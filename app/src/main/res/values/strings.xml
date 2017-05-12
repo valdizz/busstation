@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">Bus timetable</string>
+    <string name="app_name_full">Bus timetable in Lida</string>
+    <string name="btn_routes">Routes</string>
+    <string name="btn_favourites">Favourites</string>
+    <string name="btn_findbytext">Find by name</string>
+    <string name="btn_findbygps">Find by GPS</string>
+    <string name="btn_exit">Exit</string>
+    <string name="about_menu">About</string>
+    <string name="back_menu">Back</string>
+    <string name="about_e_mail">e-mail: vlad.kornev@mail.ru</string>
+    <string name="stations">Stations</string>
+    <string name="img_desc_direction">Direction</string>
+    <string name="form_caption_shedule">Shedule</string>
+    <string name="toggle_btn_off">Work</string>
+    <string name="toggle_btn_on">Week</string>
+    <string name="dialog_set_reminder">Reminder</string>
+    <string name="dialog_message">Left: %1$d h. %2$d min.</string>
+    <string name="dialog_message_left">The bus left...</string>
+</resources>

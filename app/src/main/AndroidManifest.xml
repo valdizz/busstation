@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="utf-8"?>
+<manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    package="com.example.valdizz.busstation"
+    android:versionName="1.0.0">
+
+    <application
+        android:allowBackup="true"
+        android:icon="@mipmap/ic_launcher"
+        android:label="@string/app_name"
+        android:supportsRtl="true"
+        android:theme="@style/AppTheme">
+        <activity
+            android:name=".SplashActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/SplashTheme">
+            <intent-filter>
+                <action android:name="android.intent.action.MAIN" />
+
+                <category android:name="android.intent.category.LAUNCHER" />
+            </intent-filter>
+        </activity>
+        <activity
+            android:name=".MainActivity"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".RoutesActivity"
+            android:label="@string/btn_routes"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".AboutActivity"
+            android:label="@string/about_menu"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".StationsActivity"
+            android:label="@string/stations"
+            android:screenOrientation="portrait" />
+        <activity
+            android:name=".SheduleActivity"
+            android:label="@string/form_caption_shedule"
+            android:screenOrientation="portrait" />
+    </application>
+
+</manifest>

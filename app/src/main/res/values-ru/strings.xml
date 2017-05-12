@@ -1,0 +1,20 @@
+<resources>
+    <string name="app_name">Расписание автобусов</string>
+    <string name="app_name_full">Расписание автобусов г.Лида</string>
+    <string name="btn_routes">Маршруты</string>
+    <string name="btn_favourites">Избранное</string>
+    <string name="btn_findbytext">Найти по наименованию</string>
+    <string name="btn_findbygps">Ближайшие по GPS</string>
+    <string name="btn_exit">Выход</string>
+    <string name="about_menu">О программе</string>
+    <string name="back_menu">Назад</string>
+    <string name="stations">Остановки</string>
+    <string name="img_desc_direction">Направление</string>
+    <string name="form_caption_shedule">Расписание</string>
+    <string name="toggle_btn_on">Вых</string>
+    <string name="toggle_btn_off">Раб</string>
+    <string name="about_e_mail">e-mail: vlad.kornev@mail.ru</string>
+    <string name="dialog_set_reminder">Напоминание</string>
+    <string name="dialog_message">Осталось: %1$d ч. %2$d мин.</string>
+    <string name="dialog_message_left">Автобус ушел...</string>
+</resources>
