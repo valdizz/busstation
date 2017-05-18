@@ -17,4 +17,7 @@
     <string name="dialog_set_reminder">Напоминание</string>
     <string name="dialog_message">Осталось: %1$d ч. %2$d мин.</string>
     <string name="dialog_message_left">Автобус ушел...</string>
+    <string name="add_menu">В избранное</string>
+    <string name="toast_addtofavorites">Станция %1$s добавлена в избранное.</string>
+    <string name="toast_removefromfavorites">Станция %1$s удалена из избранного.</string>
 </resources>

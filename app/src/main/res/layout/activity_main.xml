@@ -33,6 +33,7 @@
         <Button
             android:id="@+id/btnFavourites"
             style="@style/MainButtonStyle"
+            android:onClick="onClickFavoritesStations"
             android:text="@string/btn_favourites" />
     </LinearLayout>
 

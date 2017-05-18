@@ -1,6 +1,7 @@
 package com.example.valdizz.busstation;
 
 
+import android.content.ContentValues;
 import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
@@ -12,6 +13,8 @@ public class DatabaseAccess {
     public final static String DIRECTION_DOWN = "1";
     public final static String SHEDULE_WORKDAY = "0";
     public final static String SHEDULE_WEEKDAY = "1";
+    public final static String FAVOURITE_OFF = "0";
+    public final static String FAVOURITE_ON = "1";
 
 
     private SQLiteOpenHelper openHelper;
@@ -51,9 +54,27 @@ public class DatabaseAccess {
         return cursor;
     }
 
+    public Cursor getFavoriteStations() {
+        Cursor cursor = database.rawQuery("SELECT Stations.*, BusStations.*, Routes.name AS route_name, Routes.color AS route_color FROM BusStations INNER JOIN Stations ON (BusStations.stations_id = Stations._id) INNER JOIN Routes ON (BusStations.routes_id = Routes._id) WHERE BusStations.favorite=1", null);
+        cursor.moveToFirst();
+        return cursor;
+    }
+
     public Cursor getShedule(String[] params) {
         Cursor cursor = database.rawQuery("SELECT * FROM BusShedule WHERE busstations_id=? AND time LIKE ? AND day=? ORDER BY time", params);
         cursor.moveToFirst();
         return cursor;
+    }
+
+    public int setFavoriteStation(String favorite, String busstations_id) {
+        ContentValues values = new ContentValues();
+        values.put("favorite", favorite);
+        return database.update("BusStations", values, "_id=?", new String[]{busstations_id});
+    }
+
+    public boolean isFavoriteStation(String[] params) {
+        Cursor cursor =  database.rawQuery("SELECT favorite FROM BusStations WHERE _id=?", params);
+        cursor.moveToFirst();
+        return cursor.getString(cursor.getColumnIndex("favorite")).equals(DatabaseAccess.FAVOURITE_ON);
     }
 }

@@ -11,6 +11,7 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -64,7 +65,7 @@ public class StationsActivity extends AppCompatActivity implements LoaderManager
                 intentShedule.putExtra("route_name", tvRouteNameStations.getText());
                 intentShedule.putExtra("route_color", route_color);
                 intentShedule.putExtra("station_name", ((TextView)view.findViewById(R.id.tvStationName)).getText());
-                intentShedule.putExtra("station_id", String.valueOf(id));
+                intentShedule.putExtra("busstation_id", String.valueOf(id));
                 startActivity(intentShedule);
             }
         });
@@ -77,8 +78,8 @@ public class StationsActivity extends AppCompatActivity implements LoaderManager
             String name = cursor.getString(cursor.getColumnIndex("route_name"));
             if (!route_color.equals(color) || !(route_name.equals(name))){
                 ((GradientDrawable)tvRouteNumStations.getBackground().getCurrent()).setColor(Color.parseColor("#" + color));
-                route_color = color;
                 tvRouteNameStations.setText(name);
+                route_color = color;
                 route_name = name;
             }
             return false;
@@ -109,7 +110,7 @@ public class StationsActivity extends AppCompatActivity implements LoaderManager
     }
 
     @Override
-    public Loader onCreateLoader(int id, Bundle args) {
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         return new StationsCursorLoader(this, databaseAccess, args);
     }
 

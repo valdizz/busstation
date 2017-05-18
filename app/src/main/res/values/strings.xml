@@ -17,4 +17,7 @@
     <string name="dialog_set_reminder">Reminder</string>
     <string name="dialog_message">Left: %1$d h. %2$d min.</string>
     <string name="dialog_message_left">The bus left...</string>
+    <string name="add_menu">To favorites</string>
+    <string name="toast_addtofavorites">%1$s station added to favorites.</string>
+    <string name="toast_removefromfavorites">%1$s station removed from favorites.</string>
 </resources>

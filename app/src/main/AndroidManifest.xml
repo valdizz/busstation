@@ -38,6 +38,10 @@
             android:name=".SheduleActivity"
             android:label="@string/form_caption_shedule"
             android:screenOrientation="portrait" />
+        <activity
+            android:name=".FavoriteStationsActivity"
+            android:label="@string/btn_favourites"
+            android:screenOrientation="portrait"/>
     </application>
 
 </manifest>
