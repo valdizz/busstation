@@ -1,13 +1,21 @@
 package com.example.valdizz.busstation.Fragments;
 
 import android.content.Context;
+import android.database.Cursor;
 import android.net.Uri;
 import android.os.Bundle;
+import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
+import android.support.v4.app.ListFragment;
+import android.support.v4.app.LoaderManager;
+import android.support.v4.content.CursorLoader;
+import android.support.v4.content.Loader;
+import android.support.v4.widget.SimpleCursorAdapter;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 
+import com.example.valdizz.busstation.DatabaseAccess;
 import com.example.valdizz.busstation.R;
 
 
@@ -19,7 +27,7 @@ import com.example.valdizz.busstation.R;
  * Use the {@link FavotiteStationListFragment#newInstance} factory method to
  * create an instance of this fragment.
  */
-public class FavotiteStationListFragment extends Fragment {
+public class FavotiteStationListFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor> {
     // TODO: Rename parameter arguments, choose names that match
     // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
     private static final String ARG_PARAM1 = "param1";
@@ -28,6 +36,9 @@ public class FavotiteStationListFragment extends Fragment {
     // TODO: Rename and change types of parameters
     private String mParam1;
     private String mParam2;
+
+    DatabaseAccess databaseAccess;
+    SimpleCursorAdapter scStationAdapter;
 
     private OnFragmentInteractionListener mListener;
 
@@ -69,6 +80,18 @@ public class FavotiteStationListFragment extends Fragment {
         return inflater.inflate(R.layout.fragment_favotite_station_list, container, false);
     }
 
+    @Override
+    public void onActivityCreated(@Nullable Bundle savedInstanceState) {
+        super.onActivityCreated(savedInstanceState);
+        databaseAccess = DatabaseAccess.getInstance(getContext());
+        databaseAccess.open();
+
+        String[] from = new String[]{"route_number", "route_name", "station_name"};
+        int[] to = new int[]{R.id.tvRSrouteNum, R.id.tvRSroute, R.id.tvRSstation};
+        scStationAdapter = new SimpleCursorAdapter(getContext(), R.layout.activity_favorite_stations, null, from, to, 0);
+        setListAdapter(scStationAdapter);
+    }
+
     // TODO: Rename method, update argument and hook method into UI event
     public void onButtonPressed(Uri uri) {
         if (mListener != null) {
@@ -91,6 +114,7 @@ public class FavotiteStationListFragment extends Fragment {
     public void onDetach() {
         super.onDetach();
         mListener = null;
+        databaseAccess.close();
     }
 
     /**
@@ -106,5 +130,35 @@ public class FavotiteStationListFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    @Override
+    public Loader<Cursor> onCreateLoader(int id, Bundle args) {
+        return new FavoriteStationsCursorLoader(getContext(), databaseAccess);
+    }
+
+    @Override
+    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+        scStationAdapter.swapCursor(data);
+    }
+
+    @Override
+    public void onLoaderReset(Loader<Cursor> loader) {
+
+    }
+
+    static class FavoriteStationsCursorLoader extends CursorLoader {
+        DatabaseAccess db;
+
+        public FavoriteStationsCursorLoader(Context context, DatabaseAccess db) {
+            super(context);
+            this.db = db;
+        }
+
+        @Override
+        protected Cursor onLoadInBackground() {
+            Cursor cursor = db.getFavoriteStations();
+            return cursor;
+        }
     }
 }

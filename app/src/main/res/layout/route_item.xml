@@ -6,8 +6,8 @@
     android:orientation="horizontal"
     android:layout_margin="5dp">
     <TextView
-        style="@style/MainItemStyle"
         android:id="@+id/tvRouteNum"
+        style="@style/MainItemStyle"
         android:background="@drawable/main_item_num"
         android:layout_width="wrap_content"
         android:layout_height="match_parent"
@@ -17,8 +17,8 @@
         android:text="">
     </TextView>
     <TextView
-        style="@style/MainItemStyle"
         android:id="@+id/tvRouteName"
+        style="@style/MainItemStyle"
         android:background="@drawable/main_item"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

@@ -20,4 +20,5 @@
     <string name="add_menu">В избранное</string>
     <string name="toast_addtofavorites">Станция %1$s добавлена в избранное.</string>
     <string name="toast_removefromfavorites">Станция %1$s удалена из избранного.</string>
+    <string name="list_empty">Нет записей</string>
 </resources>

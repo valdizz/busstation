@@ -6,8 +6,8 @@
     android:orientation="horizontal"
     android:layout_margin="5dp">
     <TextView
-        style="@style/MainItemStyle"
         android:id="@+id/tvStationName"
+        style="@style/MainItemStyle"
         android:background="@drawable/main_item"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

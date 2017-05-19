@@ -11,14 +11,9 @@
     android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.valdizz.busstation.FavoriteStationsActivity">
 
-    <LinearLayout
+    <fragment
+        android:name="com.example.valdizz.busstation.Fragments.FavotiteStationListFragment"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal">
-
-        <ListView
-            android:id="@+id/lvFavoritesStations"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent" />
-    </LinearLayout>
+        android:layout_height="match_parent">
+    </fragment>
 </LinearLayout>

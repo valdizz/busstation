@@ -55,7 +55,7 @@ public class DatabaseAccess {
     }
 
     public Cursor getFavoriteStations() {
-        Cursor cursor = database.rawQuery("SELECT Stations.*, BusStations.*, Routes.name AS route_name, Routes.color AS route_color FROM BusStations INNER JOIN Stations ON (BusStations.stations_id = Stations._id) INNER JOIN Routes ON (BusStations.routes_id = Routes._id) WHERE BusStations.favorite=1", null);
+        Cursor cursor = database.rawQuery("SELECT Stations.name AS station_name, BusStations.*, Routes.number AS route_number, Routes.name AS route_name, Routes.color AS route_color FROM BusStations INNER JOIN Stations ON (BusStations.stations_id = Stations._id) INNER JOIN Routes ON (BusStations.routes_id = Routes._id) WHERE BusStations.favorite=1", null);
         cursor.moveToFirst();
         return cursor;
     }

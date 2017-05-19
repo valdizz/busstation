@@ -20,4 +20,8 @@
     <string name="add_menu">To favorites</string>
     <string name="toast_addtofavorites">%1$s station added to favorites.</string>
     <string name="toast_removefromfavorites">%1$s station removed from favorites.</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+    <string name="list_empty">Empty</string>
 </resources>
