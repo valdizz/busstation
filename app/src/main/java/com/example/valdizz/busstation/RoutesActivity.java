@@ -19,6 +19,8 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.example.valdizz.busstation.Database.DatabaseAccess;
+
 
 public class RoutesActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -33,6 +35,10 @@ public class RoutesActivity extends AppCompatActivity implements LoaderManager.L
 
         lvRoutes = (ListView) findViewById(R.id.lvRoutes);
 
+        initializeContentLoader();
+    }
+
+    private void initializeContentLoader(){
         databaseAccess = DatabaseAccess.getInstance(this);
         databaseAccess.open();
 
@@ -41,19 +47,21 @@ public class RoutesActivity extends AppCompatActivity implements LoaderManager.L
         scRoutesAdapter = new SimpleCursorAdapter(this, R.layout.route_item, null, from, to, 0);
         scRoutesAdapter.setViewBinder(new RoutesAdapterViewBinder());
         lvRoutes.setAdapter(scRoutesAdapter);
+        lvRoutes.setOnItemClickListener(routesListener);
         getSupportLoaderManager().initLoader(0, null, this);
-
-        lvRoutes.setOnItemClickListener(new AdapterView.OnItemClickListener(){
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intent = new Intent(RoutesActivity.this, StationsActivity.class);
-                intent.putExtra("route_id", String.valueOf(id));
-                intent.putExtra("route_num", ((TextView)view.findViewById(R.id.tvRouteNum)).getText());
-                intent.putExtra("route_name", ((TextView)view.findViewById(R.id.tvRouteName)).getText());
-                startActivity(intent);
-            }
-        });
     }
+
+    private AdapterView.OnItemClickListener routesListener = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            Intent intent = new Intent(RoutesActivity.this, StationsActivity.class);
+            intent.putExtra("route_id", String.valueOf(id));
+            intent.putExtra("route_num", ((TextView)view.findViewById(R.id.tvRouteNum)).getText());
+            intent.putExtra("route_name", ((TextView)view.findViewById(R.id.tvRouteName)).getText());
+            intent.putExtra("route_color", (view.findViewById(R.id.tvRouteNum)).getTag().toString());
+            startActivity(intent);
+        }
+    };
 
     private class RoutesAdapterViewBinder implements SimpleCursorAdapter.ViewBinder{
         @Override
@@ -61,11 +69,9 @@ public class RoutesActivity extends AppCompatActivity implements LoaderManager.L
             String color = cursor.getString(cursor.getColumnIndex("color"));
             String number = cursor.getString(cursor.getColumnIndex("number"));
             if (view.getId() == R.id.tvRouteNum){
-                StateListDrawable drawable = (StateListDrawable)view.getBackground();
-                GradientDrawable gradientDrawable = (GradientDrawable)drawable.getCurrent();
-                gradientDrawable.mutate();
-                gradientDrawable.setColor(Color.parseColor("#"+color));
+                ((GradientDrawable)view.getBackground().getCurrent()).setColor(Color.parseColor("#" + color));
                 ((TextView)view).setText(number);
+                view.setTag(color);
                 return true;
             }
             return false;

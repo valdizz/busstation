@@ -25,6 +25,10 @@ public class AboutActivity extends AppCompatActivity {
         tvAndroidVersion = (TextView) findViewById(R.id.tvAnroidVersion);
         tvCopyright = (TextView) findViewById(R.id.tvCopyright);
 
+        init();
+    }
+
+    private void init(){
         tvAppVersion.setText("v. " + BuildConfig.VERSION_NAME);
         tvAndroidVersion.setText("Android ver: " + Build.VERSION.RELEASE + " (" + Build.VERSION.SDK_INT + ")");
         tvCopyright.setText("Copyright © " + ((Calendar.getInstance().get(Calendar.YEAR))==2017 ? "2017" : "2017 - "+Calendar.getInstance().get(Calendar.YEAR)) + "\nby Vlad Kornev");

@@ -11,13 +11,14 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
+
+import com.example.valdizz.busstation.Database.DatabaseAccess;
 
 public class StationsActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -27,7 +28,6 @@ public class StationsActivity extends AppCompatActivity implements LoaderManager
     TextView tvRouteNumStations;
     TextView tvRouteNameStations;
     Bundle bundle;
-    String route_color, route_name;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -38,13 +38,19 @@ public class StationsActivity extends AppCompatActivity implements LoaderManager
         tvRouteNumStations = (TextView)findViewById(R.id.tvRouteNumStations);
         tvRouteNameStations = (TextView)findViewById(R.id.tvRouteNameStations);
 
-        route_name = "";
-        route_color = "";
+        init();
+        initializeContentLoader();
+    }
 
+    private void init(){
         Intent intent = getIntent();
         tvRouteNumStations.setText(intent.getStringExtra("route_num"));
+        ((GradientDrawable)tvRouteNumStations.getBackground().getCurrent()).setColor(Color.parseColor("#" + intent.getStringExtra("route_color")));
+        tvRouteNumStations.setTag(intent.getStringExtra("route_color"));
         tvRouteNameStations.setText(intent.getStringExtra("route_name"));
+    }
 
+    private void initializeContentLoader(){
         databaseAccess = DatabaseAccess.getInstance(this);
         databaseAccess.open();
 
@@ -53,37 +59,42 @@ public class StationsActivity extends AppCompatActivity implements LoaderManager
         scStationAdapter = new SimpleCursorAdapter(this, R.layout.station_item, null, from, to, 0);
         scStationAdapter.setViewBinder(new StationsAdapterViewBinder());
         lvStations.setAdapter(scStationAdapter);
+        lvStations.setOnItemClickListener(stationsListener);
+
         bundle = new Bundle();
         bundle.putStringArray("route_params", new String[]{tvRouteNumStations.getText().toString(), databaseAccess.DIRECTION_UP});
         getSupportLoaderManager().initLoader(0, bundle, this);
-
-        lvStations.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                Intent intentShedule = new Intent(StationsActivity.this, SheduleActivity.class);
-                intentShedule.putExtra("route_num", tvRouteNumStations.getText());
-                intentShedule.putExtra("route_name", tvRouteNameStations.getText());
-                intentShedule.putExtra("route_color", route_color);
-                intentShedule.putExtra("station_name", ((TextView)view.findViewById(R.id.tvStationName)).getText());
-                intentShedule.putExtra("busstation_id", String.valueOf(id));
-                startActivity(intentShedule);
-            }
-        });
     }
+
+    private AdapterView.OnItemClickListener stationsListener = new AdapterView.OnItemClickListener() {
+        @Override
+        public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            Intent intentShedule = new Intent(StationsActivity.this, SheduleActivity.class);
+            intentShedule.putExtra("route_num", tvRouteNumStations.getText());
+            intentShedule.putExtra("route_name", tvRouteNameStations.getText());
+            intentShedule.putExtra("route_color", tvRouteNumStations.getTag().toString());
+            intentShedule.putExtra("station_name", ((TextView)view.findViewById(R.id.tvStationName)).getText());
+            intentShedule.putExtra("busstation_id", String.valueOf(id));
+            startActivity(intentShedule);
+        }
+    };
 
     private class StationsAdapterViewBinder implements SimpleCursorAdapter.ViewBinder{
         @Override
         public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
-            String color = cursor.getString(cursor.getColumnIndex("route_color"));
             String name = cursor.getString(cursor.getColumnIndex("route_name"));
-            if (!route_color.equals(color) || !(route_name.equals(name))){
-                ((GradientDrawable)tvRouteNumStations.getBackground().getCurrent()).setColor(Color.parseColor("#" + color));
-                tvRouteNameStations.setText(name);
-                route_color = color;
-                route_name = name;
-            }
+            tvRouteNameStations.setText(name);
             return false;
         }
+    }
+
+    public void onClickDirection(View view){
+        String direction = bundle.getStringArray("route_params")[1];
+        bundle.clear();
+        bundle.putStringArray("route_params", new String[]{tvRouteNumStations.getText().toString(), (direction.equals(databaseAccess.DIRECTION_UP) ? databaseAccess.DIRECTION_DOWN : databaseAccess.DIRECTION_UP)});
+
+        databaseAccess.open();
+        getSupportLoaderManager().restartLoader(0, bundle, this).forceLoad();
     }
 
     @Override
@@ -147,12 +158,4 @@ public class StationsActivity extends AppCompatActivity implements LoaderManager
         }
     }
 
-    public void onClickDirection(View view){
-        String direction = bundle.getStringArray("route_params")[1];
-        bundle.clear();
-        bundle.putStringArray("route_params", new String[]{tvRouteNumStations.getText().toString(), (direction.equals(databaseAccess.DIRECTION_UP) ? databaseAccess.DIRECTION_DOWN : databaseAccess.DIRECTION_UP)});
-
-        databaseAccess.open();
-        getSupportLoaderManager().restartLoader(0, bundle, this).forceLoad();
-    }
 }

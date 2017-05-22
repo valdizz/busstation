@@ -6,5 +6,6 @@
     <dimen name="main_button_text_size">20sp</dimen>
     <dimen name="main_item_margin">3dp</dimen>
     <dimen name="main_item_text_size">16sp</dimen>
+    <dimen name="main_item_text_size_small">12sp</dimen>
     <dimen name="caption_text_size">18sp</dimen>
 </resources>

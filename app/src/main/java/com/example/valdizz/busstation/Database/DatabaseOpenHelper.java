@@ -1,4 +1,4 @@
-package com.example.valdizz.busstation;
+package com.example.valdizz.busstation.Database;
 
 import android.content.Context;
 import com.readystatesoftware.sqliteasset.SQLiteAssetHelper;

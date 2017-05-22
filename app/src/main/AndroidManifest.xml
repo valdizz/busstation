@@ -41,7 +41,10 @@
         <activity
             android:name=".FavoriteStationsActivity"
             android:label="@string/btn_favourites"
-            android:screenOrientation="portrait"/>
+            android:screenOrientation="portrait" />
+        <activity android:name=".FoundStationsActivity"
+            android:label="@string/btn_findbytext"
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>

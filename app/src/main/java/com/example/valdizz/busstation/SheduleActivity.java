@@ -13,7 +13,6 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -24,6 +23,9 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 import android.widget.ToggleButton;
+
+import com.example.valdizz.busstation.Database.DatabaseAccess;
+import com.example.valdizz.busstation.Dialogs.TimeToDepartureDialog;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -61,6 +63,12 @@ public class SheduleActivity extends AppCompatActivity implements LoaderManager.
         tbSwithcDaysShedule = (ToggleButton)findViewById(R.id.switchDaysShedule);
         tlShedule = (TableLayout) findViewById(R.id.tlShedule);
 
+        init();
+        createShedule(hour = 4, day);
+        initializeHandler();
+    }
+
+    private void init(){
         Intent intent = getIntent();
         tvRouteNumShedule.setText(intent.getStringExtra("route_num"));
         ((GradientDrawable)tvRouteNumShedule.getBackground().getCurrent()).setColor(Color.parseColor("#" + intent.getStringExtra("route_color")));
@@ -71,14 +79,13 @@ public class SheduleActivity extends AppCompatActivity implements LoaderManager.
         databaseAccess = DatabaseAccess.getInstance(this);
         databaseAccess.open();
         is_favorite_station = databaseAccess.isFavoriteStation(new String[] {busstation_id});
-
         timeToDepartureDialog = new TimeToDepartureDialog();
         bundle = new Bundle();
         day = isWeekend() ? databaseAccess.SHEDULE_WEEKDAY : databaseAccess.SHEDULE_WORKDAY;
         tbSwithcDaysShedule.setChecked(isWeekend());
-        createShedule(hour = 4, day);
+    }
 
-        //стартуем обновление ячеек в фоне каждую минуту
+    private void initializeHandler(){
         updateHandler = new Handler();
         long next = SystemClock.uptimeMillis() + (SheduleActivity.UPDATE_PERIOD - System.currentTimeMillis() % SheduleActivity.UPDATE_PERIOD) + 1000;
         updateHandler.postAtTime(updateRunnable, next);
@@ -150,17 +157,17 @@ public class SheduleActivity extends AppCompatActivity implements LoaderManager.
     private void createSheduleLine(Cursor data) {
         String time;
         if ((data!=null) && (data.getCount()>0)) {
-            //создаем строку
+            //add line
             TableRow tableRow = new TableRow(this);
             tableRow.setTag(hour);
             TableRow.LayoutParams trParams = new TableRow.LayoutParams();
             trParams.gravity = Gravity.CENTER;
             tableRow.setLayoutParams(trParams);
 
-            //добавим заголовок строки для каждого часа
+            //add line header (every hour)
             tableRow.addView(tvSheduleHour(getHourFormatHH(hour)));
 
-            //добавляем ячейки со временем
+            //add cells with time
             data.moveToFirst();
             while (!data.isAfterLast()) {
                 time = data.getString(data.getColumnIndex("time"));

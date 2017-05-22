@@ -1,4 +1,4 @@
-package com.example.valdizz.busstation;
+package com.example.valdizz.busstation.Database;
 
 
 import android.content.ContentValues;
@@ -54,14 +54,20 @@ public class DatabaseAccess {
         return cursor;
     }
 
-    public Cursor getFavoriteStations() {
-        Cursor cursor = database.rawQuery("SELECT Stations.name AS station_name, BusStations.*, Routes.number AS route_number, Routes.name AS route_name, Routes.color AS route_color FROM BusStations INNER JOIN Stations ON (BusStations.stations_id = Stations._id) INNER JOIN Routes ON (BusStations.routes_id = Routes._id) WHERE BusStations.favorite=1", null);
+    public Cursor getShedule(String[] params) {
+        Cursor cursor = database.rawQuery("SELECT * FROM BusShedule WHERE busstations_id=? AND time LIKE ? AND day=? ORDER BY time", params);
         cursor.moveToFirst();
         return cursor;
     }
 
-    public Cursor getShedule(String[] params) {
-        Cursor cursor = database.rawQuery("SELECT * FROM BusShedule WHERE busstations_id=? AND time LIKE ? AND day=? ORDER BY time", params);
+    public Cursor getFoundStations(String[] params) {
+        Cursor cursor = database.rawQuery("SELECT Stations.name AS station_name, BusStations.*, Routes.number AS route_number, Routes.name AS route_name, Routes.color AS route_color FROM BusStations INNER JOIN Stations ON (BusStations.stations_id = Stations._id) INNER JOIN Routes ON (BusStations.routes_id = Routes._id) WHERE station_name LIKE ? ORDER BY station_name", params);
+        cursor.moveToFirst();
+        return cursor;
+    }
+
+    public Cursor getFavoriteStations() {
+        Cursor cursor = database.rawQuery("SELECT Stations.name AS station_name, BusStations.*, Routes.number AS route_number, Routes.name AS route_name, Routes.color AS route_color FROM BusStations INNER JOIN Stations ON (BusStations.stations_id = Stations._id) INNER JOIN Routes ON (BusStations.routes_id = Routes._id) WHERE BusStations.favorite=1", null);
         cursor.moveToFirst();
         return cursor;
     }

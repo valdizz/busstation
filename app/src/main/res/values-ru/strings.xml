@@ -4,7 +4,7 @@
     <string name="btn_routes">Маршруты</string>
     <string name="btn_favourites">Избранное</string>
     <string name="btn_findbytext">Найти по наименованию</string>
-    <string name="btn_findbygps">Ближайшие по GPS</string>
+    <string name="btn_findbygps">Найти на карте</string>
     <string name="btn_exit">Выход</string>
     <string name="about_menu">О программе</string>
     <string name="back_menu">Назад</string>
@@ -20,5 +20,8 @@
     <string name="add_menu">В избранное</string>
     <string name="toast_addtofavorites">Станция %1$s добавлена в избранное.</string>
     <string name="toast_removefromfavorites">Станция %1$s удалена из избранного.</string>
-    <string name="list_empty">Нет записей</string>
+    <string name="list_empty">Нет данных</string>
+    <string name="btn_alerts">Оповещения</string>
+    <string name="hello_blank_fragment"></string>
+    <string name="hint_findbyname">Введите наименование</string>
 </resources>

@@ -54,6 +54,11 @@ public class MainActivity extends AppCompatActivity{
         startActivity(intent);
     }
 
+    public void onClickFoundStations(View view){
+        Intent intent = new Intent(this, FoundStationsActivity.class);
+        startActivity(intent);
+    }
+
     public void onClickExit(View view){
         finish();
     }

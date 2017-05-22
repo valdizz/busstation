@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/activity_favorite_stations"
+    android:id="@+id/activity_found_stations"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
@@ -9,13 +9,19 @@
     android:paddingLeft="@dimen/activity_horizontal_margin"
     android:paddingRight="@dimen/activity_horizontal_margin"
     android:paddingTop="@dimen/activity_vertical_margin"
-    tools:context="com.example.valdizz.busstation.FavoriteStationsActivity">
+    tools:context="com.example.valdizz.busstation.FoundStationsActivity">
+
+    <EditText
+        android:id="@+id/userFilter"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:hint="@string/hint_findbyname"
+        android:paddingBottom="10dp"/>
 
     <fragment
         android:id="@+id/favorite_station_list"
         android:name="com.example.valdizz.busstation.Fragments.RouteStationListFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        tools:layout="@layout/routestation_list_fragment">
-    </fragment>
+        tools:layout="@layout/routestation_list_fragment"></fragment>
 </LinearLayout>

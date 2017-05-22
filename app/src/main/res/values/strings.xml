@@ -2,9 +2,9 @@
     <string name="app_name">Bus timetable</string>
     <string name="app_name_full">Bus timetable in Lida</string>
     <string name="btn_routes">Routes</string>
-    <string name="btn_favourites">Favourites</string>
+    <string name="btn_favourites">Favorites</string>
     <string name="btn_findbytext">Find by name</string>
-    <string name="btn_findbygps">Find by GPS</string>
+    <string name="btn_findbygps">Find on map</string>
     <string name="btn_exit">Exit</string>
     <string name="about_menu">About</string>
     <string name="back_menu">Back</string>
@@ -20,8 +20,7 @@
     <string name="add_menu">To favorites</string>
     <string name="toast_addtofavorites">%1$s station added to favorites.</string>
     <string name="toast_removefromfavorites">%1$s station removed from favorites.</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
-    <string name="list_empty">Empty</string>
+    <string name="list_empty">No data</string>
+    <string name="btn_alerts">Alerts</string>
+    <string name="hint_findbyname">Enter the name</string>
 </resources>

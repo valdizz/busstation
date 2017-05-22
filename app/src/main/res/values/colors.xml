@@ -8,4 +8,5 @@
     <color name="colorAboutCaptionText">#0faf15</color>
     <color name="colorAboutText">#d76f12</color>
     <color name="colorShedulePastBgnd">#e0dfdb</color>
+    <color name="colorBlack">#000000</color>
 </resources>
