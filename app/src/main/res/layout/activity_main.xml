@@ -59,6 +59,7 @@
         <Button
             android:id="@+id/btnFindByGps"
             style="@style/MainButtonStyle"
+            android:onClick="onClickMapStations"
             android:text="@string/btn_findbygps" />
     </LinearLayout>
 

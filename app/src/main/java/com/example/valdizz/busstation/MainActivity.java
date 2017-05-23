@@ -59,6 +59,11 @@ public class MainActivity extends AppCompatActivity{
         startActivity(intent);
     }
 
+    public void onClickMapStations(View view){
+        Intent intent = new Intent(this, MapStationsActivity.class);
+        startActivity(intent);
+    }
+
     public void onClickExit(View view){
         finish();
     }

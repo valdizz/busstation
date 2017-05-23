@@ -23,4 +23,6 @@
     <string name="list_empty">No data</string>
     <string name="btn_alerts">Alerts</string>
     <string name="hint_findbyname">Enter the name</string>
+    <string name="title_activity_map_stations">Map</string>
+    <string name="city">Lida</string>
 </resources>

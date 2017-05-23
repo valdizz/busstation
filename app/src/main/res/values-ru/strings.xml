@@ -24,4 +24,5 @@
     <string name="btn_alerts">Оповещения</string>
     <string name="hello_blank_fragment"></string>
     <string name="hint_findbyname">Введите наименование</string>
+    <string name="city">Лида</string>
 </resources>

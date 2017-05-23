@@ -12,6 +12,7 @@ import android.support.v4.content.Loader;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -46,10 +47,11 @@ public class RouteStationListFragment extends ListFragment implements LoaderMana
     @Override
     public void onResume() {
         super.onResume();
+        Log.d("DDD", getActivity().getClass().getSimpleName());
         if (getActivity().getClass().getSimpleName().equals("FoundStationsActivity")) {
             EditText userFilter = (EditText) getActivity().findViewById(R.id.userFilter);
-            if (!userFilter.getText().toString().isEmpty())
-                scRouteStationAdapter.getFilter().filter(userFilter.getText().toString());
+            Log.d("DDD", userFilter.getText().toString());
+            scRouteStationAdapter.getFilter().filter(userFilter.getText().toString());
 
             userFilter.addTextChangedListener(new TextWatcher() {
                 @Override
