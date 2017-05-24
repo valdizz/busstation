@@ -5,9 +5,6 @@ import android.database.Cursor;
 import android.os.Bundle;
 import android.support.v4.content.CursorLoader;
 
-/**
- * Created by V.Kornev on 22.05.17.
- */
 
 public class FoundStationsCursorLoader extends CursorLoader {
     DatabaseAccess db;
