@@ -22,7 +22,8 @@
     <string name="toast_removefromfavorites">Станция %1$s удалена из избранного.</string>
     <string name="list_empty">Нет данных</string>
     <string name="btn_alerts">Оповещения</string>
-    <string name="hello_blank_fragment"></string>
     <string name="hint_findbyname">Введите наименование</string>
     <string name="city">Лида</string>
+    <string name="map_mylocation">Я здесь</string>
+    <string name="map_routes">"Маршруты: "</string>
 </resources>

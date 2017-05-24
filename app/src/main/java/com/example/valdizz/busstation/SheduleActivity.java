@@ -64,6 +64,7 @@ public class SheduleActivity extends AppCompatActivity implements LoaderManager.
         tlShedule = (TableLayout) findViewById(R.id.tlShedule);
 
         init();
+        databaseAccess.open();
         createShedule(hour = 4, day);
         initializeHandler();
     }
@@ -77,8 +78,8 @@ public class SheduleActivity extends AppCompatActivity implements LoaderManager.
         busstation_id = intent.getStringExtra("busstation_id");
 
         databaseAccess = DatabaseAccess.getInstance(this);
-        databaseAccess.open();
-        is_favorite_station = databaseAccess.isFavoriteStation(new String[] {busstation_id});
+        getFavoriteStation();
+
         timeToDepartureDialog = new TimeToDepartureDialog();
         bundle = new Bundle();
         day = isWeekend() ? databaseAccess.SHEDULE_WEEKDAY : databaseAccess.SHEDULE_WORKDAY;
@@ -135,17 +136,37 @@ public class SheduleActivity extends AppCompatActivity implements LoaderManager.
                 return true;
             }
             case R.id.add_menu:{
-                databaseAccess.open();
-                databaseAccess.setFavoriteStation(is_favorite_station ? DatabaseAccess.FAVOURITE_OFF : DatabaseAccess.FAVOURITE_ON, busstation_id);
-                menu.findItem(R.id.add_menu).setIcon(is_favorite_station ? R.drawable.add_icon : R.drawable.remove_icon);
-                Toast.makeText(this, getString(is_favorite_station ? R.string.toast_removefromfavorites : R.string.toast_addtofavorites, tvStationNameShedule.getText()), Toast.LENGTH_SHORT).show();
-                is_favorite_station = !is_favorite_station;
-                databaseAccess.close();
+                setFavoriteStation();
                 return true;
             }
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    private void setFavoriteStation(){
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                databaseAccess.open();
+                databaseAccess.setFavoriteStation(is_favorite_station ? DatabaseAccess.FAVOURITE_OFF : DatabaseAccess.FAVOURITE_ON, busstation_id);
+                menu.findItem(R.id.add_menu).setIcon(is_favorite_station ? R.drawable.add_icon : R.drawable.remove_icon);
+                Toast.makeText(SheduleActivity.this, getString(is_favorite_station ? R.string.toast_removefromfavorites : R.string.toast_addtofavorites, tvStationNameShedule.getText()), Toast.LENGTH_SHORT).show();
+                is_favorite_station = !is_favorite_station;
+                databaseAccess.close();
+            }
+        });
+    }
+
+    private void getFavoriteStation(){
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                databaseAccess.open();
+                is_favorite_station = databaseAccess.isFavoriteStation(new String[] {busstation_id});
+                databaseAccess.close();
+            }
+        });
     }
 
     private void createShedule(int hour, String day) {

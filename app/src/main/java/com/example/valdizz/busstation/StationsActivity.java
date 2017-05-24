@@ -82,8 +82,7 @@ public class StationsActivity extends AppCompatActivity implements LoaderManager
     private class StationsAdapterViewBinder implements SimpleCursorAdapter.ViewBinder{
         @Override
         public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
-            String name = cursor.getString(cursor.getColumnIndex("route_name"));
-            tvRouteNameStations.setText(name);
+            tvRouteNameStations.setText(cursor.getString(cursor.getColumnIndex("route_name")));
             return false;
         }
     }
