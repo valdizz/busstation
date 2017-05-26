@@ -5,25 +5,26 @@
     android:layout_height="wrap_content"
     android:orientation="horizontal"
     android:layout_margin="5dp">
+
     <TextView
         android:id="@+id/tvRouteNum"
         style="@style/MainItemStyle"
         android:background="@drawable/main_item_num"
-        android:layout_width="wrap_content"
+        android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="center_vertical"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp"
-        android:text="">
-    </TextView>
+        android:gravity="center"
+        android:layout_weight="6"
+        android:text=""/>
+
     <TextView
         android:id="@+id/tvRouteName"
         style="@style/MainItemStyle"
         android:background="@drawable/main_item"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_gravity="center_vertical"
-        android:paddingLeft="20dp"
-        android:text="">
-    </TextView>
+        android:gravity="center_vertical"
+        android:layout_weight="1"
+        android:paddingLeft="10dp"
+        android:text=""/>
+
 </LinearLayout>

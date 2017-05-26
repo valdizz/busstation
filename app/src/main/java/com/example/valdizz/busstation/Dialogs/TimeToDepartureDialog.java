@@ -29,7 +29,7 @@ public class TimeToDepartureDialog extends AppCompatDialogFragment {
                 .setNegativeButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                    @Override
                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.cancel();
+                        dialog.dismiss();
                    }
                });
 

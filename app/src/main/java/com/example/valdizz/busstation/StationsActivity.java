@@ -1,13 +1,11 @@
 package com.example.valdizz.busstation;
 
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.AppCompatActivity;
@@ -19,6 +17,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.valdizz.busstation.Database.DatabaseAccess;
+import com.example.valdizz.busstation.Database.StationsCursorLoader;
 
 public class StationsActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -54,7 +53,7 @@ public class StationsActivity extends AppCompatActivity implements LoaderManager
         databaseAccess = DatabaseAccess.getInstance(this);
         databaseAccess.open();
 
-        String[] from = new String[]{"name"};
+        String[] from = new String[]{DatabaseAccess.STATION_NAME};
         int[] to = new int[]{R.id.tvStationName};
         scStationAdapter = new SimpleCursorAdapter(this, R.layout.station_item, null, from, to, 0);
         scStationAdapter.setViewBinder(new StationsAdapterViewBinder());
@@ -62,7 +61,7 @@ public class StationsActivity extends AppCompatActivity implements LoaderManager
         lvStations.setOnItemClickListener(stationsListener);
 
         bundle = new Bundle();
-        bundle.putStringArray("route_params", new String[]{tvRouteNumStations.getText().toString(), databaseAccess.DIRECTION_UP});
+        bundle.putStringArray(DatabaseAccess.BUNDLE_PARAMS, new String[]{tvRouteNumStations.getText().toString(), databaseAccess.DIRECTION_UP});
         getSupportLoaderManager().initLoader(0, bundle, this);
     }
 
@@ -82,15 +81,15 @@ public class StationsActivity extends AppCompatActivity implements LoaderManager
     private class StationsAdapterViewBinder implements SimpleCursorAdapter.ViewBinder{
         @Override
         public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
-            tvRouteNameStations.setText(cursor.getString(cursor.getColumnIndex("route_name")));
+            tvRouteNameStations.setText(cursor.getString(cursor.getColumnIndex(DatabaseAccess.ROUTE_NAME)));
             return false;
         }
     }
 
     public void onClickDirection(View view){
-        String direction = bundle.getStringArray("route_params")[1];
+        String direction = bundle.getStringArray(DatabaseAccess.BUNDLE_PARAMS)[1];
         bundle.clear();
-        bundle.putStringArray("route_params", new String[]{tvRouteNumStations.getText().toString(), (direction.equals(databaseAccess.DIRECTION_UP) ? databaseAccess.DIRECTION_DOWN : databaseAccess.DIRECTION_UP)});
+        bundle.putStringArray(DatabaseAccess.BUNDLE_PARAMS, new String[]{tvRouteNumStations.getText().toString(), (direction.equals(databaseAccess.DIRECTION_UP) ? databaseAccess.DIRECTION_DOWN : databaseAccess.DIRECTION_UP)});
 
         databaseAccess.open();
         getSupportLoaderManager().restartLoader(0, bundle, this).forceLoad();
@@ -131,30 +130,13 @@ public class StationsActivity extends AppCompatActivity implements LoaderManager
 
     @Override
     public void onLoaderReset(Loader loader) {
-
+        scStationAdapter.swapCursor(null);
     }
 
     @Override
     protected void onDestroy() {
         super.onDestroy();
         databaseAccess.close();
-    }
-
-    static class StationsCursorLoader extends CursorLoader {
-        DatabaseAccess db;
-        Bundle bundle;
-
-        public StationsCursorLoader(Context context, DatabaseAccess db, Bundle bundle) {
-            super(context);
-            this.db = db;
-            this.bundle = bundle;
-        }
-
-        @Override
-        protected Cursor onLoadInBackground() {
-            Cursor cursor = db.getStations(bundle.getStringArray("route_params"));
-            return cursor;
-        }
     }
 
 }

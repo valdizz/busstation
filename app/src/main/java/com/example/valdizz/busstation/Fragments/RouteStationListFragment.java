@@ -12,7 +12,6 @@ import android.support.v4.content.Loader;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -29,8 +28,11 @@ import com.example.valdizz.busstation.SheduleActivity;
 
 public class RouteStationListFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
+    private final static String FOUND_STATION_ACTIVITY = "FoundStationsActivity";
+
     DatabaseAccess databaseAccess;
     SimpleCursorAdapter scRouteStationAdapter;
+
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -42,38 +44,17 @@ public class RouteStationListFragment extends ListFragment implements LoaderMana
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
         initializeContentLoader();
+        if (getActivity().getClass().getSimpleName().equals(FOUND_STATION_ACTIVITY)) {
+            addUserFilter();
+        }
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        Log.d("DDD", getActivity().getClass().getSimpleName());
-        if (getActivity().getClass().getSimpleName().equals("FoundStationsActivity")) {
-            EditText userFilter = (EditText) getActivity().findViewById(R.id.userFilter);
-            Log.d("DDD", userFilter.getText().toString());
-            scRouteStationAdapter.getFilter().filter(userFilter.getText().toString());
-
-            userFilter.addTextChangedListener(new TextWatcher() {
-                @Override
-                public void beforeTextChanged(CharSequence s, int start, int count, int after) {
-                }
-
-                @Override
-                public void onTextChanged(CharSequence s, int start, int before, int count) {
-                    scRouteStationAdapter.getFilter().filter(s.toString());
-                }
-
-                @Override
-                public void afterTextChanged(Editable s) {
-                }
-            });
-
-            scRouteStationAdapter.setFilterQueryProvider(new FilterQueryProvider() {
-                @Override
-                public Cursor runQuery(CharSequence constraint) {
-                    return databaseAccess.getFoundStations(new String[]{(constraint == null || constraint.length() == 0 ? "%%" : "%" + constraint.toString() + "%")});
-                }
-            });
+        if (!getActivity().getClass().getSimpleName().equals(FOUND_STATION_ACTIVITY)){
+            databaseAccess.open();
+            getLoaderManager().initLoader(0, null, this).forceLoad();
         }
     }
 
@@ -87,7 +68,7 @@ public class RouteStationListFragment extends ListFragment implements LoaderMana
         databaseAccess = DatabaseAccess.getInstance(getActivity());
         databaseAccess.open();
 
-        String[] from = new String[]{"route_number", "route_name", "station_name"};
+        String[] from = new String[]{DatabaseAccess.ROUTE_NUMBER, DatabaseAccess.ROUTE_NAME, DatabaseAccess.STATION_NAME};
         int[] to = new int[]{R.id.tvRSrouteNum, R.id.tvRSroute, R.id.tvRSstation};
         scRouteStationAdapter = new SimpleCursorAdapter(getActivity(), R.layout.routestation_item, null, from, to, 0);
         scRouteStationAdapter.setViewBinder(new RouteStationAdapterViewBinder());
@@ -95,11 +76,39 @@ public class RouteStationListFragment extends ListFragment implements LoaderMana
         getLoaderManager().initLoader(0, null, this);
     }
 
+    private void addUserFilter(){
+        EditText userFilter = (EditText) getActivity().findViewById(R.id.userFilter);
+        scRouteStationAdapter.getFilter().filter(userFilter.getText().toString());
+
+        userFilter.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+                scRouteStationAdapter.getFilter().filter(s.toString());
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+            }
+        });
+
+        scRouteStationAdapter.setFilterQueryProvider(new FilterQueryProvider() {
+            @Override
+            public Cursor runQuery(CharSequence constraint) {
+                databaseAccess.open();
+                return databaseAccess.getFoundStations(new String[]{(constraint == null || constraint.length() == 0 ? "%%" : "%" + constraint.toString() + "%")});
+            }
+        });
+    }
+
     private class RouteStationAdapterViewBinder implements SimpleCursorAdapter.ViewBinder{
         @Override
         public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
-            String color = cursor.getString(cursor.getColumnIndex("route_color"));
-            String number = cursor.getString(cursor.getColumnIndex("route_number"));
+            String color = cursor.getString(cursor.getColumnIndex(DatabaseAccess.ROUTE_COLOR));
+            String number = cursor.getString(cursor.getColumnIndex(DatabaseAccess.ROUTE_NUMBER));
             if (view.getId() == R.id.tvRSrouteNum){
                 ((GradientDrawable)view.getBackground().getCurrent()).setColor(Color.parseColor("#" + color));
                 ((TextView)view).setText(number);
@@ -124,7 +133,7 @@ public class RouteStationListFragment extends ListFragment implements LoaderMana
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         switch (getActivity().getClass().getSimpleName()){
-            case "FoundStationsActivity":
+            case FOUND_STATION_ACTIVITY:
                 return new FoundStationsCursorLoader(getActivity(), databaseAccess, args);
             default:
                 return new FavoriteStationsCursorLoader(getActivity(), databaseAccess);
@@ -138,7 +147,7 @@ public class RouteStationListFragment extends ListFragment implements LoaderMana
 
     @Override
     public void onLoaderReset(Loader<Cursor> loader) {
-
+        scRouteStationAdapter.swapCursor(null);
     }
 
 }

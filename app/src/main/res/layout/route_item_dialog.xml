@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="horizontal"
+    android:padding="4dp">
+
+    <TextView
+        android:id="@+id/tvRouteNumDialog"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:layout_weight="8"
+        android:minHeight="30dp"
+        android:textSize="@dimen/main_item_text_size"
+        android:textColor="@color/colorBlack"
+        android:text="1"/>
+
+    <TextView
+        android:id="@+id/tvRouteNameDialog"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center_vertical"
+        android:layout_weight="1"
+        android:paddingLeft="5dp"
+        android:textSize="@dimen/main_item_text_size"
+        android:textColor="@color/colorBlack"
+        android:text="2"/>
+</LinearLayout>

@@ -25,5 +25,8 @@
     <string name="hint_findbyname">Enter the name</string>
     <string name="city">Lida</string>
     <string name="map_mylocation">I\'m here</string>
-    <string name="map_routes">"Routes: "</string>
+    <string name="map_route">Route N:</string>
+    <string name="about_version" translatable="false">v. %1$s</string>
+    <string name="about_droidversion" translatable="false">Android ver: %1$s (%2$d)</string>
+    <string name="about_copyright" translatable="false">Copyright © %1$s \n by Vlad Kornev</string>
 </resources>

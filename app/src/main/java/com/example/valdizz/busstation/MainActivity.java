@@ -10,8 +10,6 @@ import android.widget.Button;
 
 public class MainActivity extends AppCompatActivity{
 
-    public static final String TAG_LOG = "BusStationLog";
-
     Button btnRoutes;
 
     @Override

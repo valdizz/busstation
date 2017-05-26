@@ -1,30 +1,32 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<LinearLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
-    android:layout_margin="5dp"
-    android:orientation="horizontal">
+    android:orientation="horizontal"
+    android:layout_margin="5dp">
 
     <TextView
         android:id="@+id/tvRSrouteNum"
         style="@style/MainItemStyle"
-        android:layout_width="wrap_content"
-        android:layout_height="match_parent"
-        android:layout_gravity="center_vertical"
         android:background="@drawable/main_item_num"
-        android:paddingLeft="20dp"
-        android:paddingRight="20dp"
-        android:text=""></TextView>
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:gravity="center"
+        android:layout_weight="6"
+        android:text=""/>
 
     <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingBottom="3dp"
-        android:paddingTop="3dp">
+        android:layout_height="match_parent"
+        android:layout_weight="1"
+        android:minHeight="40dp"
+        android:paddingTop="3dp"
+        android:paddingBottom="3dp">
 
         <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
             android:background="@drawable/main_item"
             android:orientation="vertical"
             android:padding="10dp">
@@ -33,19 +35,19 @@
                 android:id="@+id/tvRSroute"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
+                android:gravity="center_vertical"
                 android:text=""
                 android:textSize="@dimen/main_item_text_size_small"
-                android:textColor="@color/colorBlack"></TextView>
+                android:textColor="@color/colorBlack"/>
 
             <TextView
                 android:id="@+id/tvRSstation"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
+                android:gravity="center_vertical"
                 android:text=""
                 android:textSize="@dimen/main_item_text_size"
-                android:textColor="@color/colorBlack"></TextView>
+                android:textColor="@color/colorBlack"/>
         </LinearLayout>
     </LinearLayout>
 

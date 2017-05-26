@@ -29,9 +29,9 @@ public class AboutActivity extends AppCompatActivity {
     }
 
     private void init(){
-        tvAppVersion.setText("v. " + BuildConfig.VERSION_NAME);
-        tvAndroidVersion.setText("Android ver: " + Build.VERSION.RELEASE + " (" + Build.VERSION.SDK_INT + ")");
-        tvCopyright.setText("Copyright © " + ((Calendar.getInstance().get(Calendar.YEAR))==2017 ? "2017" : "2017 - "+Calendar.getInstance().get(Calendar.YEAR)) + "\nby Vlad Kornev");
+        tvAppVersion.setText(getString(R.string.about_version, BuildConfig.VERSION_NAME));
+        tvAndroidVersion.setText(getString(R.string.about_droidversion, Build.VERSION.RELEASE, Build.VERSION.SDK_INT ));
+        tvCopyright.setText(getString(R.string.about_copyright,((Calendar.getInstance().get(Calendar.YEAR))==2017 ? "2017" : "2017 - "+Calendar.getInstance().get(Calendar.YEAR))));
     }
 
     @Override

@@ -1,14 +1,11 @@
 package com.example.valdizz.busstation;
 
-import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
-import android.graphics.drawable.StateListDrawable;
 import android.os.Bundle;
 import android.support.v4.app.LoaderManager;
-import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.AppCompatActivity;
@@ -20,6 +17,7 @@ import android.widget.ListView;
 import android.widget.TextView;
 
 import com.example.valdizz.busstation.Database.DatabaseAccess;
+import com.example.valdizz.busstation.Database.RoutesCursorLoader;
 
 
 public class RoutesActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
@@ -42,7 +40,7 @@ public class RoutesActivity extends AppCompatActivity implements LoaderManager.L
         databaseAccess = DatabaseAccess.getInstance(this);
         databaseAccess.open();
 
-        String[] from = new String[]{"number", "name"};
+        String[] from = new String[]{DatabaseAccess.ROUTE_NUMBER, DatabaseAccess.ROUTE_NAME};
         int[] to = new int[]{R.id.tvRouteNum, R.id.tvRouteName};
         scRoutesAdapter = new SimpleCursorAdapter(this, R.layout.route_item, null, from, to, 0);
         scRoutesAdapter.setViewBinder(new RoutesAdapterViewBinder());
@@ -66,8 +64,8 @@ public class RoutesActivity extends AppCompatActivity implements LoaderManager.L
     private class RoutesAdapterViewBinder implements SimpleCursorAdapter.ViewBinder{
         @Override
         public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
-            String color = cursor.getString(cursor.getColumnIndex("color"));
-            String number = cursor.getString(cursor.getColumnIndex("number"));
+            String color = cursor.getString(cursor.getColumnIndex(DatabaseAccess.ROUTE_COLOR));
+            String number = cursor.getString(cursor.getColumnIndex(DatabaseAccess.ROUTE_NUMBER));
             if (view.getId() == R.id.tvRouteNum){
                 ((GradientDrawable)view.getBackground().getCurrent()).setColor(Color.parseColor("#" + color));
                 ((TextView)view).setText(number);
@@ -113,7 +111,7 @@ public class RoutesActivity extends AppCompatActivity implements LoaderManager.L
 
     @Override
     public void onLoaderReset(Loader loader) {
-
+        scRoutesAdapter.swapCursor(null);
     }
 
     @Override
@@ -121,21 +119,5 @@ public class RoutesActivity extends AppCompatActivity implements LoaderManager.L
         super.onDestroy();
         databaseAccess.close();
     }
-
-    static class RoutesCursorLoader extends CursorLoader {
-        DatabaseAccess db;
-
-        public RoutesCursorLoader(Context context, DatabaseAccess db) {
-            super(context);
-            this.db = db;
-        }
-
-        @Override
-        protected Cursor onLoadInBackground() {
-            Cursor cursor = db.getRoutes();
-            return cursor;
-        }
-    }
-
 
 }

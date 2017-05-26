@@ -25,5 +25,5 @@
     <string name="hint_findbyname">Введите наименование</string>
     <string name="city">Лида</string>
     <string name="map_mylocation">Я здесь</string>
-    <string name="map_routes">"Маршруты: "</string>
+    <string name="map_route">Маршрут N:</string>
 </resources>

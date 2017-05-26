@@ -171,7 +171,7 @@ public class SheduleActivity extends AppCompatActivity implements LoaderManager.
 
     private void createShedule(int hour, String day) {
         bundle.clear();
-        bundle.putStringArray("shedule_params", new String[]{busstation_id, (hour < 10 ? "0" + String.valueOf(hour) + "%" : String.valueOf(hour) + "%"), day});
+        bundle.putStringArray(DatabaseAccess.BUNDLE_PARAMS, new String[]{busstation_id, (hour < 10 ? "0" + String.valueOf(hour) + "%" : String.valueOf(hour) + "%"), day});
         getSupportLoaderManager().restartLoader(0, bundle, this).forceLoad();
     }
 
@@ -283,7 +283,7 @@ public class SheduleActivity extends AppCompatActivity implements LoaderManager.
 
         @Override
         protected Cursor onLoadInBackground() {
-            Cursor cursor = db.getShedule(bundle.getStringArray("shedule_params"));
+            Cursor cursor = db.getShedule(bundle.getStringArray(DatabaseAccess.BUNDLE_PARAMS));
             return cursor;
         }
     }

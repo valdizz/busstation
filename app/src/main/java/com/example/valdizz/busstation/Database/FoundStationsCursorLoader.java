@@ -18,7 +18,7 @@ public class FoundStationsCursorLoader extends CursorLoader {
 
     @Override
     protected Cursor onLoadInBackground() {
-        Cursor cursor = db.getFoundStations(bundle==null ? new String[]{"%%"} :bundle.getStringArray("find_params"));
+        Cursor cursor = db.getFoundStations(bundle==null ? new String[]{"%%"} :bundle.getStringArray(DatabaseAccess.BUNDLE_PARAMS));
         return cursor;
     }
 }

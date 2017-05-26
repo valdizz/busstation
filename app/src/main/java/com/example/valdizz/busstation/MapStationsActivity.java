@@ -37,9 +37,10 @@ import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.util.HashMap;
+import java.util.Locale;
 import java.util.Map;
 
-import static com.example.valdizz.busstation.MainActivity.TAG_LOG;
+import static com.example.valdizz.busstation.Database.DatabaseAccess.TAG_LOG;
 
 public class MapStationsActivity extends AppCompatActivity implements OnMapReadyCallback, ConnectionCallbacks, OnConnectionFailedListener, LocationListener, GoogleMap.CancelableCallback, GoogleMap.OnMarkerClickListener {
 
@@ -79,7 +80,6 @@ public class MapStationsActivity extends AppCompatActivity implements OnMapReady
     }
 
     private void updateValuesFromBundle(Bundle savedInstanceState) {
-        Log.d(TAG_LOG, "updateValuesFromBundle");
         if (savedInstanceState != null) {
             if (savedInstanceState.keySet().contains(KEY_REQUESTING_LOCATION_UPDATES)) {
                 mRequestingLocationUpdates = savedInstanceState.getBoolean(KEY_REQUESTING_LOCATION_UPDATES);
@@ -117,7 +117,6 @@ public class MapStationsActivity extends AppCompatActivity implements OnMapReady
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
-        Log.d(TAG_LOG, "onActivityResult "+requestCode);
         switch (requestCode) {
             case REQUEST_CHECK_SETTINGS:
                 switch (resultCode) {
@@ -142,15 +141,12 @@ public class MapStationsActivity extends AppCompatActivity implements OnMapReady
                         final Status status = result.getStatus();
                         switch (status.getStatusCode()) {
                             case LocationSettingsStatusCodes.SUCCESS:
-                                Log.d(TAG_LOG, "LocationSettingsStatusCodes.SUCCESS");
                                 try {
                                     LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, MapStationsActivity.this);
                                 } catch (SecurityException e) {
-                                    Log.d(TAG_LOG, "ERROR " +e.toString());
                                 }
                                 break;
                             case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
-                                Log.d(TAG_LOG, "LocationSettingsStatusCodes.RESOLUTION_REQUIRED");
                                 try {
                                     status.startResolutionForResult(MapStationsActivity.this, REQUEST_CHECK_SETTINGS);
                                 } catch (IntentSender.SendIntentException e) {
@@ -169,7 +165,6 @@ public class MapStationsActivity extends AppCompatActivity implements OnMapReady
     }
 
     private void updateUI() {
-        Log.d(TAG_LOG, "updateUI " +mCurrentLocation);
         if (mCurrentLocation != null) {
             myPosition = new LatLng(mCurrentLocation.getLatitude(), mCurrentLocation.getLongitude());
             if (myLocationMarker == null) {
@@ -197,7 +192,6 @@ public class MapStationsActivity extends AppCompatActivity implements OnMapReady
     }
 
     protected void stopLocationUpdates() {
-        Log.d(TAG_LOG, "stopLocationUpdates");
         LocationServices.FusedLocationApi.removeLocationUpdates(mGoogleApiClient, this).setResultCallback(new ResultCallback<Status>() {
             @Override
             public void onResult(Status status) {
@@ -208,14 +202,12 @@ public class MapStationsActivity extends AppCompatActivity implements OnMapReady
 
     @Override
     protected void onStart() {
-        Log.d(TAG_LOG, "onStart");
         super.onStart();
         mGoogleApiClient.connect();
     }
 
     @Override
     public void onResume() {
-        Log.d(TAG_LOG, "onResume");
         super.onResume();
         if (mGoogleApiClient.isConnected() && mRequestingLocationUpdates) {
             startLocationUpdates();
@@ -225,7 +217,6 @@ public class MapStationsActivity extends AppCompatActivity implements OnMapReady
 
     @Override
     protected void onPause() {
-        Log.d(TAG_LOG, "onPause");
         super.onPause();
         if (mGoogleApiClient.isConnected()) {
             stopLocationUpdates();
@@ -234,7 +225,6 @@ public class MapStationsActivity extends AppCompatActivity implements OnMapReady
 
     @Override
     protected void onStop() {
-        Log.d(TAG_LOG, "onStop");
         super.onStop();
         mGoogleApiClient.disconnect();
     }
@@ -245,27 +235,23 @@ public class MapStationsActivity extends AppCompatActivity implements OnMapReady
             try {
                 mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
             } catch (SecurityException e) {
-                Log.d(TAG_LOG, "ERROR " +e.toString());
             }
             updateUI();
         }
         if (mRequestingLocationUpdates) {
-            Log.d(TAG_LOG, "in onConnected(), starting location updates");
             startLocationUpdates();
         }
-        Log.d(TAG_LOG, "onConnected " +mCurrentLocation + " / " + mRequestingLocationUpdates);
     }
 
     @Override
     public void onLocationChanged(Location location) {
-        Log.d(TAG_LOG, "onLocationChanged");
         mCurrentLocation = location;
         updateUI();
     }
 
     @Override
     public void onConnectionSuspended(int cause) {
-        Log.d(TAG_LOG, "onConnectionSuspended");
+
     }
 
     @Override
@@ -316,7 +302,7 @@ public class MapStationsActivity extends AppCompatActivity implements OnMapReady
                 databaseAccess.open();
                 Cursor stations = databaseAccess.getAllStations();
                 while (!stations.isAfterLast()){
-                    String position = stations.getString(stations.getColumnIndex("gps"));
+                    String position = stations.getString(stations.getColumnIndex(DatabaseAccess.BUSSTATION_GPS));
                     if (position!=null && !position.isEmpty()) {
                         String[] positions = position.split(",");
                         if (positions.length == 2) {
@@ -333,10 +319,7 @@ public class MapStationsActivity extends AppCompatActivity implements OnMapReady
                             LatLng markerLatLng = new LatLng(lat, lng);
                             stationsMap.put(markerLatLng, new MarkerOptions()
                                     .position(markerLatLng)
-                                    .title(stations.getString(stations.getColumnIndex("station_name")))
-                                    .snippet(stationsMap.containsKey(markerLatLng)
-                                            ? stationsMap.get(markerLatLng).getSnippet()+", "+stations.getString(stations.getColumnIndex("route_number"))
-                                            : getString(R.string.map_routes) + stations.getString(stations.getColumnIndex("route_number")))
+                                    .title(stations.getString(stations.getColumnIndex(DatabaseAccess.STATION_NAME)))
                                     .icon(BitmapDescriptorFactory.fromResource(R.drawable.busstation_icon)));
                         }
                     }
@@ -352,8 +335,12 @@ public class MapStationsActivity extends AppCompatActivity implements OnMapReady
 
     @Override
     public boolean onMarkerClick(Marker marker) {
-        if (!marker.getSnippet().isEmpty()){
-            new StationListDialog().show(getSupportFragmentManager(), marker.getTitle());
+        if (!marker.equals(myLocationMarker)){
+            Bundle stationListDialogArgs = new Bundle();
+            stationListDialogArgs.putString(DatabaseAccess.STATION_NAME, marker.getTitle());
+            StationListDialog stationListDialog = new StationListDialog();
+            stationListDialog.setArguments(stationListDialogArgs);
+            stationListDialog.show(getSupportFragmentManager(), String.format(Locale.ENGLISH, "%1$.6f, %2$.6f", marker.getPosition().latitude, marker.getPosition().longitude));
             return true;
         }
         return false;

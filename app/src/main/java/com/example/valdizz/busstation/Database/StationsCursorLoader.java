@@ -6,11 +6,11 @@ import android.os.Bundle;
 import android.support.v4.content.CursorLoader;
 
 
-public class RoutesOnStationCursorLoader extends CursorLoader {
+public class StationsCursorLoader extends CursorLoader{
     DatabaseAccess db;
     Bundle bundle;
 
-    public RoutesOnStationCursorLoader(Context context, DatabaseAccess db, Bundle bundle) {
+    public StationsCursorLoader(Context context, DatabaseAccess db, Bundle bundle) {
         super(context);
         this.db = db;
         this.bundle = bundle;
@@ -18,7 +18,7 @@ public class RoutesOnStationCursorLoader extends CursorLoader {
 
     @Override
     protected Cursor onLoadInBackground() {
-        Cursor cursor = db.getRoutesOnStation(bundle.getStringArray(DatabaseAccess.BUNDLE_PARAMS));
+        Cursor cursor = db.getStations(bundle.getStringArray(DatabaseAccess.BUNDLE_PARAMS));
         return cursor;
     }
 }
