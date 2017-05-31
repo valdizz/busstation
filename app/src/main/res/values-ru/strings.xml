@@ -21,9 +21,20 @@
     <string name="toast_addtofavorites">Станция %1$s добавлена в избранное.</string>
     <string name="toast_removefromfavorites">Станция %1$s удалена из избранного.</string>
     <string name="list_empty">Нет данных</string>
-    <string name="btn_alerts">Оповещения</string>
+    <string name="btn_reminders">Напоминания</string>
     <string name="hint_findbyname">Введите наименование</string>
     <string name="city">Лида</string>
     <string name="map_mylocation">Я здесь</string>
     <string name="map_route">Маршрут N:</string>
+    <string name="reminder_date">Дата</string>
+    <string name="reminder_name">Наименование</string>
+    <string name="reminder_periodicity">Периодичность</string>
+    <string name="reminder_time">Время</string>
+    <string name="reminder_friday">Пт</string>
+    <string name="reminder_monday">Пн</string>
+    <string name="reminder_saturday">Сб</string>
+    <string name="reminder_sunday">Вс</string>
+    <string name="reminder_tuesday">Вт</string>
+    <string name="reminder_thursday">Чт</string>
+    <string name="reminder_wednesday">Ср</string>
 </resources>

@@ -72,7 +72,8 @@
         <Button
             android:id="@+id/btnAlerts"
             style="@style/MainButtonStyle"
-            android:text="@string/btn_alerts" />
+            android:onClick="onClickReminders"
+            android:text="@string/btn_reminders" />
     </LinearLayout>
 
     <LinearLayout

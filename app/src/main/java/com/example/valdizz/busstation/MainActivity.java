@@ -64,6 +64,11 @@ public class MainActivity extends AppCompatActivity{
         startActivity(intent);
     }
 
+    public void onClickReminders(View view){
+        Intent intent = new Intent(this, RemindersActivity.class);
+        startActivity(intent);
+    }
+
     public void onClickExit(View view){
         finish();
     }

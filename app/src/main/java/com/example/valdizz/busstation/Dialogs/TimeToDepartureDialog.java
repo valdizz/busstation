@@ -2,11 +2,13 @@ package com.example.valdizz.busstation.Dialogs;
 
 import android.app.Dialog;
 import android.content.DialogInterface;
+import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatDialogFragment;
 
 import com.example.valdizz.busstation.R;
+import com.example.valdizz.busstation.ReminderSettingsActivity;
 
 public class TimeToDepartureDialog extends AppCompatDialogFragment {
     private String message;
@@ -23,7 +25,8 @@ public class TimeToDepartureDialog extends AppCompatDialogFragment {
                 .setNeutralButton(R.string.dialog_set_reminder, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        //TODO
+                        Intent intent = new Intent(getActivity(), ReminderSettingsActivity.class);
+                        startActivity(intent);
                     }
                 })
                 .setNegativeButton(android.R.string.ok, new DialogInterface.OnClickListener() {
