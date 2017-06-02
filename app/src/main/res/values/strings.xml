@@ -29,7 +29,7 @@
     <string name="about_version" translatable="false">v. %1$s</string>
     <string name="about_droidversion" translatable="false">Android ver: %1$s (%2$d)</string>
     <string name="about_copyright" translatable="false">Copyright © %1$s \n by Vlad Kornev</string>
-    <string name="reminder_name">Name</string>
+    <string name="reminder_note">Note</string>
     <string name="reminder_date">Date</string>
     <string name="reminder_time">Time</string>
     <string name="reminder_periodicity">Periodicity</string>
@@ -40,4 +40,8 @@
     <string name="reminder_friday">Fri</string>
     <string name="reminder_saturday">Sat</string>
     <string name="reminder_sunday">Sun</string>
+    <string name="reminder_datetime">Remind me on %1$s at %2$s</string>
+    <string name="reminder_spectime">Specify time</string>
+    <string name="reminder_specdate">Specify date</string>
+    <string name="reminder_daily">daily</string>
 </resources>

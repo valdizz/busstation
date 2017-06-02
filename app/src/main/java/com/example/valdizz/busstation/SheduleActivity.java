@@ -73,6 +73,7 @@ public class SheduleActivity extends AppCompatActivity implements LoaderManager.
         Intent intent = getIntent();
         tvRouteNumShedule.setText(intent.getStringExtra("route_num"));
         ((GradientDrawable)tvRouteNumShedule.getBackground().getCurrent()).setColor(Color.parseColor("#" + intent.getStringExtra("route_color")));
+        tvRouteNumShedule.setTag(intent.getStringExtra("route_color"));
         tvRouteNameShedule.setText(intent.getStringExtra("route_name"));
         tvStationNameShedule.setText(intent.getStringExtra("station_name"));
         busstation_id = intent.getStringExtra("busstation_id");

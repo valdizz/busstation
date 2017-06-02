@@ -11,153 +11,263 @@
     tools:context="com.example.valdizz.busstation.ReminderSettingsActivity">
 
 
-    <TextView
-        android:id="@+id/tvReminderName"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:text="@string/reminder_name" />
-
-    <EditText
-        android:id="@+id/editText"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="textPersonName"
-        android:text="" />
-
-    <TextView
-        android:id="@+id/tvReminderTime"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="7dp"
-        android:text="@string/reminder_time" />
-
-    <EditText
-        android:id="@+id/editText2"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="time" />
-
-    <TextView
-        android:id="@+id/tvReminderDate"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="7dp"
-        android:text="@string/reminder_date" />
-
-    <EditText
-        android:id="@+id/editText3"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:ems="10"
-        android:inputType="date" />
-
-    <TextView
-        android:id="@+id/tvReminderPeriodicity"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:paddingTop="7dp"
-        android:text="@string/reminder_periodicity" />
-
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="horizontal">
 
-        <CheckBox
-            android:id="@+id/chkMonday"
+        <TextView
+            android:id="@+id/tvRouteNumReminder"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:button="@null"
-            android:drawableTop="?android:attr/listChoiceIndicatorMultiple"
+            android:layout_height="match_parent"
+            android:layout_weight="6"
+            android:background="@drawable/main_item_num"
             android:gravity="center"
-            android:text="@string/reminder_monday" />
+            android:text=""
+            android:textColor="@color/colorBlack"
+            android:textSize="@dimen/main_item_text_size" />
 
-        <CheckBox
-            android:id="@+id/chkTuesday"
+        <LinearLayout
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
+            android:layout_height="match_parent"
+            android:layout_marginLeft="3dp"
             android:layout_weight="1"
-            android:button="@null"
-            android:drawableTop="?android:attr/listChoiceIndicatorMultiple"
-            android:gravity="center"
+            android:background="@drawable/main_item"
+            android:orientation="vertical"
+            android:padding="3dp">
 
-            android:text="@string/reminder_tuesday" />
+            <TextView
+                android:id="@+id/tvRouteNameReminder"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_weight="2"
+                android:gravity="center_vertical"
+                android:paddingLeft="3dp"
+                android:text=""
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/main_item_text_size_small" />
 
-        <CheckBox
-            android:id="@+id/chkWednesday"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:button="@null"
-            android:drawableTop="?android:attr/listChoiceIndicatorMultiple"
-            android:gravity="center"
-            android:text="@string/reminder_wednesday" />
-
-        <CheckBox
-            android:id="@+id/chkThursday"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:button="@null"
-            android:drawableTop="?android:attr/listChoiceIndicatorMultiple"
-            android:gravity="center"
-            android:text="@string/reminder_thursday" />
-
-        <CheckBox
-            android:id="@+id/chkFriday"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:button="@null"
-            android:drawableTop="?android:attr/listChoiceIndicatorMultiple"
-            android:gravity="center"
-            android:text="@string/reminder_friday" />
-
-        <CheckBox
-            android:id="@+id/chkSaturday"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:button="@null"
-            android:drawableTop="?android:attr/listChoiceIndicatorMultiple"
-            android:gravity="center"
-            android:text="@string/reminder_saturday" />
-
-        <CheckBox
-            android:id="@+id/chkSunday"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:button="@null"
-            android:drawableTop="?android:attr/listChoiceIndicatorMultiple"
-            android:gravity="center"
-            android:text="@string/reminder_sunday" />
+            <TextView
+                android:id="@+id/tvStationNameReminder"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_marginTop="5dp"
+                android:layout_weight="1"
+                android:gravity="center_vertical"
+                android:paddingLeft="3dp"
+                android:text=""
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/main_item_text_size" />
+        </LinearLayout>
     </LinearLayout>
+
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:orientation="vertical"
+            android:focusableInTouchMode="true">
+
+            <TextView
+                android:id="@+id/tvReminderDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="17dp"
+                android:text="@string/reminder_date"
+                android:textColor="@color/colorBlack" />
+
+            <TextView
+                android:id="@+id/etReminderDate"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/main_item"
+                android:drawableRight="@android:drawable/ic_menu_my_calendar"
+                android:gravity="center_vertical"
+                android:onClick="onReminderDateClick"
+                android:padding="5dp"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/main_item_text_size" />
+
+            <TextView
+                android:id="@+id/tvReminderTime"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="7dp"
+                android:text="@string/reminder_time"
+                android:textColor="@color/colorBlack" />
+
+            <TextView
+                android:id="@+id/etReminderTime"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/main_item"
+                android:drawableRight="@android:drawable/ic_menu_week"
+                android:gravity="center_vertical"
+                android:onClick="onReminderRimeClick"
+                android:padding="5dp"
+                android:textColor="@color/colorBlack"
+                android:textSize="@dimen/main_item_text_size" />
+
+            <TextView
+                android:id="@+id/tvReminderPeriodicity"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="7dp"
+                android:text="@string/reminder_periodicity"
+                android:textColor="@color/colorBlack" />
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/main_item"
+                android:orientation="horizontal"
+                android:padding="5dp">
+
+                <CheckBox
+                    android:id="@+id/chkMonday"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:button="@null"
+                    android:drawableTop="?android:attr/listChoiceIndicatorMultiple"
+                    android:gravity="center"
+                    android:onClick="onClickCheckBox"
+                    android:text="@string/reminder_monday" />
+
+                <CheckBox
+                    android:id="@+id/chkTuesday"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:button="@null"
+                    android:drawableTop="?android:attr/listChoiceIndicatorMultiple"
+                    android:gravity="center"
+                    android:onClick="onClickCheckBox"
+                    android:text="@string/reminder_tuesday" />
+
+                <CheckBox
+                    android:id="@+id/chkWednesday"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:button="@null"
+                    android:drawableTop="?android:attr/listChoiceIndicatorMultiple"
+                    android:gravity="center"
+                    android:onClick="onClickCheckBox"
+                    android:text="@string/reminder_wednesday" />
+
+                <CheckBox
+                    android:id="@+id/chkThursday"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:button="@null"
+                    android:drawableTop="?android:attr/listChoiceIndicatorMultiple"
+                    android:gravity="center"
+                    android:onClick="onClickCheckBox"
+                    android:text="@string/reminder_thursday" />
+
+                <CheckBox
+                    android:id="@+id/chkFriday"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:button="@null"
+                    android:drawableTop="?android:attr/listChoiceIndicatorMultiple"
+                    android:gravity="center"
+                    android:onClick="onClickCheckBox"
+                    android:text="@string/reminder_friday" />
+
+                <CheckBox
+                    android:id="@+id/chkSaturday"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:button="@null"
+                    android:drawableTop="?android:attr/listChoiceIndicatorMultiple"
+                    android:gravity="center"
+                    android:onClick="onClickCheckBox"
+                    android:text="@string/reminder_saturday" />
+
+                <CheckBox
+                    android:id="@+id/chkSunday"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:button="@null"
+                    android:drawableTop="?android:attr/listChoiceIndicatorMultiple"
+                    android:gravity="center"
+                    android:onClick="onClickCheckBox"
+                    android:text="@string/reminder_sunday" />
+            </LinearLayout>
+
+            <TextView
+                android:id="@+id/tvReminderNote"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:paddingTop="7dp"
+                android:text="@string/reminder_note"
+                android:textColor="@color/colorBlack" />
+
+            <EditText
+                android:id="@+id/etReminderNote"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/main_item"
+                android:padding="10dp"
+                android:text="" />
+        </LinearLayout>
+
+    </ScrollView>
+
 
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:gravity="bottom"
-        android:orientation="horizontal">
+        android:orientation="vertical">
 
-        <Button
-            android:id="@+id/btnCancel"
-            style="@style/Widget.AppCompat.Button.Borderless.Colored"
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <TextView
+                android:id="@+id/tvReminderDateTime"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="@drawable/main_item_num"
+                android:gravity="center_vertical"
+                android:minHeight="40dp"
+                android:text=""
+                android:textColor="@color/colorBlue" />
+        </LinearLayout>
+
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@android:string/cancel" />
+            android:orientation="horizontal">
 
-        <Button
-            android:id="@+id/btnOk"
-            style="@style/Widget.AppCompat.Button.Borderless.Colored"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_weight="1"
-            android:text="@android:string/ok" />
+            <Button
+                android:id="@+id/btnCancel"
+                style="@style/Widget.AppCompat.Button.Borderless.Colored"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:onClick="onClickCancel"
+                android:text="@android:string/cancel" />
+
+            <Button
+                android:id="@+id/btnOk"
+                style="@style/Widget.AppCompat.Button.Borderless.Colored"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                android:onClick="onClickOk"
+                android:text="@android:string/ok" />
+        </LinearLayout>
     </LinearLayout>
 
 </LinearLayout>

@@ -6,9 +6,11 @@ import android.content.Intent;
 import android.os.Bundle;
 import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatDialogFragment;
+import android.widget.TextView;
 
 import com.example.valdizz.busstation.R;
 import com.example.valdizz.busstation.ReminderSettingsActivity;
+import com.example.valdizz.busstation.SheduleActivity;
 
 public class TimeToDepartureDialog extends AppCompatDialogFragment {
     private String message;
@@ -25,8 +27,13 @@ public class TimeToDepartureDialog extends AppCompatDialogFragment {
                 .setNeutralButton(R.string.dialog_set_reminder, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
-                        Intent intent = new Intent(getActivity(), ReminderSettingsActivity.class);
-                        startActivity(intent);
+                        Intent intentRemider = new Intent(getActivity(), ReminderSettingsActivity.class);
+                        intentRemider.putExtra("route_num", ((TextView) getActivity().findViewById(R.id.tvRouteNumShedule)).getText());
+                        intentRemider.putExtra("route_name", ((TextView) getActivity().findViewById(R.id.tvRouteNameShedule)).getText());
+                        intentRemider.putExtra("route_color", (getActivity().findViewById(R.id.tvRouteNumShedule)).getTag().toString());
+                        intentRemider.putExtra("station_name", ((TextView)getActivity().findViewById(R.id.tvStationNameShedule)).getText());
+                        intentRemider.putExtra("busstation_id", "1");
+                        startActivity(intentRemider);
                     }
                 })
                 .setNegativeButton(android.R.string.ok, new DialogInterface.OnClickListener() {

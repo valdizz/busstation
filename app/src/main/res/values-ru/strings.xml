@@ -27,7 +27,7 @@
     <string name="map_mylocation">Я здесь</string>
     <string name="map_route">Маршрут N:</string>
     <string name="reminder_date">Дата</string>
-    <string name="reminder_name">Наименование</string>
+    <string name="reminder_note">Примечание</string>
     <string name="reminder_periodicity">Периодичность</string>
     <string name="reminder_time">Время</string>
     <string name="reminder_friday">Пт</string>
@@ -37,4 +37,8 @@
     <string name="reminder_tuesday">Вт</string>
     <string name="reminder_thursday">Чт</string>
     <string name="reminder_wednesday">Ср</string>
+    <string name="reminder_datetime">Напомнить %1$s в %2$s</string>
+    <string name="reminder_specdate">Укажите дату</string>
+    <string name="reminder_spectime">Укажите время</string>
+    <string name="reminder_daily">ежедневно</string>
 </resources>
