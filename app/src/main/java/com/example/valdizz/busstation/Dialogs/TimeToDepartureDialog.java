@@ -32,7 +32,7 @@ public class TimeToDepartureDialog extends AppCompatDialogFragment {
                         intentRemider.putExtra("route_name", ((TextView) getActivity().findViewById(R.id.tvRouteNameShedule)).getText());
                         intentRemider.putExtra("route_color", (getActivity().findViewById(R.id.tvRouteNumShedule)).getTag().toString());
                         intentRemider.putExtra("station_name", ((TextView)getActivity().findViewById(R.id.tvStationNameShedule)).getText());
-                        intentRemider.putExtra("busstation_id", "1");
+                        intentRemider.putExtra("busstation_id",((SheduleActivity)getActivity()).getBusstation_id());
                         startActivity(intentRemider);
                     }
                 })

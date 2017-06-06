@@ -5,6 +5,7 @@
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
+    <uses-permission android:name="android.permission.RECEIVE_BOOT_COMPLETED"/>
 
     <application
         android:allowBackup="true"
@@ -19,6 +20,13 @@
         <meta-data
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
+
+        <receiver android:name=".Receivers.ReminderReceiver"/>
+        <receiver android:name=".Receivers.ReminderBootReceiver" android:enabled="false">
+            <intent-filter>
+                <action android:name="android.intent.action.BOOT_COMPLETED"></action>
+            </intent-filter>
+        </receiver>
 
         <activity
             android:name=".SplashActivity"
@@ -61,10 +69,12 @@
             android:name=".MapStationsActivity"
             android:label="@string/btn_findbygps"
             android:screenOrientation="portrait" />
-        <activity android:name=".ReminderSettingsActivity"
+        <activity
+            android:name=".ReminderSettingsActivity"
             android:label="@string/dialog_set_reminder"
             android:screenOrientation="portrait"/>
-        <activity android:name=".RemindersActivity"
+        <activity
+            android:name=".RemindersActivity"
             android:label="@string/btn_reminders"
             android:screenOrientation="portrait"/>
     </application>

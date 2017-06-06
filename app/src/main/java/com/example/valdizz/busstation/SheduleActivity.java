@@ -145,6 +145,11 @@ public class SheduleActivity extends AppCompatActivity implements LoaderManager.
         }
     }
 
+
+    public String getBusstation_id() {
+        return busstation_id;
+    }
+
     private void setFavoriteStation(){
         runOnUiThread(new Runnable() {
             @Override

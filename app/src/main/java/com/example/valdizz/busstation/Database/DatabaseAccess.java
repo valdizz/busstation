@@ -22,12 +22,22 @@ public class DatabaseAccess {
     public final static String ROUTE_NUMBER = "route_number";
     public final static String ROUTE_COLOR = "route_color";
     public final static String STATION_NAME = "station_name";
+    public final static String BUSSTATIONS = "BusStations";
     public final static String BUSSTATION_GPS = "gps";
     public final static String BUSSTATION_FAVORITE = "favorite";
     public final static String BUSSTATION_ID = "BusStations._id";
+    public final static String REMINDERS = "Reminders";
+    public final static String REMINDER_DATE = "date";
+    public final static String REMINDER_TIME = "time";
+    public final static String REMINDER_PERIODICITY = "periodicity";
+    public final static String REMINDER_NOTE = "note";
+    public final static String REMINDER_BUSSTATIONS_ID = "busstations_id";
+
+
+
 
     public final static String BUNDLE_PARAMS = "params";
-    public static final String TAG_LOG = "BUS_STATION_LOG";
+    public static final String TAG_LOG = "BUSSTATION_LOG";
 
     private SQLiteOpenHelper openHelper;
     private SQLiteDatabase database;
@@ -99,7 +109,7 @@ public class DatabaseAccess {
     public int setFavoriteStation(String favorite, String busstations_id) {
         ContentValues values = new ContentValues();
         values.put(BUSSTATION_FAVORITE, favorite);
-        return database.update("BusStations", values, "_id=?", new String[]{busstations_id});
+        return database.update(BUSSTATIONS, values, "_id=?", new String[]{busstations_id});
     }
 
     public boolean isFavoriteStation(String[] params) {
@@ -107,4 +117,29 @@ public class DatabaseAccess {
         cursor.moveToFirst();
         return cursor.getString(cursor.getColumnIndex(BUSSTATION_FAVORITE)).equals(DatabaseAccess.FAVOURITE_ON);
     }
+
+    public void addReminder(String busstations_id, String date, String time, String periodicity, String note) {
+        ContentValues values = new ContentValues();
+        values.put(REMINDER_BUSSTATIONS_ID, busstations_id);
+        values.put(REMINDER_DATE, date);
+        values.put(REMINDER_TIME, time);
+        values.put(REMINDER_PERIODICITY, periodicity);
+        values.put(REMINDER_NOTE, note);
+        database.beginTransaction();
+        try{
+            database.delete(REMINDERS, "busstations_id =? AND date=? AND time=? AND periodicity=?", new String[]{busstations_id, date, time, periodicity});
+            database.insert(REMINDERS, null, values);
+            database.setTransactionSuccessful();
+        }
+        finally {
+            database.endTransaction();
+        }
+    }
+
+    public Cursor getReminders() {
+        Cursor cursor = database.rawQuery("SELECT Stations.name AS station_name, BusStations.*, Reminders.*, Routes.number AS route_number, Routes.name AS route_name, Routes.color AS route_color FROM BusStations INNER JOIN Stations ON (BusStations.stations_id = Stations._id) INNER JOIN Routes ON (BusStations.routes_id = Routes._id) INNER JOIN Reminders ON (BusStations._id = Reminders.busstations_id) ORDER BY route_number, BusStations.num_station", null);
+        cursor.moveToFirst();
+        return cursor;
+    }
+
 }
