@@ -39,7 +39,7 @@ public class RemindersActivity extends AppCompatActivity implements LoaderManage
         databaseAccess = DatabaseAccess.getInstance(this);
         databaseAccess.open();
 
-        String[] from = new String[]{DatabaseAccess.ROUTE_NUMBER, DatabaseAccess.ROUTE_NAME, DatabaseAccess.STATION_NAME, DatabaseAccess.REMINDER_TIME};
+        String[] from = new String[]{DatabaseAccess.ROUTE_NUMBER, DatabaseAccess.ROUTE_NAME, DatabaseAccess.STATION_NAME, DatabaseAccess.REMINDER_DATETIME};
         int[] to = new int[]{R.id.tvRouteNumReminderItem, R.id.tvRouteNameReminderItem, R.id.tvStationNameReminderItem, R.id.tvDateTimeReminderItem};
         scRemindersAdapter = new SimpleCursorAdapter(this, R.layout.reminder_item, null, from, to, 0);
         scRemindersAdapter.setViewBinder(new RemindersAdapterViewBinder());
@@ -51,12 +51,15 @@ public class RemindersActivity extends AppCompatActivity implements LoaderManage
     private AdapterView.OnItemClickListener remindersListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            Intent intent = new Intent(RemindersActivity.this, StationsActivity.class);
-            intent.putExtra("route_id", String.valueOf(id));
-            intent.putExtra("route_num", ((TextView)view.findViewById(R.id.tvRouteNum)).getText());
-            intent.putExtra("route_name", ((TextView)view.findViewById(R.id.tvRouteName)).getText());
-            intent.putExtra("route_color", (view.findViewById(R.id.tvRouteNum)).getTag().toString());
-            startActivity(intent);
+            Intent intentRemider = new Intent(RemindersActivity.this, ReminderSettingsActivity.class);
+            intentRemider.putExtra("route_num", scRemindersAdapter.getCursor().getString(scRemindersAdapter.getCursor().getColumnIndex(DatabaseAccess.ROUTE_NUMBER)));
+            intentRemider.putExtra("route_name", scRemindersAdapter.getCursor().getString(scRemindersAdapter.getCursor().getColumnIndex(DatabaseAccess.ROUTE_NAME)));
+            intentRemider.putExtra("route_color", scRemindersAdapter.getCursor().getString(scRemindersAdapter.getCursor().getColumnIndex(DatabaseAccess.ROUTE_COLOR)));
+            intentRemider.putExtra("station_name", scRemindersAdapter.getCursor().getString(scRemindersAdapter.getCursor().getColumnIndex(DatabaseAccess.STATION_NAME)));
+            intentRemider.putExtra("busstation_id", scRemindersAdapter.getCursor().getString(scRemindersAdapter.getCursor().getColumnIndex(DatabaseAccess.REMINDER_BUSSTATIONS_ID)));
+            intentRemider.putExtra("reminder_date", scRemindersAdapter.getCursor().getString(scRemindersAdapter.getCursor().getColumnIndex(DatabaseAccess.REMINDER_DATE)));
+            intentRemider.putExtra("reminder_time", scRemindersAdapter.getCursor().getString(scRemindersAdapter.getCursor().getColumnIndex(DatabaseAccess.REMINDER_TIME)));
+            startActivity(intentRemider);
         }
     };
 
@@ -65,7 +68,7 @@ public class RemindersActivity extends AppCompatActivity implements LoaderManage
         public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
             String color = cursor.getString(cursor.getColumnIndex(DatabaseAccess.ROUTE_COLOR));
             String number = cursor.getString(cursor.getColumnIndex(DatabaseAccess.ROUTE_NUMBER));
-            if (view.getId() == R.id.tvRouteNum){
+            if (view.getId() == R.id.tvRouteNumReminderItem){
                 ((GradientDrawable)view.getBackground().getCurrent()).setColor(Color.parseColor("#" + color));
                 ((TextView)view).setText(number);
                 view.setTag(color);

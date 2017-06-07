@@ -4,7 +4,8 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:orientation="vertical"
-    android:layout_margin="5dp">
+    android:layout_margin="5dp"
+    android:padding="3dp">
 
 
     <LinearLayout
@@ -35,8 +36,8 @@
             <TextView
                 android:id="@+id/tvRouteNameReminderItem"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_weight="1"
+                android:layout_height="wrap_content"
+                android:layout_weight="2"
                 android:gravity="center_vertical"
                 android:paddingLeft="3dp"
                 android:text=""
@@ -46,8 +47,8 @@
             <TextView
                 android:id="@+id/tvStationNameReminderItem"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="5dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="1dp"
                 android:layout_weight="1"
                 android:gravity="center_vertical"
                 android:paddingLeft="3dp"
@@ -58,8 +59,8 @@
             <TextView
                 android:id="@+id/tvDateTimeReminderItem"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginTop="5dp"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="3dp"
                 android:layout_weight="1"
                 android:gravity="center_vertical"
                 android:paddingLeft="3dp"

@@ -32,6 +32,7 @@ public class DatabaseAccess {
     public final static String REMINDER_PERIODICITY = "periodicity";
     public final static String REMINDER_NOTE = "note";
     public final static String REMINDER_BUSSTATIONS_ID = "busstations_id";
+    public final static String REMINDER_DATETIME = "reminders_datetime";
 
 
 
@@ -137,7 +138,7 @@ public class DatabaseAccess {
     }
 
     public Cursor getReminders() {
-        Cursor cursor = database.rawQuery("SELECT Stations.name AS station_name, BusStations.*, Reminders.*, Routes.number AS route_number, Routes.name AS route_name, Routes.color AS route_color FROM BusStations INNER JOIN Stations ON (BusStations.stations_id = Stations._id) INNER JOIN Routes ON (BusStations.routes_id = Routes._id) INNER JOIN Reminders ON (BusStations._id = Reminders.busstations_id) ORDER BY route_number, BusStations.num_station", null);
+        Cursor cursor = database.rawQuery("SELECT Stations.name AS station_name, BusStations.*, Reminders.*, Reminders.date||'  '||Reminders.time AS reminders_datetime, Routes.number AS route_number, Routes.name AS route_name, Routes.color AS route_color FROM BusStations INNER JOIN Stations ON (BusStations.stations_id = Stations._id) INNER JOIN Routes ON (BusStations.routes_id = Routes._id) INNER JOIN Reminders ON (BusStations._id = Reminders.busstations_id) ORDER BY route_number, BusStations.num_station", null);
         cursor.moveToFirst();
         return cursor;
     }

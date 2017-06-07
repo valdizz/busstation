@@ -62,9 +62,12 @@ public class ReminderSettingsActivity extends AppCompatActivity {
         Intent intent = getIntent();
         tvRouteNumReminder.setText(intent.getStringExtra("route_num"));
         ((GradientDrawable)tvRouteNumReminder.getBackground().getCurrent()).setColor(Color.parseColor("#" + intent.getStringExtra("route_color")));
+        tvRouteNumReminder.setTag(intent.getStringExtra("route_color"));
         tvRouteNameReminder.setText(intent.getStringExtra("route_name"));
         tvStationNameReminder.setText(intent.getStringExtra("station_name"));
         busstation_id = intent.getStringExtra("busstation_id");
+        etReminderDate.setText(intent.getStringExtra("reminder_date"));
+        etReminderTime.setText(intent.getStringExtra("reminder_time"));
 
         databaseAccess = DatabaseAccess.getInstance(this);
     }
@@ -134,14 +137,13 @@ public class ReminderSettingsActivity extends AppCompatActivity {
     }
 
     public void onClickOk(View view){
-        String name = tvRouteNumReminder.getText().toString() + tvRouteNameReminder.getText().toString() + tvStationNameReminder.getText().toString();
         String time = etReminderTime.getText().toString();
         String date = etReminderDate.getText().toString();
         Calendar reminderTime = getReminderDateTime(date, time);
         String periodicity = getReminderPeriodicity();
 
-        addReminderToDB(busstation_id, time, date, periodicity, etReminderNote.getText().toString());
-        setAlarm(name, reminderTime, periodicity);
+        addReminderToDB(busstation_id, date, time, periodicity, etReminderNote.getText().toString());
+        setAlarm(reminderTime, periodicity);
 
         finish();
     }
@@ -157,20 +159,24 @@ public class ReminderSettingsActivity extends AppCompatActivity {
         });
     }
 
-    private void setAlarm(String reminderName, Calendar reminderTime, String reminderPeriodicity){
+    private void setAlarm(Calendar reminderTime, String reminderPeriodicity){
         am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        Intent intent = new Intent(this, ReminderReceiver.class);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
+        Intent intentRemider = new Intent(this, ReminderReceiver.class);
+        intentRemider.putExtra("route_num", tvRouteNumReminder.getText());
+        intentRemider.putExtra("route_name", tvRouteNameReminder.getText());
+        intentRemider.putExtra("route_color", tvRouteNumReminder.getTag().toString());
+        intentRemider.putExtra("station_name", tvStationNameReminder.getText());
+        intentRemider.putExtra("busstation_id", busstation_id);
+        intentRemider.putExtra("reminder_datetime", tvReminderDateTime.getText());
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intentRemider, PendingIntent.FLAG_CANCEL_CURRENT);
         if (reminderPeriodicity.length()==0){
-            intent.setAction(String.valueOf(reminderTime.getTimeInMillis()));
-            intent.putExtra("reminder", reminderName);
+            intentRemider.setAction(String.valueOf(reminderTime.getTimeInMillis()));
             am.set(AlarmManager.RTC_WAKEUP, reminderTime.getTimeInMillis(), pendingIntent);
         }
         else {
             for (char ch : reminderPeriodicity.toCharArray()){
                 reminderTime.set(Calendar.DAY_OF_WEEK, ch);
-                intent.setAction(String.valueOf(reminderTime.getTimeInMillis()));
-                intent.putExtra("reminder", reminderName);
+                intentRemider.setAction(String.valueOf(reminderTime.getTimeInMillis()));
                 am.setRepeating(AlarmManager.RTC_WAKEUP, reminderTime.getTimeInMillis(), AlarmManager.INTERVAL_DAY * 7, pendingIntent);
             }
         }

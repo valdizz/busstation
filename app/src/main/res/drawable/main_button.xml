@@ -3,14 +3,14 @@
     <item android:state_pressed="true">
         <shape>
             <gradient android:type="linear" android:endColor="#CCFF90" android:startColor="#B2FF59" android:angle="0.0" />
-            <stroke android:width="4dp" android:color="@color/colorMainOrange"/>
+            <stroke android:width="2dp" android:color="@color/colorMainOrange"/>
             <padding android:left="20dp" android:right="20dp" android:top="5dp" android:bottom="5dp"/>
         </shape>
     </item>
     <item>
         <shape>
             <gradient android:type="linear" android:endColor="#FFF9C4" android:startColor="#FBC02D" android:angle="0.0" />
-            <stroke android:width="4dp" android:color="@color/colorMainGreen"/>
+            <stroke android:width="2dp" android:color="@color/colorMainGreen"/>
             <padding android:left="20dp" android:right="20dp" android:top="5dp" android:bottom="5dp"/>
         </shape>
     </item>
