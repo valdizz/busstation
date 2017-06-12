@@ -137,6 +137,10 @@ public class DatabaseAccess {
         }
     }
 
+    public boolean deleteReminder(String[] params){
+        return database.delete(DatabaseAccess.REMINDERS, "_id=?", params) > 0;
+    }
+
     public Cursor getReminders() {
         Cursor cursor = database.rawQuery("SELECT Stations.name AS station_name, BusStations.*, Reminders.*, Reminders.date||'  '||Reminders.time AS reminders_datetime, Routes.number AS route_number, Routes.name AS route_name, Routes.color AS route_color FROM BusStations INNER JOIN Stations ON (BusStations.stations_id = Stations._id) INNER JOIN Routes ON (BusStations.routes_id = Routes._id) INNER JOIN Reminders ON (BusStations._id = Reminders.busstations_id) ORDER BY route_number, BusStations.num_station", null);
         cursor.moveToFirst();

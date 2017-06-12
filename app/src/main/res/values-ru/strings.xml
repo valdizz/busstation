@@ -41,4 +41,6 @@
     <string name="reminder_specdate">Укажите дату</string>
     <string name="reminder_spectime">Укажите время</string>
     <string name="reminder_daily">ежедневно</string>
+    <string name="delete">Удалить</string>
+    <string name="add">Добавить</string>
 </resources>

@@ -9,6 +9,7 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.AppCompatActivity;
+import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -20,6 +21,8 @@ import com.example.valdizz.busstation.Database.DatabaseAccess;
 import com.example.valdizz.busstation.Database.RemindersCursorLoader;
 
 public class RemindersActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
+
+    private static final int CM_DELETE_ID = 0;
 
     ListView lvReminders;
     DatabaseAccess databaseAccess;
@@ -44,11 +47,12 @@ public class RemindersActivity extends AppCompatActivity implements LoaderManage
         scRemindersAdapter = new SimpleCursorAdapter(this, R.layout.reminder_item, null, from, to, 0);
         scRemindersAdapter.setViewBinder(new RemindersAdapterViewBinder());
         lvReminders.setAdapter(scRemindersAdapter);
-        lvReminders.setOnItemClickListener(remindersListener);
+        lvReminders.setOnItemClickListener(reminderOnClickListener);
+        registerForContextMenu(lvReminders);
         getSupportLoaderManager().initLoader(0, null, this);
     }
 
-    private AdapterView.OnItemClickListener remindersListener = new AdapterView.OnItemClickListener() {
+    private AdapterView.OnItemClickListener reminderOnClickListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             Intent intentRemider = new Intent(RemindersActivity.this, ReminderSettingsActivity.class);
@@ -59,6 +63,8 @@ public class RemindersActivity extends AppCompatActivity implements LoaderManage
             intentRemider.putExtra("busstation_id", scRemindersAdapter.getCursor().getString(scRemindersAdapter.getCursor().getColumnIndex(DatabaseAccess.REMINDER_BUSSTATIONS_ID)));
             intentRemider.putExtra("reminder_date", scRemindersAdapter.getCursor().getString(scRemindersAdapter.getCursor().getColumnIndex(DatabaseAccess.REMINDER_DATE)));
             intentRemider.putExtra("reminder_time", scRemindersAdapter.getCursor().getString(scRemindersAdapter.getCursor().getColumnIndex(DatabaseAccess.REMINDER_TIME)));
+            intentRemider.putExtra("reminder_periodicity", scRemindersAdapter.getCursor().getString(scRemindersAdapter.getCursor().getColumnIndex(DatabaseAccess.REMINDER_PERIODICITY)));
+            intentRemider.putExtra("reminder_note", scRemindersAdapter.getCursor().getString(scRemindersAdapter.getCursor().getColumnIndex(DatabaseAccess.REMINDER_NOTE)));
             startActivity(intentRemider);
         }
     };
@@ -99,6 +105,38 @@ public class RemindersActivity extends AppCompatActivity implements LoaderManage
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    @Override
+    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
+        if (v.getId()==R.id.lvReminders){
+            menu.add(Menu.NONE, CM_DELETE_ID, 0, getString(R.string.delete));
+        }
+    }
+
+    @Override
+    public boolean onContextItemSelected(MenuItem item) {
+        switch (item.getItemId()){
+            case CM_DELETE_ID:{
+                AdapterView.AdapterContextMenuInfo acmi = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
+                deleteReminderFromDB(new String[]{String.valueOf(acmi.id)});
+                databaseAccess.open();
+                getSupportLoaderManager().restartLoader(0, null, this);
+                break;
+            }
+        }
+        return true;
+    }
+
+    private void deleteReminderFromDB(final String[] params){
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                databaseAccess.open();
+                databaseAccess.deleteReminder(params);
+                databaseAccess.close();
+            }
+        });
     }
 
     @Override

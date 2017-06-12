@@ -68,8 +68,47 @@ public class ReminderSettingsActivity extends AppCompatActivity {
         busstation_id = intent.getStringExtra("busstation_id");
         etReminderDate.setText(intent.getStringExtra("reminder_date"));
         etReminderTime.setText(intent.getStringExtra("reminder_time"));
+        etReminderNote.setText(intent.getStringExtra("reminder_note"));
+        setPeriodicity(intent.getStringExtra("reminder_periodicity"));
 
         databaseAccess = DatabaseAccess.getInstance(this);
+    }
+
+    private void setPeriodicity(String periodicity){
+        if (periodicity!=null && periodicity.length() > 0) {
+            for (char ch : periodicity.toCharArray()){
+                switch (Character.getNumericValue(ch)){
+                    case (Calendar.MONDAY):{
+                        chkMonday.setChecked(true);
+                        break;
+                    }
+                    case (Calendar.TUESDAY):{
+                        chkTuesday.setChecked(true);
+                        break;
+                    }
+                    case (Calendar.WEDNESDAY):{
+                        chkWednesday.setChecked(true);
+                        break;
+                    }
+                    case (Calendar.THURSDAY):{
+                        chkThursday.setChecked(true);
+                        break;
+                    }
+                    case (Calendar.FRIDAY):{
+                        chkFriday.setChecked(true);
+                        break;
+                    }
+                    case (Calendar.SATURDAY):{
+                        chkSaturday.setChecked(true);
+                        break;
+                    }
+                    case (Calendar.SUNDAY):{
+                        chkSunday.setChecked(true);
+                        break;
+                    }
+                }
+            }
+        }
     }
 
     public void onReminderRimeClick(View view){
@@ -213,5 +252,6 @@ public class ReminderSettingsActivity extends AppCompatActivity {
         calendar.set(Calendar.MILLISECOND, 0);
         return calendar;
     }
+
 
 }

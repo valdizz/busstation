@@ -44,4 +44,6 @@
     <string name="reminder_spectime">Specify time</string>
     <string name="reminder_specdate">Specify date</string>
     <string name="reminder_daily">daily</string>
+    <string name="add">Add</string>
+    <string name="delete">Delete</string>
 </resources>
