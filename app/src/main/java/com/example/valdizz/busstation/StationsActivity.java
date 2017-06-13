@@ -9,6 +9,7 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -18,6 +19,8 @@ import android.widget.TextView;
 
 import com.example.valdizz.busstation.Database.DatabaseAccess;
 import com.example.valdizz.busstation.Database.StationsCursorLoader;
+import com.example.valdizz.busstation.Model.Route;
+import com.example.valdizz.busstation.Model.Station;
 
 public class StationsActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -27,6 +30,8 @@ public class StationsActivity extends AppCompatActivity implements LoaderManager
     TextView tvRouteNumStations;
     TextView tvRouteNameStations;
     Bundle bundle;
+    Route route;
+    Station station;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -42,11 +47,11 @@ public class StationsActivity extends AppCompatActivity implements LoaderManager
     }
 
     private void init(){
-        Intent intent = getIntent();
-        tvRouteNumStations.setText(intent.getStringExtra("route_num"));
-        ((GradientDrawable)tvRouteNumStations.getBackground().getCurrent()).setColor(Color.parseColor("#" + intent.getStringExtra("route_color")));
-        tvRouteNumStations.setTag(intent.getStringExtra("route_color"));
-        tvRouteNameStations.setText(intent.getStringExtra("route_name"));
+        route = getIntent().getBundleExtra(Route.class.getSimpleName()).getParcelable(Route.class.getCanonicalName());
+
+        tvRouteNumStations.setText(route.getNumber());
+        ((GradientDrawable)tvRouteNumStations.getBackground().getCurrent()).setColor(Color.parseColor("#" + route.getColor()));
+        tvRouteNameStations.setText(route.getName());
     }
 
     private void initializeContentLoader(){
@@ -61,19 +66,24 @@ public class StationsActivity extends AppCompatActivity implements LoaderManager
         lvStations.setOnItemClickListener(stationsListener);
 
         bundle = new Bundle();
-        bundle.putStringArray(DatabaseAccess.BUNDLE_PARAMS, new String[]{tvRouteNumStations.getText().toString(), databaseAccess.DIRECTION_UP});
+        bundle.putStringArray(DatabaseAccess.BUNDLE_PARAMS, new String[]{route.getNumber(), route.isDirection() ? "1" : "0"});
         getSupportLoaderManager().initLoader(0, bundle, this);
     }
 
     private AdapterView.OnItemClickListener stationsListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            station = new Station(
+                    scStationAdapter.getCursor().getInt(scStationAdapter.getCursor().getColumnIndex(DatabaseAccess.BUSSTATION_ID)),
+                    route,
+                    scStationAdapter.getCursor().getString(scStationAdapter.getCursor().getColumnIndex(DatabaseAccess.STATION_NAME)),
+                    scStationAdapter.getCursor().getShort(scStationAdapter.getCursor().getColumnIndex(DatabaseAccess.BUSSTATION_FAVORITE))!=0,
+                    scStationAdapter.getCursor().getString(scStationAdapter.getCursor().getColumnIndex(DatabaseAccess.BUSSTATION_GPS)));
+
+            Bundle bundle = new Bundle();
+            bundle.putParcelable(Station.class.getCanonicalName(), station);
             Intent intentShedule = new Intent(StationsActivity.this, SheduleActivity.class);
-            intentShedule.putExtra("route_num", tvRouteNumStations.getText());
-            intentShedule.putExtra("route_name", tvRouteNameStations.getText());
-            intentShedule.putExtra("route_color", tvRouteNumStations.getTag().toString());
-            intentShedule.putExtra("station_name", ((TextView)view.findViewById(R.id.tvStationName)).getText());
-            intentShedule.putExtra("busstation_id", String.valueOf(id));
+            intentShedule.putExtra(Station.class.getSimpleName(), bundle);
             startActivity(intentShedule);
         }
     };
@@ -87,9 +97,9 @@ public class StationsActivity extends AppCompatActivity implements LoaderManager
     }
 
     public void onClickDirection(View view){
-        String direction = bundle.getStringArray(DatabaseAccess.BUNDLE_PARAMS)[1];
+        route.setDirection(!route.isDirection());
         bundle.clear();
-        bundle.putStringArray(DatabaseAccess.BUNDLE_PARAMS, new String[]{tvRouteNumStations.getText().toString(), (direction.equals(databaseAccess.DIRECTION_UP) ? databaseAccess.DIRECTION_DOWN : databaseAccess.DIRECTION_UP)});
+        bundle.putStringArray(DatabaseAccess.BUNDLE_PARAMS, new String[]{route.getNumber(), route.isDirection() ? "1" : "0"});
 
         databaseAccess.open();
         getSupportLoaderManager().restartLoader(0, bundle, this).forceLoad();

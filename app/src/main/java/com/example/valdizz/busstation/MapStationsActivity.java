@@ -14,6 +14,7 @@ import android.widget.Toast;
 
 import com.example.valdizz.busstation.Database.DatabaseAccess;
 import com.example.valdizz.busstation.Dialogs.StationListDialog;
+import com.example.valdizz.busstation.Model.Station;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;

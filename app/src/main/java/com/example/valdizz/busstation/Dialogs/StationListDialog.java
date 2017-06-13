@@ -17,6 +17,8 @@ import android.widget.TextView;
 
 import com.example.valdizz.busstation.Database.DatabaseAccess;
 import com.example.valdizz.busstation.Database.RoutesOnStationCursorLoader;
+import com.example.valdizz.busstation.Model.Route;
+import com.example.valdizz.busstation.Model.Station;
 import com.example.valdizz.busstation.R;
 import com.example.valdizz.busstation.SheduleActivity;
 
@@ -24,6 +26,7 @@ public class StationListDialog extends AppCompatDialogFragment implements Loader
 
     private SimpleCursorAdapter scRoutesOnStationAdapter;
     private DatabaseAccess databaseAccess;
+    private Station station;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -56,12 +59,20 @@ public class StationListDialog extends AppCompatDialogFragment implements Loader
     DialogInterface.OnClickListener onDialogClickListener = new DialogInterface.OnClickListener() {
         @Override
         public void onClick(DialogInterface dialog, int which) {
+            Route route = new Route(
+                    scRoutesOnStationAdapter.getCursor().getString(scRoutesOnStationAdapter.getCursor().getColumnIndex(DatabaseAccess.ROUTE_NUMBER)),
+                    scRoutesOnStationAdapter.getCursor().getString(scRoutesOnStationAdapter.getCursor().getColumnIndex(DatabaseAccess.ROUTE_NAME)),
+                    scRoutesOnStationAdapter.getCursor().getString(scRoutesOnStationAdapter.getCursor().getColumnIndex(DatabaseAccess.ROUTE_COLOR)),
+                    scRoutesOnStationAdapter.getCursor().getShort(scRoutesOnStationAdapter.getCursor().getColumnIndex(DatabaseAccess.ROUTE_DIRECTION))!=0);
+            station = new Station(
+                    scRoutesOnStationAdapter.getCursor().getInt(scRoutesOnStationAdapter.getCursor().getColumnIndex(DatabaseAccess.BUSSTATION_ID)),
+                    route,
+                    scRoutesOnStationAdapter.getCursor().getString(scRoutesOnStationAdapter.getCursor().getColumnIndex(DatabaseAccess.STATION_NAME)),
+                    scRoutesOnStationAdapter.getCursor().getShort(scRoutesOnStationAdapter.getCursor().getColumnIndex(DatabaseAccess.BUSSTATION_FAVORITE))!=0,
+                    scRoutesOnStationAdapter.getCursor().getString(scRoutesOnStationAdapter.getCursor().getColumnIndex(DatabaseAccess.BUSSTATION_GPS)));
+
             Intent intentShedule = new Intent(getActivity(), SheduleActivity.class);
-            intentShedule.putExtra("route_num", scRoutesOnStationAdapter.getCursor().getString(scRoutesOnStationAdapter.getCursor().getColumnIndex(DatabaseAccess.ROUTE_NUMBER)));
-            intentShedule.putExtra("route_name", scRoutesOnStationAdapter.getCursor().getString(scRoutesOnStationAdapter.getCursor().getColumnIndex(DatabaseAccess.ROUTE_NAME)));
-            intentShedule.putExtra("route_color", scRoutesOnStationAdapter.getCursor().getString(scRoutesOnStationAdapter.getCursor().getColumnIndex(DatabaseAccess.ROUTE_COLOR)));
-            intentShedule.putExtra("station_name", scRoutesOnStationAdapter.getCursor().getString(scRoutesOnStationAdapter.getCursor().getColumnIndex(DatabaseAccess.STATION_NAME)));
-            intentShedule.putExtra("busstation_id", scRoutesOnStationAdapter.getCursor().getString(scRoutesOnStationAdapter.getCursor().getColumnIndex(DatabaseAccess.BUSSTATION_ID)));
+            intentShedule.putExtra(Station.class.getCanonicalName(), station);
             startActivity(intentShedule);
         }
     };
@@ -69,12 +80,9 @@ public class StationListDialog extends AppCompatDialogFragment implements Loader
     SimpleCursorAdapter.ViewBinder scRoutesOnStationAdapterBinder = new SimpleCursorAdapter.ViewBinder() {
         @Override
         public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
-            String color = cursor.getString(cursor.getColumnIndex(DatabaseAccess.ROUTE_COLOR));
-            String number = cursor.getString(cursor.getColumnIndex(DatabaseAccess.ROUTE_NUMBER));
             if (view.getId() == R.id.tvRouteNumDialog){
-                view.setBackgroundColor(Color.parseColor("#" + color));
-                ((TextView)view).setText(number);
-                view.setTag(color);
+                view.setBackgroundColor(Color.parseColor("#" + cursor.getString(cursor.getColumnIndex(DatabaseAccess.ROUTE_COLOR))));
+                ((TextView)view).setText(cursor.getString(cursor.getColumnIndex(DatabaseAccess.ROUTE_NUMBER)));
                 return true;
             }
             return false;

@@ -18,6 +18,7 @@ import android.widget.TextView;
 
 import com.example.valdizz.busstation.Database.DatabaseAccess;
 import com.example.valdizz.busstation.Database.RoutesCursorLoader;
+import com.example.valdizz.busstation.Model.Route;
 
 
 public class RoutesActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
@@ -25,6 +26,7 @@ public class RoutesActivity extends AppCompatActivity implements LoaderManager.L
     ListView lvRoutes;
     DatabaseAccess databaseAccess;
     SimpleCursorAdapter scRoutesAdapter;
+    Route route;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -52,24 +54,26 @@ public class RoutesActivity extends AppCompatActivity implements LoaderManager.L
     private AdapterView.OnItemClickListener routesListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            Intent intent = new Intent(RoutesActivity.this, StationsActivity.class);
-            intent.putExtra("route_id", String.valueOf(id));
-            intent.putExtra("route_num", ((TextView)view.findViewById(R.id.tvRouteNum)).getText());
-            intent.putExtra("route_name", ((TextView)view.findViewById(R.id.tvRouteName)).getText());
-            intent.putExtra("route_color", (view.findViewById(R.id.tvRouteNum)).getTag().toString());
-            startActivity(intent);
+            route = new Route(
+                    scRoutesAdapter.getCursor().getString(scRoutesAdapter.getCursor().getColumnIndex(DatabaseAccess.ROUTE_NUMBER)),
+                    scRoutesAdapter.getCursor().getString(scRoutesAdapter.getCursor().getColumnIndex(DatabaseAccess.ROUTE_NAME)),
+                    scRoutesAdapter.getCursor().getString(scRoutesAdapter.getCursor().getColumnIndex(DatabaseAccess.ROUTE_COLOR)),
+                    scRoutesAdapter.getCursor().getShort(scRoutesAdapter.getCursor().getColumnIndex(DatabaseAccess.ROUTE_DIRECTION))!=0);
+
+            Bundle bundle = new Bundle();
+            bundle.putParcelable(Route.class.getCanonicalName(), route);
+            Intent intentStations = new Intent(RoutesActivity.this, StationsActivity.class);
+            intentStations.putExtra(Route.class.getSimpleName(), bundle);
+            startActivity(intentStations);
         }
     };
 
     private class RoutesAdapterViewBinder implements SimpleCursorAdapter.ViewBinder{
         @Override
         public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
-            String color = cursor.getString(cursor.getColumnIndex(DatabaseAccess.ROUTE_COLOR));
-            String number = cursor.getString(cursor.getColumnIndex(DatabaseAccess.ROUTE_NUMBER));
             if (view.getId() == R.id.tvRouteNum){
-                ((GradientDrawable)view.getBackground().getCurrent()).setColor(Color.parseColor("#" + color));
-                ((TextView)view).setText(number);
-                view.setTag(color);
+                ((GradientDrawable)view.getBackground().getCurrent()).setColor(Color.parseColor("#" + cursor.getString(cursor.getColumnIndex(DatabaseAccess.ROUTE_COLOR))));
+                ((TextView)view).setText(cursor.getString(cursor.getColumnIndex(DatabaseAccess.ROUTE_NUMBER)));
                 return true;
             }
             return false;

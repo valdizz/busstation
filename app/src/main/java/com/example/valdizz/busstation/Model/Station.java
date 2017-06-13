@@ -9,15 +9,13 @@ public class Station implements Parcelable {
     private int id;
     private Route route;
     private String name;
-    private int number;
     private boolean favorite;
     private String gps;
 
-    public Station(int id, Route route, String name, int number, boolean favorite, String gps) {
+    public Station(int id, Route route, String name, boolean favorite, String gps) {
         this.id = id;
         this.route = route;
         this.name = name;
-        this.number = number;
         this.favorite = favorite;
         this.gps = gps;
     }
@@ -26,7 +24,6 @@ public class Station implements Parcelable {
         this.id = parcel.readInt();
         this.route = parcel.readParcelable(Route.class.getClassLoader());
         this.name = parcel.readString();
-        this.number = parcel.readInt();
         this.favorite = parcel.readByte() != 0;
         this.gps = parcel.readString();
     }
@@ -55,14 +52,6 @@ public class Station implements Parcelable {
         this.name = name;
     }
 
-    public int getNumber() {
-        return number;
-    }
-
-    public void setNumber(int number) {
-        this.number = number;
-    }
-
     public boolean isFavorite() {
         return favorite;
     }
@@ -89,7 +78,6 @@ public class Station implements Parcelable {
         dest.writeInt(id);
         dest.writeParcelable(route, flags);
         dest.writeString(name);
-        dest.writeInt(number);
         dest.writeByte((byte) (favorite ? 1 : 0));
         dest.writeString(gps);
     }

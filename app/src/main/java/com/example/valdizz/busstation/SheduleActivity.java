@@ -26,30 +26,33 @@ import android.widget.ToggleButton;
 
 import com.example.valdizz.busstation.Database.DatabaseAccess;
 import com.example.valdizz.busstation.Dialogs.TimeToDepartureDialog;
+import com.example.valdizz.busstation.Model.Shedule;
+import com.example.valdizz.busstation.Model.Station;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 
 
 public class SheduleActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
+    public static final long UPDATE_PERIOD = 60*1000L;
+
     DatabaseAccess databaseAccess;
     Menu menu;
     TextView tvRouteNumShedule;
     TextView tvRouteNameShedule;
     TextView tvStationNameShedule;
-    ToggleButton tbSwithcDaysShedule;
+    ToggleButton tbSwitchDaysShedule;
     TableLayout tlShedule;
-    String busstation_id;
-    boolean is_favorite_station;
     Bundle bundle;
     int hour;
-    String day;
     Handler updateHandler;
     TimeToDepartureDialog timeToDepartureDialog;
-    public static final long UPDATE_PERIOD = 60*1000L;
+    Station station;
+    Shedule shedule;
 
 
     @Override
@@ -60,31 +63,29 @@ public class SheduleActivity extends AppCompatActivity implements LoaderManager.
         tvRouteNumShedule = (TextView)findViewById(R.id.tvRouteNumShedule);
         tvRouteNameShedule = (TextView)findViewById(R.id.tvRouteNameShedule);
         tvStationNameShedule = (TextView)findViewById(R.id.tvStationNameShedule);
-        tbSwithcDaysShedule = (ToggleButton)findViewById(R.id.switchDaysShedule);
+        tbSwitchDaysShedule = (ToggleButton)findViewById(R.id.switchDaysShedule);
         tlShedule = (TableLayout) findViewById(R.id.tlShedule);
 
         init();
         databaseAccess.open();
-        createShedule(hour = 4, day);
+        createShedule(hour = 4, shedule.isWeekday() ? "1" : "0");
         initializeHandler();
     }
 
     private void init(){
-        Intent intent = getIntent();
-        tvRouteNumShedule.setText(intent.getStringExtra("route_num"));
-        ((GradientDrawable)tvRouteNumShedule.getBackground().getCurrent()).setColor(Color.parseColor("#" + intent.getStringExtra("route_color")));
-        tvRouteNumShedule.setTag(intent.getStringExtra("route_color"));
-        tvRouteNameShedule.setText(intent.getStringExtra("route_name"));
-        tvStationNameShedule.setText(intent.getStringExtra("station_name"));
-        busstation_id = intent.getStringExtra("busstation_id");
+        station = getIntent().getBundleExtra(Station.class.getSimpleName()).getParcelable(Station.class.getCanonicalName());
+        shedule = new Shedule(station, "", isWeekend(), "");
+        bundle = new Bundle();
+
+        tvRouteNumShedule.setText(station.getRoute().getNumber());
+        ((GradientDrawable)tvRouteNumShedule.getBackground().getCurrent()).setColor(Color.parseColor("#" + station.getRoute().getColor()));
+        tvRouteNameShedule.setText(station.getRoute().getName());
+        tvStationNameShedule.setText(station.getName());
 
         databaseAccess = DatabaseAccess.getInstance(this);
-        getFavoriteStation();
 
         timeToDepartureDialog = new TimeToDepartureDialog();
-        bundle = new Bundle();
-        day = isWeekend() ? databaseAccess.SHEDULE_WEEKDAY : databaseAccess.SHEDULE_WORKDAY;
-        tbSwithcDaysShedule.setChecked(isWeekend());
+        tbSwitchDaysShedule.setChecked(shedule.isWeekday());
     }
 
     private void initializeHandler(){
@@ -120,7 +121,7 @@ public class SheduleActivity extends AppCompatActivity implements LoaderManager.
     public boolean onCreateOptionsMenu(Menu menu) {
         this.menu = menu;
         getMenuInflater().inflate(R.menu.shedule_actionbar_menu, menu);
-        menu.findItem(R.id.add_menu).setIcon(is_favorite_station ? R.drawable.remove_icon : R.drawable.add_icon);
+        menu.findItem(R.id.add_menu).setIcon(shedule.getStation().isFavorite() ? R.drawable.remove_icon : R.drawable.add_icon);
         return true;
     }
 
@@ -137,6 +138,7 @@ public class SheduleActivity extends AppCompatActivity implements LoaderManager.
                 return true;
             }
             case R.id.add_menu:{
+                shedule.getStation().setFavorite(!shedule.getStation().isFavorite());
                 setFavoriteStation();
                 return true;
             }
@@ -145,31 +147,14 @@ public class SheduleActivity extends AppCompatActivity implements LoaderManager.
         }
     }
 
-
-    public String getBusstation_id() {
-        return busstation_id;
-    }
-
     private void setFavoriteStation(){
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
                 databaseAccess.open();
-                databaseAccess.setFavoriteStation(is_favorite_station ? DatabaseAccess.FAVOURITE_OFF : DatabaseAccess.FAVOURITE_ON, busstation_id);
-                menu.findItem(R.id.add_menu).setIcon(is_favorite_station ? R.drawable.add_icon : R.drawable.remove_icon);
-                Toast.makeText(SheduleActivity.this, getString(is_favorite_station ? R.string.toast_removefromfavorites : R.string.toast_addtofavorites, tvStationNameShedule.getText()), Toast.LENGTH_SHORT).show();
-                is_favorite_station = !is_favorite_station;
-                databaseAccess.close();
-            }
-        });
-    }
-
-    private void getFavoriteStation(){
-        runOnUiThread(new Runnable() {
-            @Override
-            public void run() {
-                databaseAccess.open();
-                is_favorite_station = databaseAccess.isFavoriteStation(new String[] {busstation_id});
+                databaseAccess.setFavoriteStation(shedule.getStation().isFavorite() ? "1" : "0", String.valueOf(shedule.getStation().getId()));
+                menu.findItem(R.id.add_menu).setIcon(shedule.getStation().isFavorite() ? R.drawable.remove_icon : R.drawable.add_icon);
+                Toast.makeText(SheduleActivity.this, getString(!shedule.getStation().isFavorite() ? R.string.toast_removefromfavorites : R.string.toast_addtofavorites, shedule.getStation().getName()), Toast.LENGTH_SHORT).show();
                 databaseAccess.close();
             }
         });
@@ -177,12 +162,12 @@ public class SheduleActivity extends AppCompatActivity implements LoaderManager.
 
     private void createShedule(int hour, String day) {
         bundle.clear();
-        bundle.putStringArray(DatabaseAccess.BUNDLE_PARAMS, new String[]{busstation_id, (hour < 10 ? "0" + String.valueOf(hour) + "%" : String.valueOf(hour) + "%"), day});
+        bundle.putStringArray(DatabaseAccess.BUNDLE_PARAMS, new String[]{String.valueOf(shedule.getStation().getId()), (hour < 10 ? "0" + String.valueOf(hour) + "%" : String.valueOf(hour) + "%"), day});
         getSupportLoaderManager().restartLoader(0, bundle, this).forceLoad();
     }
 
     private void createSheduleLine(Cursor data) {
-        String time;
+        String time, description;
         if ((data!=null) && (data.getCount()>0)) {
             //add line
             TableRow tableRow = new TableRow(this);
@@ -197,8 +182,9 @@ public class SheduleActivity extends AppCompatActivity implements LoaderManager.
             //add cells with time
             data.moveToFirst();
             while (!data.isAfterLast()) {
-                time = data.getString(data.getColumnIndex("time"));
-                tableRow.addView(tvSheduleTime(time, (isLater(time, getCurrentTime()) ? R.drawable.shedule_item : R.drawable.shedule_item_past)));
+                time = data.getString(data.getColumnIndex(DatabaseAccess.SHEDULE_TIME));
+                description = data.getString(data.getColumnIndex(DatabaseAccess.SHEDULE_DESCRIPTION));
+                tableRow.addView(tvSheduleTime(time, description, (isLater(time, getCurrentTime()) ? R.drawable.shedule_item : R.drawable.shedule_item_past)));
                 data.moveToNext();
             }
             tlShedule.addView(tableRow);
@@ -217,7 +203,7 @@ public class SheduleActivity extends AppCompatActivity implements LoaderManager.
         return textViewHour;
     }
 
-    private TextView tvSheduleTime(final String time, int idBgndRes){
+    private TextView tvSheduleTime(final String time, final String description, int idBgndRes){
         TextView textViewTime = new TextView(this);
         textViewTime.setText(time);
         textViewTime.setTypeface(Typeface.MONOSPACE, Typeface.BOLD);
@@ -229,6 +215,8 @@ public class SheduleActivity extends AppCompatActivity implements LoaderManager.
         textViewTime.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                shedule.setTime(time);
+                shedule.setDescription(description);
                 String currentTime = getCurrentTime();
                 if (isLater(time, currentTime)){
                     int timeH = Integer.valueOf(time.substring(0,2));
@@ -240,9 +228,11 @@ public class SheduleActivity extends AppCompatActivity implements LoaderManager.
                         timeHourDiff -= 1;
                     }
                     timeToDepartureDialog.setMessage(getString(R.string.dialog_message, timeHourDiff, timeMinDiff));
+                    timeToDepartureDialog.setShedule(shedule);
                 }
                 else {
                     timeToDepartureDialog.setMessage(getString(R.string.dialog_message_left));
+                    timeToDepartureDialog.setShedule(shedule);
                 }
 
                 timeToDepartureDialog.show(getSupportFragmentManager(), "timeToDepartureDialog");
@@ -262,7 +252,7 @@ public class SheduleActivity extends AppCompatActivity implements LoaderManager.
         if (hour == 23)
             hour = -1;
         if (hour != 3)
-            createShedule(++hour, day);
+            createShedule(++hour, shedule.isWeekday() ? "1" : "0");
     }
 
     @Override
@@ -295,23 +285,19 @@ public class SheduleActivity extends AppCompatActivity implements LoaderManager.
     }
 
     public void onClickSwitchDays(View view){
-        if (((ToggleButton)view).isChecked())
-            day = databaseAccess.SHEDULE_WEEKDAY;
-        else
-            day = databaseAccess.SHEDULE_WORKDAY;
+        shedule.setWeekday(((ToggleButton)view).isChecked());
         tlShedule.removeAllViews();
         databaseAccess.open();
-        createShedule(hour = 4, day);
+        createShedule(hour = 4, shedule.isWeekday() ? "1" : "0");
     }
 
     private boolean isWeekend(){
-        String dayOfWeek = new SimpleDateFormat("F").format(new Date());
-        return (dayOfWeek.equals("6") || dayOfWeek.equals("7"));
+        Calendar dayOfWeek = Calendar.getInstance();
+        return dayOfWeek.get(Calendar.DAY_OF_WEEK)==Calendar.SUNDAY || dayOfWeek.get(Calendar.DAY_OF_WEEK)==Calendar.SATURDAY;
     }
 
     private String getCurrentTime(){
-        String currentTime = new SimpleDateFormat("HH:mm").format(new Date());
-        return currentTime;
+        return new SimpleDateFormat("HH:mm").format(new Date());
     }
 
     private String getHourFormatHH(int hour){

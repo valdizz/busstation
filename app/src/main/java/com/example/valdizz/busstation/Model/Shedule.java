@@ -9,34 +9,23 @@ import java.util.List;
 
 public class Shedule implements Parcelable {
 
-    private int id;
     private Station station;
-    private List<String> timeList;
+    private String time;
     private boolean weekday;
     private String description;
 
-    public Shedule(int id, Station station, List<String> timeList, boolean day, String description) {
-        this.id = id;
+    public Shedule(Station station, String time, boolean day, String description) {
         this.station = station;
         this.weekday = day;
         this.description = description;
-        this.timeList = timeList;
+        this.time = time;
     }
 
     public Shedule(Parcel parcel) {
-        this.id = parcel.readInt();
         this.station = parcel.readParcelable(Station.class.getClassLoader());
-        this.timeList = parcel.readArrayList(ArrayList.class.getClassLoader());
+        this.time = parcel.readString();
         this.weekday = parcel.readByte() != 0;
         this.description = parcel.readString();
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public Station getStation() {
@@ -47,12 +36,12 @@ public class Shedule implements Parcelable {
         this.station = station;
     }
 
-    public List<String> getTimeList() {
-        return timeList;
+    public String getTime() {
+        return time;
     }
 
-    public void setTimeList(List<String> timeList) {
-        this.timeList = timeList;
+    public void setTime(String time) {
+        this.time = time;
     }
 
     public boolean isWeekday() {
@@ -78,9 +67,8 @@ public class Shedule implements Parcelable {
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(id);
         dest.writeParcelable(station, flags);
-        dest.writeStringList(timeList);
+        dest.writeString(time);
         dest.writeByte((byte) (weekday ? 1 : 0));
         dest.writeString(description);
     }

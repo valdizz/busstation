@@ -23,6 +23,8 @@ import android.widget.TextView;
 import com.example.valdizz.busstation.Database.DatabaseAccess;
 import com.example.valdizz.busstation.Database.FavoriteStationsCursorLoader;
 import com.example.valdizz.busstation.Database.FoundStationsCursorLoader;
+import com.example.valdizz.busstation.Model.Route;
+import com.example.valdizz.busstation.Model.Station;
 import com.example.valdizz.busstation.R;
 import com.example.valdizz.busstation.SheduleActivity;
 
@@ -32,11 +34,11 @@ public class RouteStationListFragment extends ListFragment implements LoaderMana
 
     DatabaseAccess databaseAccess;
     SimpleCursorAdapter scRouteStationAdapter;
+    Station station;
 
 
     @Override
-    public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState) {
+    public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
         return inflater.inflate(R.layout.routestation_list_fragment, container, false);
     }
 
@@ -107,12 +109,9 @@ public class RouteStationListFragment extends ListFragment implements LoaderMana
     private class RouteStationAdapterViewBinder implements SimpleCursorAdapter.ViewBinder{
         @Override
         public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
-            String color = cursor.getString(cursor.getColumnIndex(DatabaseAccess.ROUTE_COLOR));
-            String number = cursor.getString(cursor.getColumnIndex(DatabaseAccess.ROUTE_NUMBER));
             if (view.getId() == R.id.tvRSrouteNum){
-                ((GradientDrawable)view.getBackground().getCurrent()).setColor(Color.parseColor("#" + color));
-                ((TextView)view).setText(number);
-                view.setTag(color);
+                ((GradientDrawable)view.getBackground().getCurrent()).setColor(Color.parseColor("#" + cursor.getString(cursor.getColumnIndex(DatabaseAccess.ROUTE_COLOR))));
+                ((TextView)view).setText(cursor.getString(cursor.getColumnIndex(DatabaseAccess.ROUTE_NUMBER)));
                 return true;
             }
             return false;
@@ -121,12 +120,20 @@ public class RouteStationListFragment extends ListFragment implements LoaderMana
 
     @Override
     public void onListItemClick(ListView l, View v, int position, long id) {
+        Route route = new Route(
+                scRouteStationAdapter.getCursor().getString(scRouteStationAdapter.getCursor().getColumnIndex(DatabaseAccess.ROUTE_NUMBER)),
+                scRouteStationAdapter.getCursor().getString(scRouteStationAdapter.getCursor().getColumnIndex(DatabaseAccess.ROUTE_NAME)),
+                scRouteStationAdapter.getCursor().getString(scRouteStationAdapter.getCursor().getColumnIndex(DatabaseAccess.ROUTE_COLOR)),
+                scRouteStationAdapter.getCursor().getShort(scRouteStationAdapter.getCursor().getColumnIndex(DatabaseAccess.ROUTE_DIRECTION))!=0);
+        station = new Station(
+                scRouteStationAdapter.getCursor().getInt(scRouteStationAdapter.getCursor().getColumnIndex(DatabaseAccess.BUSSTATION_ID)),
+                route,
+                scRouteStationAdapter.getCursor().getString(scRouteStationAdapter.getCursor().getColumnIndex(DatabaseAccess.STATION_NAME)),
+                scRouteStationAdapter.getCursor().getShort(scRouteStationAdapter.getCursor().getColumnIndex(DatabaseAccess.BUSSTATION_FAVORITE))!=0,
+                scRouteStationAdapter.getCursor().getString(scRouteStationAdapter.getCursor().getColumnIndex(DatabaseAccess.BUSSTATION_GPS)));
+
         Intent intentShedule = new Intent(getActivity(), SheduleActivity.class);
-        intentShedule.putExtra("route_num", ((TextView)v.findViewById(R.id.tvRSrouteNum)).getText());
-        intentShedule.putExtra("route_name", ((TextView)v.findViewById(R.id.tvRSroute)).getText());
-        intentShedule.putExtra("route_color", (v.findViewById(R.id.tvRSrouteNum)).getTag().toString());
-        intentShedule.putExtra("station_name", ((TextView)v.findViewById(R.id.tvRSstation)).getText());
-        intentShedule.putExtra("busstation_id", String.valueOf(id));
+        intentShedule.putExtra(Station.class.getCanonicalName(), station);
         startActivity(intentShedule);
     }
 

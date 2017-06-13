@@ -6,14 +6,16 @@ import android.os.Parcelable;
 
 public class Route implements Parcelable{
 
-    private int id;
     private String number;
     private String name;
     private String color;
     private boolean direction;
 
-    public Route(int id, String number, String name, String color, boolean direction) {
-        this.id = id;
+    public Route(){
+
+    }
+
+    public Route(String number, String name, String color, boolean direction) {
         this.number = number;
         this.name = name;
         this.color = color;
@@ -21,19 +23,10 @@ public class Route implements Parcelable{
     }
 
     public Route(Parcel parcel){
-        this.id = parcel.readInt();
         this.number = parcel.readString();
         this.name = parcel.readString();
         this.color = parcel.readString();
         this.direction = parcel.readByte() != 0;
-    }
-
-    public int getId() {
-        return id;
-    }
-
-    public void setId(int id) {
-        this.id = id;
     }
 
     public String getNumber() {
@@ -75,7 +68,6 @@ public class Route implements Parcelable{
 
     @Override
     public void writeToParcel(Parcel dest, int flags) {
-        dest.writeInt(id);
         dest.writeString(number);
         dest.writeString(name);
         dest.writeString(color);
