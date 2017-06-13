@@ -17,6 +17,7 @@ import android.widget.DatePicker;
 import android.widget.EditText;
 import android.widget.TextView;
 import android.widget.TimePicker;
+import android.widget.Toast;
 
 import com.example.valdizz.busstation.Database.DatabaseAccess;
 import com.example.valdizz.busstation.Model.Reminder;
@@ -59,7 +60,7 @@ public class ReminderSettingsActivity extends AppCompatActivity {
     }
 
     private void init(){
-        reminder = getIntent().getBundleExtra(Reminder.class.getSimpleName()).getParcelable(Reminder.class.getCanonicalName());
+        reminder = getIntent().getBundleExtra(Reminder.class.getCanonicalName()).getParcelable(Reminder.class.getCanonicalName());
 
         tvRouteNumReminder.setText(reminder.getStation().getRoute().getNumber());
         ((GradientDrawable)tvRouteNumReminder.getBackground().getCurrent()).setColor(Color.parseColor("#" + reminder.getStation().getRoute().getColor()));
@@ -179,12 +180,15 @@ public class ReminderSettingsActivity extends AppCompatActivity {
         reminder.setTime(etReminderTime.getText().toString());
         reminder.setNote(etReminderNote.getText().toString());
         reminder.setPeriodicity(getReminderPeriodicity());
-        Calendar reminderTime = reminder.getCalendar(reminder.getDate(), reminder.getTime());
 
-        addReminderToDB(String.valueOf(reminder.getStation().getId()), reminder.getDate(), reminder.getTime(), reminder.getPeriodicity(), reminder.getNote());
-        setAlarm(reminderTime, reminder.getPeriodicity());
-
-        finish();
+        if (reminder.getCalendar(reminder.getDate(), reminder.getTime()).getTimeInMillis() < Calendar.getInstance().getTimeInMillis() && reminder.getPeriodicity().isEmpty()){
+            Toast.makeText(ReminderSettingsActivity.this, getString(R.string.reminder_error), Toast.LENGTH_SHORT).show();
+        }
+        else {
+            addReminderToDB(String.valueOf(reminder.getStation().getId()), reminder.getDate(), reminder.getTime(), reminder.getPeriodicity(), reminder.getNote());
+            setAlarm(reminder.getCalendar(reminder.getDate(), reminder.getTime()), reminder.getPeriodicity());
+            finish();
+        }
     }
 
     private void addReminderToDB(final String busstations_id, final String date, final String time, final String periodicity, final String note){
@@ -200,8 +204,10 @@ public class ReminderSettingsActivity extends AppCompatActivity {
 
     private void setAlarm(Calendar reminderTime, String reminderPeriodicity){
         am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(Reminder.class.getCanonicalName(), reminder);
         Intent intentReminderReceiver = new Intent(ReminderSettingsActivity.this, ReminderReceiver.class);
-        intentReminderReceiver.putExtra(Reminder.class.getCanonicalName(), reminder);
+        intentReminderReceiver.putExtra(Reminder.class.getCanonicalName(), bundle);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intentReminderReceiver, PendingIntent.FLAG_CANCEL_CURRENT);
         if (reminderPeriodicity.length()==0){
             intentReminderReceiver.setAction(String.valueOf(reminderTime.getTimeInMillis()));
@@ -209,7 +215,7 @@ public class ReminderSettingsActivity extends AppCompatActivity {
         }
         else {
             for (char ch : reminderPeriodicity.toCharArray()){
-                reminderTime.set(Calendar.DAY_OF_WEEK, ch);
+                reminderTime.set(Calendar.DAY_OF_WEEK, Character.getNumericValue(ch));
                 intentReminderReceiver.setAction(String.valueOf(reminderTime.getTimeInMillis()));
                 am.setRepeating(AlarmManager.RTC_WAKEUP, reminderTime.getTimeInMillis(), AlarmManager.INTERVAL_DAY * 7, pendingIntent);
             }

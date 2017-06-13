@@ -18,7 +18,7 @@ public class DatabaseAccess {
     public final static String ROUTE_DIRECTION = "route_direction";
     public final static String STATION_NAME = "station_name";
     public final static String BUSSTATIONS = "BusStations";
-    public final static String BUSSTATION_ID = "BusStations._id";
+    public final static String BUSSTATION_ID = "busstation_id";
     public final static String BUSSTATION_GPS = "gps";
     public final static String BUSSTATION_FAVORITE = "favorite";
     public final static String REMINDERS = "Reminders";
@@ -27,7 +27,6 @@ public class DatabaseAccess {
     public final static String REMINDER_PERIODICITY = "periodicity";
     public final static String REMINDER_NOTE = "note";
     public final static String REMINDER_BUSSTATIONS_ID = "busstations_id";
-    public final static String REMINDER_DATETIME = "reminders_datetime";
     public final static String SHEDULE_TIME = "time";
     public final static String SHEDULE_DESCRIPTION = "description";
 
@@ -66,7 +65,7 @@ public class DatabaseAccess {
     }
 
     public Cursor getStations(String[] params) {
-        Cursor cursor = database.rawQuery("SELECT Stations._id, Stations.name AS station_name, BusStations.*, Routes.name AS route_name, Routes.color AS route_color FROM BusStations INNER JOIN Stations ON (BusStations.stations_id = Stations._id) INNER JOIN Routes ON (BusStations.routes_id = Routes._id) WHERE Routes.number=? AND Routes.direction=? ORDER BY BusStations.num_station", params);
+        Cursor cursor = database.rawQuery("SELECT Stations._id, Stations.name AS station_name, BusStations._id AS busstation_id, BusStations.*, Routes.name AS route_name, Routes.color AS route_color FROM BusStations INNER JOIN Stations ON (BusStations.stations_id = Stations._id) INNER JOIN Routes ON (BusStations.routes_id = Routes._id) WHERE Routes.number=? AND Routes.direction=? ORDER BY BusStations.num_station", params);
         cursor.moveToFirst();
         return cursor;
     }
@@ -78,25 +77,25 @@ public class DatabaseAccess {
     }
 
     public Cursor getFoundStations(String[] params) {
-        Cursor cursor = database.rawQuery("SELECT Stations.name AS station_name, BusStations.*, Routes._id AS route_id, Routes.number AS route_number, Routes.name AS route_name, Routes.color AS route_color, Routes.direction AS route_direction FROM BusStations INNER JOIN Stations ON (BusStations.stations_id = Stations._id) INNER JOIN Routes ON (BusStations.routes_id = Routes._id) WHERE station_name LIKE ? ORDER BY route_number, BusStations.num_station", params);
+        Cursor cursor = database.rawQuery("SELECT Stations.name AS station_name, BusStations._id AS busstation_id, BusStations.*, Routes._id AS route_id, Routes.number AS route_number, Routes.name AS route_name, Routes.color AS route_color, Routes.direction AS route_direction FROM BusStations INNER JOIN Stations ON (BusStations.stations_id = Stations._id) INNER JOIN Routes ON (BusStations.routes_id = Routes._id) WHERE station_name LIKE ? ORDER BY route_number, BusStations.num_station", params);
         cursor.moveToFirst();
         return cursor;
     }
 
     public Cursor getFavoriteStations() {
-        Cursor cursor = database.rawQuery("SELECT Stations.name AS station_name, BusStations.*, Routes._id AS route_id, Routes.number AS route_number, Routes.name AS route_name, Routes.color AS route_color, Routes.direction AS route_direction FROM BusStations INNER JOIN Stations ON (BusStations.stations_id = Stations._id) INNER JOIN Routes ON (BusStations.routes_id = Routes._id) WHERE BusStations.favorite=1 ORDER BY route_number, BusStations.num_station", null);
+        Cursor cursor = database.rawQuery("SELECT Stations.name AS station_name, BusStations._id AS busstation_id, BusStations.*, Routes._id AS route_id, Routes.number AS route_number, Routes.name AS route_name, Routes.color AS route_color, Routes.direction AS route_direction FROM BusStations INNER JOIN Stations ON (BusStations.stations_id = Stations._id) INNER JOIN Routes ON (BusStations.routes_id = Routes._id) WHERE BusStations.favorite=1 ORDER BY route_number, BusStations.num_station", null);
         cursor.moveToFirst();
         return cursor;
     }
 
     public Cursor getAllStations() {
-        Cursor cursor = database.rawQuery("SELECT Stations.name AS station_name, BusStations.*, Routes.number AS route_number, Routes.name AS route_name, Routes.color AS route_color FROM BusStations INNER JOIN Stations ON (BusStations.stations_id = Stations._id) INNER JOIN Routes ON (BusStations.routes_id = Routes._id) ORDER BY route_number, BusStations.num_station", null);
+        Cursor cursor = database.rawQuery("SELECT Stations.name AS station_name, BusStations._id AS busstation_id, BusStations.*, Routes.number AS route_number, Routes.name AS route_name, Routes.color AS route_color FROM BusStations INNER JOIN Stations ON (BusStations.stations_id = Stations._id) INNER JOIN Routes ON (BusStations.routes_id = Routes._id) ORDER BY route_number, BusStations.num_station", null);
         cursor.moveToFirst();
         return cursor;
     }
 
     public Cursor getRoutesOnStation(String[] params) {
-        Cursor cursor = database.rawQuery("SELECT Stations.name AS station_name, BusStations.*, Routes._id AS route_id, Routes.number AS route_number, Routes.name AS route_name, Routes.color AS route_color, Routes.direction AS route_direction FROM BusStations INNER JOIN Stations ON (BusStations.stations_id = Stations._id) INNER JOIN Routes ON (BusStations.routes_id = Routes._id) WHERE gps = ? ORDER BY route_number, BusStations.num_station", params);
+        Cursor cursor = database.rawQuery("SELECT Stations.name AS station_name, BusStations._id AS busstation_id, BusStations.*, Routes._id AS route_id, Routes.number AS route_number, Routes.name AS route_name, Routes.color AS route_color, Routes.direction AS route_direction FROM BusStations INNER JOIN Stations ON (BusStations.stations_id = Stations._id) INNER JOIN Routes ON (BusStations.routes_id = Routes._id) WHERE gps = ? ORDER BY route_number, BusStations.num_station", params);
         cursor.moveToFirst();
         return cursor;
     }
@@ -107,14 +106,8 @@ public class DatabaseAccess {
         return database.update(BUSSTATIONS, values, "_id=?", new String[]{busstations_id});
     }
 
-    public boolean isFavoriteStation(String[] params) {
-        Cursor cursor =  database.rawQuery("SELECT favorite FROM BusStations WHERE _id=?", params);
-        cursor.moveToFirst();
-        return cursor.getString(cursor.getColumnIndex(BUSSTATION_FAVORITE)).equals("1");
-    }
-
     public Cursor getReminders() {
-        Cursor cursor = database.rawQuery("SELECT Stations.name AS station_name, BusStations.*, Reminders.*, Reminders.date|'  '|Reminders.time AS reminders_datetime, Routes._id AS route_id, Routes.number AS route_number, Routes.name AS route_name, Routes.color AS route_color, Routes.direction AS route_direction FROM BusStations INNER JOIN Stations ON (BusStations.stations_id = Stations._id) INNER JOIN Routes ON (BusStations.routes_id = Routes._id) INNER JOIN Reminders ON (BusStations._id = Reminders.busstations_id) ORDER BY route_number, BusStations.num_station", null);
+        Cursor cursor = database.rawQuery("SELECT Stations.name AS station_name, BusStations._id AS busstation_id, BusStations.*, Reminders.*, Routes._id AS route_id, Routes.number AS route_number, Routes.name AS route_name, Routes.color AS route_color, Routes.direction AS route_direction FROM BusStations INNER JOIN Stations ON (BusStations.stations_id = Stations._id) INNER JOIN Routes ON (BusStations.routes_id = Routes._id) INNER JOIN Reminders ON (BusStations._id = Reminders.busstations_id) ORDER BY route_number, BusStations.num_station", null);
         cursor.moveToFirst();
         return cursor;
     }

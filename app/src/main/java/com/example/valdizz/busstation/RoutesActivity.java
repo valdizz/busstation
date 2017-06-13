@@ -63,7 +63,7 @@ public class RoutesActivity extends AppCompatActivity implements LoaderManager.L
             Bundle bundle = new Bundle();
             bundle.putParcelable(Route.class.getCanonicalName(), route);
             Intent intentStations = new Intent(RoutesActivity.this, StationsActivity.class);
-            intentStations.putExtra(Route.class.getSimpleName(), bundle);
+            intentStations.putExtra(Route.class.getCanonicalName(), bundle);
             startActivity(intentStations);
         }
     };

@@ -39,7 +39,7 @@ public class TimeToDepartureDialog extends AppCompatDialogFragment {
                         Bundle bundle = new Bundle();
                         bundle.putParcelable(Reminder.class.getCanonicalName(), reminder);
                         Intent intentReminderSettings = new Intent(getActivity(), ReminderSettingsActivity.class);
-                        intentReminderSettings.putExtra(Reminder.class.getSimpleName(), bundle);
+                        intentReminderSettings.putExtra(Reminder.class.getCanonicalName(), bundle);
                         startActivity(intentReminderSettings);
                     }
                 })

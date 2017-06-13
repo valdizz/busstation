@@ -111,49 +111,4 @@ public class Reminder implements Parcelable {
         return calendar;
     }
 
-    public String getReminderTitle(){
-        return "Route: " + station.getRoute().getNumber() + "  " + station.getRoute().getName();
-    }
-
-    public String getReminderText(){
-        if (periodicity!=null && periodicity.length() > 0) {
-            StringBuilder days = new StringBuilder();
-            for (char ch : periodicity.toCharArray()){
-                switch (Character.getNumericValue(ch)){
-                    case (Calendar.MONDAY):{
-                        days.append("Mon");
-                        break;
-                    }
-                    case (Calendar.TUESDAY):{
-                        days.append(days.length()!=0 ? ", ": "").append("Tue");
-                        break;
-                    }
-                    case (Calendar.WEDNESDAY):{
-                        days.append(days.length()!=0 ? ", ": "").append("Wed");
-                        break;
-                    }
-                    case (Calendar.THURSDAY):{
-                        days.append(days.length()!=0 ? ", ": "").append("Thu");
-                        break;
-                    }
-                    case (Calendar.FRIDAY):{
-                        days.append(days.length()!=0 ? ", ": "").append("Fri");
-                        break;
-                    }
-                    case (Calendar.SATURDAY):{
-                        days.append(days.length()!=0 ? ", ": "").append("Sat");
-                        break;
-                    }
-                    case (Calendar.SUNDAY):{
-                        days.append(days.length()!=0 ? ", ": "").append("Sun");
-                        break;
-                    }
-                }
-            }
-            return "Station: " + station.getName() + "\n" + "Start: " + days.toString() + " at " + time;
-        }
-        else {
-            return "Station: " + station.getName() + "\n" + "Start: " + date + " at " + time;
-        }
-    }
 }

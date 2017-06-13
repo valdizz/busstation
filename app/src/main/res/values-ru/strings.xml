@@ -43,4 +43,7 @@
     <string name="reminder_daily">ежедневно</string>
     <string name="delete">Удалить</string>
     <string name="add">Добавить</string>
+    <string name="notification_caption">Маршрут: %1$s  %2$s</string>
+    <string name="notification_text">Остановка: %1$s</string>
+    <string name="reminder_error">Дата должна быть больше текущей!</string>
 </resources>

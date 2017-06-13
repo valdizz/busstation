@@ -71,8 +71,10 @@ public class StationListDialog extends AppCompatDialogFragment implements Loader
                     scRoutesOnStationAdapter.getCursor().getShort(scRoutesOnStationAdapter.getCursor().getColumnIndex(DatabaseAccess.BUSSTATION_FAVORITE))!=0,
                     scRoutesOnStationAdapter.getCursor().getString(scRoutesOnStationAdapter.getCursor().getColumnIndex(DatabaseAccess.BUSSTATION_GPS)));
 
+            Bundle bundle = new Bundle();
+            bundle.putParcelable(Station.class.getCanonicalName(), station);
             Intent intentShedule = new Intent(getActivity(), SheduleActivity.class);
-            intentShedule.putExtra(Station.class.getCanonicalName(), station);
+            intentShedule.putExtra(Station.class.getCanonicalName(), bundle);
             startActivity(intentShedule);
         }
     };

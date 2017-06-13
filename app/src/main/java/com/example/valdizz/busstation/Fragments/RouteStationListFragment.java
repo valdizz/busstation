@@ -56,7 +56,7 @@ public class RouteStationListFragment extends ListFragment implements LoaderMana
         super.onResume();
         if (!getActivity().getClass().getSimpleName().equals(FOUND_STATION_ACTIVITY)){
             databaseAccess.open();
-            getLoaderManager().initLoader(0, null, this).forceLoad();
+            getLoaderManager().getLoader(0).forceLoad();
         }
     }
 
@@ -132,8 +132,10 @@ public class RouteStationListFragment extends ListFragment implements LoaderMana
                 scRouteStationAdapter.getCursor().getShort(scRouteStationAdapter.getCursor().getColumnIndex(DatabaseAccess.BUSSTATION_FAVORITE))!=0,
                 scRouteStationAdapter.getCursor().getString(scRouteStationAdapter.getCursor().getColumnIndex(DatabaseAccess.BUSSTATION_GPS)));
 
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(Station.class.getCanonicalName(), station);
         Intent intentShedule = new Intent(getActivity(), SheduleActivity.class);
-        intentShedule.putExtra(Station.class.getCanonicalName(), station);
+        intentShedule.putExtra(Station.class.getCanonicalName(), bundle);
         startActivity(intentShedule);
     }
 

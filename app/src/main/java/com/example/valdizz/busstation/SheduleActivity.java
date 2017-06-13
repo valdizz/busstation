@@ -73,7 +73,7 @@ public class SheduleActivity extends AppCompatActivity implements LoaderManager.
     }
 
     private void init(){
-        station = getIntent().getBundleExtra(Station.class.getSimpleName()).getParcelable(Station.class.getCanonicalName());
+        station = getIntent().getBundleExtra(Station.class.getCanonicalName()).getParcelable(Station.class.getCanonicalName());
         shedule = new Shedule(station, "", isWeekend(), "");
         bundle = new Bundle();
 

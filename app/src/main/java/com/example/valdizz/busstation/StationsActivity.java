@@ -46,8 +46,16 @@ public class StationsActivity extends AppCompatActivity implements LoaderManager
         initializeContentLoader();
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        databaseAccess.open();
+        getSupportLoaderManager().getLoader(0).forceLoad();
+    }
+
+
     private void init(){
-        route = getIntent().getBundleExtra(Route.class.getSimpleName()).getParcelable(Route.class.getCanonicalName());
+        route = getIntent().getBundleExtra(Route.class.getCanonicalName()).getParcelable(Route.class.getCanonicalName());
 
         tvRouteNumStations.setText(route.getNumber());
         ((GradientDrawable)tvRouteNumStations.getBackground().getCurrent()).setColor(Color.parseColor("#" + route.getColor()));
@@ -83,7 +91,7 @@ public class StationsActivity extends AppCompatActivity implements LoaderManager
             Bundle bundle = new Bundle();
             bundle.putParcelable(Station.class.getCanonicalName(), station);
             Intent intentShedule = new Intent(StationsActivity.this, SheduleActivity.class);
-            intentShedule.putExtra(Station.class.getSimpleName(), bundle);
+            intentShedule.putExtra(Station.class.getCanonicalName(), bundle);
             startActivity(intentShedule);
         }
     };
