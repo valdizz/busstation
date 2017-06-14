@@ -67,7 +67,7 @@ public class SheduleActivity extends AppCompatActivity implements LoaderManager.
         tlShedule = (TableLayout) findViewById(R.id.tlShedule);
 
         init();
-        databaseAccess.open();
+
         createShedule(hour = 4, shedule.isWeekday() ? "1" : "0");
         initializeHandler();
     }
@@ -83,6 +83,7 @@ public class SheduleActivity extends AppCompatActivity implements LoaderManager.
         tvStationNameShedule.setText(station.getName());
 
         databaseAccess = DatabaseAccess.getInstance(this);
+        databaseAccess.open();
 
         timeToDepartureDialog = new TimeToDepartureDialog();
         tbSwitchDaysShedule.setChecked(shedule.isWeekday());
@@ -151,11 +152,10 @@ public class SheduleActivity extends AppCompatActivity implements LoaderManager.
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                databaseAccess.open();
+                //databaseAccess.open();
                 databaseAccess.setFavoriteStation(shedule.getStation().isFavorite() ? "1" : "0", String.valueOf(shedule.getStation().getId()));
                 menu.findItem(R.id.add_menu).setIcon(shedule.getStation().isFavorite() ? R.drawable.remove_icon : R.drawable.add_icon);
                 Toast.makeText(SheduleActivity.this, getString(!shedule.getStation().isFavorite() ? R.string.toast_removefromfavorites : R.string.toast_addtofavorites, shedule.getStation().getName()), Toast.LENGTH_SHORT).show();
-                databaseAccess.close();
             }
         });
     }
@@ -287,7 +287,7 @@ public class SheduleActivity extends AppCompatActivity implements LoaderManager.
     public void onClickSwitchDays(View view){
         shedule.setWeekday(((ToggleButton)view).isChecked());
         tlShedule.removeAllViews();
-        databaseAccess.open();
+        //databaseAccess.open();
         createShedule(hour = 4, shedule.isWeekday() ? "1" : "0");
     }
 

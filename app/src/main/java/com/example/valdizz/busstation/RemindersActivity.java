@@ -50,7 +50,6 @@ public class RemindersActivity extends AppCompatActivity implements LoaderManage
     @Override
     protected void onResume() {
         super.onResume();
-        databaseAccess.open();
         getSupportLoaderManager().getLoader(0).forceLoad();
     }
 
@@ -181,8 +180,8 @@ public class RemindersActivity extends AppCompatActivity implements LoaderManage
         switch (item.getItemId()) {
             case CM_DELETE_ID: {
                 AdapterView.AdapterContextMenuInfo acmi = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-                deleteReminderFromDB(new String[]{String.valueOf(acmi.id)});
-                databaseAccess.open();
+                deleteReminderFromDB(String.valueOf(acmi.id));
+                removeReminders(reminder);
                 getSupportLoaderManager().getLoader(0).forceLoad();
                 break;
             }
@@ -190,15 +189,18 @@ public class RemindersActivity extends AppCompatActivity implements LoaderManage
         return true;
     }
 
-    private void deleteReminderFromDB(final String[] params) {
-        runOnUiThread(new Runnable() {
+    private void deleteReminderFromDB(final String params) {
+        Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
-                databaseAccess.open();
                 databaseAccess.deleteReminder(params);
-                databaseAccess.close();
             }
         });
+        thread.start();
+    }
+
+    private void removeReminders(final Reminder reminder){
+        Log.d("ddd", reminder.getDate()+"!"+reminder.getTime()+"!"+reminder.getPeriodicity());
     }
 
     @Override

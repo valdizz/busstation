@@ -24,7 +24,9 @@ import com.example.valdizz.busstation.Model.Reminder;
 import com.example.valdizz.busstation.Model.Shedule;
 import com.example.valdizz.busstation.Receivers.ReminderReceiver;
 
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
+import java.util.Date;
 
 public class ReminderSettingsActivity extends AppCompatActivity {
 
@@ -113,7 +115,7 @@ public class ReminderSettingsActivity extends AppCompatActivity {
 
     public void onReminderRimeClick(View view){
         Calendar currentTime = reminder.getCalendar(reminder.getDate(), reminder.getTime());
-        int hour = currentTime.get(Calendar.HOUR);
+        int hour = currentTime.get(Calendar.HOUR_OF_DAY);
         int minute = currentTime.get(Calendar.MINUTE);
         TimePickerDialog timePickerDialog = new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
             @Override
@@ -185,41 +187,47 @@ public class ReminderSettingsActivity extends AppCompatActivity {
             Toast.makeText(ReminderSettingsActivity.this, getString(R.string.reminder_error), Toast.LENGTH_SHORT).show();
         }
         else {
-            addReminderToDB(String.valueOf(reminder.getStation().getId()), reminder.getDate(), reminder.getTime(), reminder.getPeriodicity(), reminder.getNote());
-            setAlarm(reminder.getCalendar(reminder.getDate(), reminder.getTime()), reminder.getPeriodicity());
+            addReminderToDB(reminder);
+            setReminders(reminder);
             finish();
         }
     }
 
-    private void addReminderToDB(final String busstations_id, final String date, final String time, final String periodicity, final String note){
-        runOnUiThread(new Runnable() {
+    private void addReminderToDB(final Reminder reminder){
+        Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
                 databaseAccess.open();
-                databaseAccess.addReminder(busstations_id, date, time, periodicity, note);
-                databaseAccess.close();
+                databaseAccess.addReminder(String.valueOf(reminder.getStation().getId()), reminder.getDate(), reminder.getTime(), reminder.getPeriodicity(), reminder.getNote());
             }
         });
+        thread.start();
     }
 
-    private void setAlarm(Calendar reminderTime, String reminderPeriodicity){
+    private void setReminders(Reminder reminder) {
+        Calendar reminderTime = reminder.getCalendar(reminder.getDate(), reminder.getTime());
+        if (reminder.getPeriodicity()!=null && reminder.getPeriodicity().length()>0){
+            for (char ch : reminder.getPeriodicity().toCharArray()){
+                reminderTime.set(Calendar.DAY_OF_WEEK, Character.getNumericValue(ch));
+                setAlarm(reminderTime);
+            }
+        }
+        else {
+                setAlarm(reminderTime);
+        }
+    }
+
+    private void setAlarm(Calendar reminderTime){
         am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
         Bundle bundle = new Bundle();
         bundle.putParcelable(Reminder.class.getCanonicalName(), reminder);
         Intent intentReminderReceiver = new Intent(ReminderSettingsActivity.this, ReminderReceiver.class);
+        intentReminderReceiver.setAction(String.valueOf(reminderTime.getTimeInMillis()));
         intentReminderReceiver.putExtra(Reminder.class.getCanonicalName(), bundle);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(this, 0, intentReminderReceiver, PendingIntent.FLAG_CANCEL_CURRENT);
-        if (reminderPeriodicity.length()==0){
-            intentReminderReceiver.setAction(String.valueOf(reminderTime.getTimeInMillis()));
-            am.set(AlarmManager.RTC_WAKEUP, reminderTime.getTimeInMillis(), pendingIntent);
-        }
-        else {
-            for (char ch : reminderPeriodicity.toCharArray()){
-                reminderTime.set(Calendar.DAY_OF_WEEK, Character.getNumericValue(ch));
-                intentReminderReceiver.setAction(String.valueOf(reminderTime.getTimeInMillis()));
-                am.setRepeating(AlarmManager.RTC_WAKEUP, reminderTime.getTimeInMillis(), AlarmManager.INTERVAL_DAY * 7, pendingIntent);
-            }
-        }
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(ReminderSettingsActivity.this, 0, intentReminderReceiver, PendingIntent.FLAG_CANCEL_CURRENT);
+        am.set(AlarmManager.RTC_WAKEUP, reminderTime.getTimeInMillis(), pendingIntent);
+        Log.d("ddd", String.valueOf(reminderTime.getTimeInMillis()) + " / " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(reminderTime.getTime()));
+        //am.setRepeating(AlarmManager.RTC_WAKEUP, reminderTime.getTimeInMillis(), AlarmManager.INTERVAL_DAY * 7, pendingIntent);
     }
 
     private String getReminderPeriodicity(){

@@ -130,8 +130,12 @@ public class DatabaseAccess {
         }
     }
 
-    public boolean deleteReminder(String[] params){
-        return database.delete(DatabaseAccess.REMINDERS, "_id=?", params) > 0;
+    public boolean deleteReminder(String id){
+        return database.delete(REMINDERS, "_id=?", new String[]{id}) > 0;
+    }
+
+    public boolean deleteReminder(String busstations_id, String date, String time, String periodicity){
+        return database.delete(REMINDERS, "busstations_id =? AND date=? AND time=? AND periodicity=?", new String[]{busstations_id, date, time, periodicity}) > 0;
     }
 
 

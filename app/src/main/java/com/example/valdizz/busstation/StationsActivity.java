@@ -49,7 +49,6 @@ public class StationsActivity extends AppCompatActivity implements LoaderManager
     @Override
     protected void onResume() {
         super.onResume();
-        databaseAccess.open();
         getSupportLoaderManager().getLoader(0).forceLoad();
     }
 
@@ -108,7 +107,6 @@ public class StationsActivity extends AppCompatActivity implements LoaderManager
         route.setDirection(!route.isDirection());
         bundle.clear();
         bundle.putStringArray(DatabaseAccess.BUNDLE_PARAMS, new String[]{route.getNumber(), route.isDirection() ? "1" : "0"});
-
         databaseAccess.open();
         getSupportLoaderManager().restartLoader(0, bundle, this).forceLoad();
     }
