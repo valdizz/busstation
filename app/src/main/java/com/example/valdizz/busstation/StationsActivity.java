@@ -49,6 +49,7 @@ public class StationsActivity extends AppCompatActivity implements LoaderManager
     @Override
     protected void onResume() {
         super.onResume();
+        databaseAccess.open();
         getSupportLoaderManager().getLoader(0).forceLoad();
     }
 

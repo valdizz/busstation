@@ -21,12 +21,10 @@ import android.widget.Toast;
 
 import com.example.valdizz.busstation.Database.DatabaseAccess;
 import com.example.valdizz.busstation.Model.Reminder;
-import com.example.valdizz.busstation.Model.Shedule;
 import com.example.valdizz.busstation.Receivers.ReminderReceiver;
 
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
-import java.util.Date;
 
 public class ReminderSettingsActivity extends AppCompatActivity {
 
@@ -58,7 +56,7 @@ public class ReminderSettingsActivity extends AppCompatActivity {
         chkSunday = (CheckBox) findViewById(R.id.chkSunday);
 
         init();
-        updateReminderDateTime();
+        updateReminderDateTimeText();
     }
 
     private void init(){
@@ -113,7 +111,7 @@ public class ReminderSettingsActivity extends AppCompatActivity {
         }
     }
 
-    public void onReminderRimeClick(View view){
+    public void onReminderTimeClick(View view){
         Calendar currentTime = reminder.getCalendar(reminder.getDate(), reminder.getTime());
         int hour = currentTime.get(Calendar.HOUR_OF_DAY);
         int minute = currentTime.get(Calendar.MINUTE);
@@ -121,7 +119,7 @@ public class ReminderSettingsActivity extends AppCompatActivity {
             @Override
             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
                 etReminderTime.setText(String.format("%02d:%02d", hourOfDay, minute));
-                updateReminderDateTime();
+                updateReminderDateTimeText();
             }
         }, hour, minute, true);
         timePickerDialog.setTitle(getString(R.string.reminder_spectime));
@@ -137,14 +135,14 @@ public class ReminderSettingsActivity extends AppCompatActivity {
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
                 etReminderDate.setText(String.format("%02d.%02d.%4d", dayOfMonth, month, year));
-                updateReminderDateTime();
+                updateReminderDateTimeText();
             }
         }, year, month, day);
         datePickerDialog.setTitle(getString(R.string.reminder_specdate));
         datePickerDialog.show();
     }
 
-    private void updateReminderDateTime(){
+    private void updateReminderDateTimeText(){
         String reminderTime = isEmpty(etReminderTime) ? "["+getString(R.string.reminder_spectime)+"]" : etReminderTime.getText().toString();
         StringBuilder reminderDateBuilder = new StringBuilder();
         if (chkMonday.isChecked())
@@ -170,7 +168,7 @@ public class ReminderSettingsActivity extends AppCompatActivity {
     }
 
     public void onClickCheckBox(View view){
-        updateReminderDateTime();
+        updateReminderDateTimeText();
     }
 
     public void onClickCancel(View view){
@@ -178,6 +176,11 @@ public class ReminderSettingsActivity extends AppCompatActivity {
     }
 
     public void onClickOk(View view){
+        if (etReminderDate.getText().length()<10 || etReminderTime.getText().length()<5){
+            Toast.makeText(ReminderSettingsActivity.this, getString(R.string.reminder_setdatetimeerror), Toast.LENGTH_SHORT).show();
+            return;
+        }
+
         reminder.setDate(etReminderDate.getText().toString());
         reminder.setTime(etReminderTime.getText().toString());
         reminder.setNote(etReminderNote.getText().toString());
@@ -185,12 +188,12 @@ public class ReminderSettingsActivity extends AppCompatActivity {
 
         if (reminder.getCalendar(reminder.getDate(), reminder.getTime()).getTimeInMillis() < Calendar.getInstance().getTimeInMillis() && reminder.getPeriodicity().isEmpty()){
             Toast.makeText(ReminderSettingsActivity.this, getString(R.string.reminder_error), Toast.LENGTH_SHORT).show();
+            return;
         }
-        else {
-            addReminderToDB(reminder);
-            setReminders(reminder);
-            finish();
-        }
+
+        addReminderToDB(reminder);
+        setReminders(reminder);
+        finish();
     }
 
     private void addReminderToDB(final Reminder reminder){
@@ -208,8 +211,14 @@ public class ReminderSettingsActivity extends AppCompatActivity {
         Calendar reminderTime = reminder.getCalendar(reminder.getDate(), reminder.getTime());
         if (reminder.getPeriodicity()!=null && reminder.getPeriodicity().length()>0){
             for (char ch : reminder.getPeriodicity().toCharArray()){
-                reminderTime.set(Calendar.DAY_OF_WEEK, Character.getNumericValue(ch));
-                setAlarm(reminderTime);
+                Calendar newReminderTime = Calendar.getInstance();
+                newReminderTime.setTimeInMillis(reminderTime.getTimeInMillis());
+                newReminderTime.set(Calendar.DAY_OF_WEEK, Character.getNumericValue(ch));
+                Log.d(DatabaseAccess.TAG_LOG, "Before" + String.valueOf(newReminderTime.getTimeInMillis())+ " / " + new SimpleDateFormat("dd-MM-yyyy hh:mm:ss").format(newReminderTime.getTime()));
+                if (newReminderTime.getTimeInMillis() < Calendar.getInstance().getTimeInMillis()){
+                    newReminderTime.add(Calendar.DAY_OF_MONTH, 7);
+                }
+                setAlarm(newReminderTime);
             }
         }
         else {
@@ -226,8 +235,7 @@ public class ReminderSettingsActivity extends AppCompatActivity {
         intentReminderReceiver.putExtra(Reminder.class.getCanonicalName(), bundle);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(ReminderSettingsActivity.this, 0, intentReminderReceiver, PendingIntent.FLAG_CANCEL_CURRENT);
         am.set(AlarmManager.RTC_WAKEUP, reminderTime.getTimeInMillis(), pendingIntent);
-        Log.d("ddd", String.valueOf(reminderTime.getTimeInMillis()) + " / " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(reminderTime.getTime()));
-        //am.setRepeating(AlarmManager.RTC_WAKEUP, reminderTime.getTimeInMillis(), AlarmManager.INTERVAL_DAY * 7, pendingIntent);
+        Log.d(DatabaseAccess.TAG_LOG, String.valueOf(reminderTime.getTimeInMillis())+ " / " + new SimpleDateFormat("dd-MM-yyyy hh:mm:ss").format(reminderTime.getTime()));
     }
 
     private String getReminderPeriodicity(){

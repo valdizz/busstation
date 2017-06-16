@@ -106,7 +106,7 @@
                 android:background="@drawable/main_item"
                 android:drawableRight="@android:drawable/ic_menu_week"
                 android:gravity="center_vertical"
-                android:onClick="onReminderRimeClick"
+                android:onClick="onReminderTimeClick"
                 android:padding="5dp"
                 android:textColor="@color/colorBlack"
                 android:textSize="@dimen/main_item_text_size" />

@@ -46,4 +46,5 @@
     <string name="notification_caption">Маршрут: %1$s  %2$s</string>
     <string name="notification_text">Остановка: %1$s</string>
     <string name="reminder_error">Дата должна быть больше текущей!</string>
+    <string name="reminder_setdatetimeerror">Дата и время не определены!</string>
 </resources>

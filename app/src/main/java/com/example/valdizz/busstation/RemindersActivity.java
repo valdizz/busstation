@@ -193,6 +193,7 @@ public class RemindersActivity extends AppCompatActivity implements LoaderManage
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
+                databaseAccess.open();
                 databaseAccess.deleteReminder(params);
             }
         });
@@ -200,7 +201,7 @@ public class RemindersActivity extends AppCompatActivity implements LoaderManage
     }
 
     private void removeReminders(final Reminder reminder){
-        Log.d("ddd", reminder.getDate()+"!"+reminder.getTime()+"!"+reminder.getPeriodicity());
+        //TODO
     }
 
     @Override

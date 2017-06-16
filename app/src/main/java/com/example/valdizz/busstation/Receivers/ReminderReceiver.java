@@ -80,7 +80,6 @@ public class ReminderReceiver extends BroadcastReceiver {
         intent.setAction(String.valueOf(Long.valueOf(intent.getAction()) + AlarmManager.INTERVAL_DAY * 7));
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intent, PendingIntent.FLAG_CANCEL_CURRENT);
         am.set(AlarmManager.RTC_WAKEUP, Long.valueOf(intent.getAction()), pendingIntent);
-        Log.d("ddd", intent.getAction() + " / " + new SimpleDateFormat("yyyy-MM-dd HH:mm:ss").format(new Date(Long.valueOf(intent.getAction()))));
     }
 
     private void deleteFromDB(final Reminder reminder){

@@ -126,23 +126,18 @@ public class MapStationsActivity extends AppCompatActivity implements OnMapReady
 
     public boolean checkLocationPermission() {
         if (ContextCompat.checkSelfPermission(this,
-                Manifest.permission. ACCESS_FINE_LOCATION)
+                Manifest.permission.ACCESS_FINE_LOCATION)
                 != PackageManager.PERMISSION_GRANTED) {
 
-            // Should we show an explanation?
             if (ActivityCompat.shouldShowRequestPermissionRationale(this,
-                    Manifest.permission. ACCESS_FINE_LOCATION)) {
+                    Manifest.permission.ACCESS_FINE_LOCATION)) {
 
-                // Show an explanation to the user *asynchronously* -- don't block
-                // this thread waiting for the user's response! After the user
-                // sees the explanation, try again to request the permission.
                 new AlertDialog.Builder(this)
                         .setTitle("Location permission")
                         .setMessage("Check location permission!")
                         .setPositiveButton(android.R.string.ok, new DialogInterface.OnClickListener() {
                             @Override
                             public void onClick(DialogInterface dialogInterface, int i) {
-                                //Prompt the user once explanation has been shown
                                 ActivityCompat.requestPermissions(MapStationsActivity.this,
                                         new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                                         MY_PERMISSIONS_REQUEST_LOCATION);
@@ -151,9 +146,8 @@ public class MapStationsActivity extends AppCompatActivity implements OnMapReady
                         .create()
                         .show();
             } else {
-                // No explanation needed, we can request the permission.
                 ActivityCompat.requestPermissions(this,
-                        new String[]{Manifest.permission. ACCESS_FINE_LOCATION},
+                        new String[]{Manifest.permission.ACCESS_FINE_LOCATION},
                         MY_PERMISSIONS_REQUEST_LOCATION);
             }
             return false;
@@ -166,15 +160,12 @@ public class MapStationsActivity extends AppCompatActivity implements OnMapReady
     public void onRequestPermissionsResult(int requestCode, String permissions[], int[] grantResults) {
         switch (requestCode) {
             case MY_PERMISSIONS_REQUEST_LOCATION: {
-                // If request is cancelled, the result arrays are empty.
                 if (grantResults.length > 0 && grantResults[0] == PackageManager.PERMISSION_GRANTED) {
-                    // permission was granted
-                    if (ContextCompat.checkSelfPermission(this, Manifest.permission. ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                        //Request location updates:
+                    if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                         startLocationUpdates();
                     }
                 } else {
-                    // permission denied
+
                 }
                 return;
             }
@@ -240,8 +231,7 @@ public class MapStationsActivity extends AppCompatActivity implements OnMapReady
                         .build();
                 mMap.animateCamera(CameraUpdateFactory.newCameraPosition(myCameraPosition), DURATION_TIME_IN_MILLISECONDS, MapStationsActivity.this);
                 addMyLocationMarker(myPosition);
-            }
-            else {
+            } else {
                 myLocationMarker.setPosition(myPosition);
             }
         }
@@ -275,9 +265,11 @@ public class MapStationsActivity extends AppCompatActivity implements OnMapReady
     @Override
     public void onResume() {
         super.onResume();
-        if (mGoogleApiClient.isConnected() && mRequestingLocationUpdates && checkLocationPermission()) {
-            if (ContextCompat.checkSelfPermission(this, Manifest.permission. ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
-                startLocationUpdates();
+        if (checkLocationPermission()) {
+            if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+                if (mGoogleApiClient.isConnected() && mRequestingLocationUpdates) {
+                    startLocationUpdates();
+                }
             }
         }
         updateUI();
@@ -369,9 +361,9 @@ public class MapStationsActivity extends AppCompatActivity implements OnMapReady
                 DatabaseAccess databaseAccess = DatabaseAccess.getInstance(MapStationsActivity.this);
                 databaseAccess.open();
                 Cursor stations = databaseAccess.getAllStations();
-                while (!stations.isAfterLast()){
+                while (!stations.isAfterLast()) {
                     String position = stations.getString(stations.getColumnIndex(DatabaseAccess.BUSSTATION_GPS));
-                    if (position!=null && !position.isEmpty()) {
+                    if (position != null && !position.isEmpty()) {
                         String[] positions = position.split(",");
                         if (positions.length == 2) {
                             double lat = 0;
@@ -393,7 +385,8 @@ public class MapStationsActivity extends AppCompatActivity implements OnMapReady
                     }
                     stations.moveToNext();
                 }
-                for (Map.Entry<LatLng, MarkerOptions> entry : stationsMap.entrySet()){
+                databaseAccess.close();
+                for (Map.Entry<LatLng, MarkerOptions> entry : stationsMap.entrySet()) {
                     mMap.addMarker(entry.getValue());
                 }
             }
@@ -402,7 +395,7 @@ public class MapStationsActivity extends AppCompatActivity implements OnMapReady
 
     @Override
     public boolean onMarkerClick(Marker marker) {
-        if (!marker.equals(myLocationMarker)){
+        if (!marker.equals(myLocationMarker)) {
             Bundle stationListDialogArgs = new Bundle();
             stationListDialogArgs.putString(DatabaseAccess.STATION_NAME, marker.getTitle());
             StationListDialog stationListDialog = new StationListDialog();

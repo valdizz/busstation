@@ -49,4 +49,5 @@
     <string name="notification_caption">Route: %1$s  %2$s</string>
     <string name="notification_text">Station: %1$s</string>
     <string name="reminder_error">The date must be greater than the current date!</string>
+    <string name="reminder_setdatetimeerror">Date and time are not defined!</string>
 </resources>
