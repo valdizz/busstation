@@ -74,43 +74,6 @@ public class ReminderSettingsActivity extends AppCompatActivity {
         databaseAccess = DatabaseAccess.getInstance(this);
     }
 
-    private void setPeriodicity(String periodicity){
-        if (periodicity!=null && periodicity.length() > 0) {
-            for (char ch : periodicity.toCharArray()){
-                switch (Character.getNumericValue(ch)){
-                    case (Calendar.MONDAY):{
-                        chkMonday.setChecked(true);
-                        break;
-                    }
-                    case (Calendar.TUESDAY):{
-                        chkTuesday.setChecked(true);
-                        break;
-                    }
-                    case (Calendar.WEDNESDAY):{
-                        chkWednesday.setChecked(true);
-                        break;
-                    }
-                    case (Calendar.THURSDAY):{
-                        chkThursday.setChecked(true);
-                        break;
-                    }
-                    case (Calendar.FRIDAY):{
-                        chkFriday.setChecked(true);
-                        break;
-                    }
-                    case (Calendar.SATURDAY):{
-                        chkSaturday.setChecked(true);
-                        break;
-                    }
-                    case (Calendar.SUNDAY):{
-                        chkSunday.setChecked(true);
-                        break;
-                    }
-                }
-            }
-        }
-    }
-
     public void onReminderTimeClick(View view){
         Calendar currentTime = reminder.getCalendar(reminder.getDate(), reminder.getTime());
         int hour = currentTime.get(Calendar.HOUR_OF_DAY);
@@ -191,51 +154,47 @@ public class ReminderSettingsActivity extends AppCompatActivity {
             return;
         }
 
-        addReminderToDB(reminder);
-        setReminders(reminder);
+        reminder.add(this, am);
+        reminder.addToDB(databaseAccess);
+
         finish();
     }
 
-    private void addReminderToDB(final Reminder reminder){
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                databaseAccess.open();
-                databaseAccess.addReminder(String.valueOf(reminder.getStation().getId()), reminder.getDate(), reminder.getTime(), reminder.getPeriodicity(), reminder.getNote());
-            }
-        });
-        thread.start();
-    }
-
-    private void setReminders(Reminder reminder) {
-        Calendar reminderTime = reminder.getCalendar(reminder.getDate(), reminder.getTime());
-        if (reminder.getPeriodicity()!=null && reminder.getPeriodicity().length()>0){
-            for (char ch : reminder.getPeriodicity().toCharArray()){
-                Calendar newReminderTime = Calendar.getInstance();
-                newReminderTime.setTimeInMillis(reminderTime.getTimeInMillis());
-                newReminderTime.set(Calendar.DAY_OF_WEEK, Character.getNumericValue(ch));
-                Log.d(DatabaseAccess.TAG_LOG, "Before" + String.valueOf(newReminderTime.getTimeInMillis())+ " / " + new SimpleDateFormat("dd-MM-yyyy hh:mm:ss").format(newReminderTime.getTime()));
-                if (newReminderTime.getTimeInMillis() < Calendar.getInstance().getTimeInMillis()){
-                    newReminderTime.add(Calendar.DAY_OF_MONTH, 7);
+    private void setPeriodicity(String periodicity){
+        if (periodicity!=null && periodicity.length() > 0) {
+            for (char ch : periodicity.toCharArray()){
+                switch (Character.getNumericValue(ch)){
+                    case (Calendar.MONDAY):{
+                        chkMonday.setChecked(true);
+                        break;
+                    }
+                    case (Calendar.TUESDAY):{
+                        chkTuesday.setChecked(true);
+                        break;
+                    }
+                    case (Calendar.WEDNESDAY):{
+                        chkWednesday.setChecked(true);
+                        break;
+                    }
+                    case (Calendar.THURSDAY):{
+                        chkThursday.setChecked(true);
+                        break;
+                    }
+                    case (Calendar.FRIDAY):{
+                        chkFriday.setChecked(true);
+                        break;
+                    }
+                    case (Calendar.SATURDAY):{
+                        chkSaturday.setChecked(true);
+                        break;
+                    }
+                    case (Calendar.SUNDAY):{
+                        chkSunday.setChecked(true);
+                        break;
+                    }
                 }
-                setAlarm(newReminderTime);
             }
         }
-        else {
-                setAlarm(reminderTime);
-        }
-    }
-
-    private void setAlarm(Calendar reminderTime){
-        am = (AlarmManager) getSystemService(Context.ALARM_SERVICE);
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(Reminder.class.getCanonicalName(), reminder);
-        Intent intentReminderReceiver = new Intent(ReminderSettingsActivity.this, ReminderReceiver.class);
-        intentReminderReceiver.setAction(String.valueOf(reminderTime.getTimeInMillis()));
-        intentReminderReceiver.putExtra(Reminder.class.getCanonicalName(), bundle);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(ReminderSettingsActivity.this, 0, intentReminderReceiver, PendingIntent.FLAG_CANCEL_CURRENT);
-        am.set(AlarmManager.RTC_WAKEUP, reminderTime.getTimeInMillis(), pendingIntent);
-        Log.d(DatabaseAccess.TAG_LOG, String.valueOf(reminderTime.getTimeInMillis())+ " / " + new SimpleDateFormat("dd-MM-yyyy hh:mm:ss").format(reminderTime.getTime()));
     }
 
     private String getReminderPeriodicity(){
