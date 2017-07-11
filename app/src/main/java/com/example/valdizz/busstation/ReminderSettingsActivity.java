@@ -1,16 +1,11 @@
 package com.example.valdizz.busstation;
 
-import android.app.AlarmManager;
 import android.app.DatePickerDialog;
-import android.app.PendingIntent;
 import android.app.TimePickerDialog;
-import android.content.Context;
-import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
-import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
-import android.util.Log;
+import android.support.v7.app.AppCompatActivity;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
@@ -21,9 +16,7 @@ import android.widget.Toast;
 
 import com.example.valdizz.busstation.Database.DatabaseAccess;
 import com.example.valdizz.busstation.Model.Reminder;
-import com.example.valdizz.busstation.Receivers.ReminderReceiver;
 
-import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 public class ReminderSettingsActivity extends AppCompatActivity {
@@ -32,7 +25,6 @@ public class ReminderSettingsActivity extends AppCompatActivity {
     EditText etReminderNote;
     TextView tvReminderDateTime, tvRouteNumReminder, tvRouteNameReminder, tvStationNameReminder, etReminderDate, etReminderTime;
     CheckBox chkMonday, chkTuesday, chkWednesday, chkThursday, chkFriday, chkSaturday, chkSunday;
-    AlarmManager am;
     Reminder reminder;
 
     @Override
@@ -154,7 +146,7 @@ public class ReminderSettingsActivity extends AppCompatActivity {
             return;
         }
 
-        reminder.add(this, am);
+        reminder.add(this);
         reminder.addToDB(databaseAccess);
 
         finish();

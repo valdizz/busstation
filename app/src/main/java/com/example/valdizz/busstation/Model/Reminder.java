@@ -106,27 +106,37 @@ public class Reminder implements Parcelable {
         }
     };
 
-    public void add(Context context, AlarmManager alarmManager){
+    public void add(Context context){
         if (periodicity!=null && periodicity.length()>0){
             for (char ch : periodicity.toCharArray()){
-                setAlarm(context, alarmManager, Character.getNumericValue(ch));
+                setAlarm(context, Character.getNumericValue(ch));
             }
         }
         else {
-            setAlarm(context, alarmManager, -1);
+            setAlarm(context, -1);
         }
     }
 
-    public void remove(){
-
-    }
-
-    private void setAlarm(Context context, AlarmManager alarmManager, int periodicity){
+    public void remove(Context context){
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
         Bundle bundle = new Bundle();
         bundle.putParcelable(Reminder.class.getCanonicalName(), this);
         Intent intentReminderReceiver = new Intent(context, ReminderReceiver.class);
         intentReminderReceiver.setAction(String.valueOf(getCalendar(date, time).getTimeInMillis()));
         intentReminderReceiver.putExtra(Reminder.class.getCanonicalName(), bundle);
+        intentReminderReceiver.putExtra("periodicity", periodicity);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intentReminderReceiver, PendingIntent.FLAG_CANCEL_CURRENT);
+        alarmManager.cancel(pendingIntent);
+    }
+
+    private void setAlarm(Context context, int periodicity){
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(Reminder.class.getCanonicalName(), this);
+        Intent intentReminderReceiver = new Intent(context, ReminderReceiver.class);
+        intentReminderReceiver.setAction(String.valueOf(getCalendar(date, time).getTimeInMillis()));
+        intentReminderReceiver.putExtra(Reminder.class.getCanonicalName(), bundle);
+        intentReminderReceiver.putExtra("periodicity", periodicity);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intentReminderReceiver, PendingIntent.FLAG_CANCEL_CURRENT);
         if (periodicity != -1) {
             alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, getNextReminderDatetime(date, time, periodicity).getTimeInMillis(), AlarmManager.INTERVAL_DAY * 7, pendingIntent);
@@ -173,7 +183,25 @@ public class Reminder implements Parcelable {
         thread.start();
     }
 
-    public void removeFromDB(){
+    public void removeFromDB(final DatabaseAccess databaseAccess, final String id){
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                databaseAccess.open();
+                databaseAccess.deleteReminder(id);
+            }
+        });
+        thread.start();
+    }
 
+    public void removeFromDB(final DatabaseAccess databaseAccess, final Reminder reminder){
+        Thread thread = new Thread(new Runnable() {
+            @Override
+            public void run() {
+                databaseAccess.open();
+                databaseAccess.deleteReminder(String.valueOf(reminder.getStation().getId()), reminder.getDate(), reminder.getTime(), reminder.getPeriodicity());
+            }
+        });
+        thread.start();
     }
 }

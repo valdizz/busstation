@@ -9,7 +9,6 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
 import android.view.ContextMenu;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -22,10 +21,8 @@ import com.example.valdizz.busstation.Database.DatabaseAccess;
 import com.example.valdizz.busstation.Database.RemindersCursorLoader;
 import com.example.valdizz.busstation.Model.Reminder;
 import com.example.valdizz.busstation.Model.Route;
-import com.example.valdizz.busstation.Model.Shedule;
 import com.example.valdizz.busstation.Model.Station;
 
-import java.util.Arrays;
 import java.util.Calendar;
 
 public class RemindersActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
@@ -67,26 +64,31 @@ public class RemindersActivity extends AppCompatActivity implements LoaderManage
         getSupportLoaderManager().initLoader(0, null, this);
     }
 
+    private Reminder getReminderFromAdapter(SimpleCursorAdapter scRemindersAdapter){
+        Route route = new Route(
+                scRemindersAdapter.getCursor().getString(scRemindersAdapter.getCursor().getColumnIndex(DatabaseAccess.ROUTE_NUMBER)),
+                scRemindersAdapter.getCursor().getString(scRemindersAdapter.getCursor().getColumnIndex(DatabaseAccess.ROUTE_NAME)),
+                scRemindersAdapter.getCursor().getString(scRemindersAdapter.getCursor().getColumnIndex(DatabaseAccess.ROUTE_COLOR)),
+                scRemindersAdapter.getCursor().getShort(scRemindersAdapter.getCursor().getColumnIndex(DatabaseAccess.ROUTE_DIRECTION)) != 0);
+        Station station = new Station(
+                scRemindersAdapter.getCursor().getInt(scRemindersAdapter.getCursor().getColumnIndex(DatabaseAccess.BUSSTATION_ID)),
+                route,
+                scRemindersAdapter.getCursor().getString(scRemindersAdapter.getCursor().getColumnIndex(DatabaseAccess.STATION_NAME)),
+                scRemindersAdapter.getCursor().getShort(scRemindersAdapter.getCursor().getColumnIndex(DatabaseAccess.BUSSTATION_FAVORITE)) != 0,
+                scRemindersAdapter.getCursor().getString(scRemindersAdapter.getCursor().getColumnIndex(DatabaseAccess.BUSSTATION_GPS)));
+        Reminder reminder = new Reminder(
+                station,
+                scRemindersAdapter.getCursor().getString(scRemindersAdapter.getCursor().getColumnIndex(DatabaseAccess.REMINDER_DATE)),
+                scRemindersAdapter.getCursor().getString(scRemindersAdapter.getCursor().getColumnIndex(DatabaseAccess.REMINDER_TIME)),
+                scRemindersAdapter.getCursor().getString(scRemindersAdapter.getCursor().getColumnIndex(DatabaseAccess.REMINDER_PERIODICITY)),
+                scRemindersAdapter.getCursor().getString(scRemindersAdapter.getCursor().getColumnIndex(DatabaseAccess.REMINDER_NOTE)));
+        return reminder;
+    }
+
     private AdapterView.OnItemClickListener reminderOnClickListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            Route route = new Route(
-                    scRemindersAdapter.getCursor().getString(scRemindersAdapter.getCursor().getColumnIndex(DatabaseAccess.ROUTE_NUMBER)),
-                    scRemindersAdapter.getCursor().getString(scRemindersAdapter.getCursor().getColumnIndex(DatabaseAccess.ROUTE_NAME)),
-                    scRemindersAdapter.getCursor().getString(scRemindersAdapter.getCursor().getColumnIndex(DatabaseAccess.ROUTE_COLOR)),
-                    scRemindersAdapter.getCursor().getShort(scRemindersAdapter.getCursor().getColumnIndex(DatabaseAccess.ROUTE_DIRECTION)) != 0);
-            Station station = new Station(
-                    scRemindersAdapter.getCursor().getInt(scRemindersAdapter.getCursor().getColumnIndex(DatabaseAccess.BUSSTATION_ID)),
-                    route,
-                    scRemindersAdapter.getCursor().getString(scRemindersAdapter.getCursor().getColumnIndex(DatabaseAccess.STATION_NAME)),
-                    scRemindersAdapter.getCursor().getShort(scRemindersAdapter.getCursor().getColumnIndex(DatabaseAccess.BUSSTATION_FAVORITE)) != 0,
-                    scRemindersAdapter.getCursor().getString(scRemindersAdapter.getCursor().getColumnIndex(DatabaseAccess.BUSSTATION_GPS)));
-            reminder = new Reminder(
-                    station,
-                    scRemindersAdapter.getCursor().getString(scRemindersAdapter.getCursor().getColumnIndex(DatabaseAccess.REMINDER_DATE)),
-                    scRemindersAdapter.getCursor().getString(scRemindersAdapter.getCursor().getColumnIndex(DatabaseAccess.REMINDER_TIME)),
-                    scRemindersAdapter.getCursor().getString(scRemindersAdapter.getCursor().getColumnIndex(DatabaseAccess.REMINDER_PERIODICITY)),
-                    scRemindersAdapter.getCursor().getString(scRemindersAdapter.getCursor().getColumnIndex(DatabaseAccess.REMINDER_NOTE)));
+            reminder = getReminderFromAdapter(scRemindersAdapter);
 
             Bundle bundle = new Bundle();
             bundle.putParcelable(Reminder.class.getCanonicalName(), reminder);
@@ -146,7 +148,7 @@ public class RemindersActivity extends AppCompatActivity implements LoaderManage
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
+    public  boolean onCreateOptionsMenu(Menu menu) {
         getMenuInflater().inflate(R.menu.actionbar_menu, menu);
         return true;
     }
@@ -180,28 +182,14 @@ public class RemindersActivity extends AppCompatActivity implements LoaderManage
         switch (item.getItemId()) {
             case CM_DELETE_ID: {
                 AdapterView.AdapterContextMenuInfo acmi = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-                deleteReminderFromDB(String.valueOf(acmi.id));
-                removeReminders(reminder);
+                reminder = getReminderFromAdapter(scRemindersAdapter);
+                reminder.remove(this);
+                reminder.removeFromDB(databaseAccess, String.valueOf(acmi.id));
                 getSupportLoaderManager().getLoader(0).forceLoad();
                 break;
             }
         }
         return true;
-    }
-
-    private void deleteReminderFromDB(final String params) {
-        Thread thread = new Thread(new Runnable() {
-            @Override
-            public void run() {
-                databaseAccess.open();
-                databaseAccess.deleteReminder(params);
-            }
-        });
-        thread.start();
-    }
-
-    private void removeReminders(final Reminder reminder){
-        //TODO
     }
 
     @Override
