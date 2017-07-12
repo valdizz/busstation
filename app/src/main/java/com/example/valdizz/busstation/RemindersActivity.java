@@ -19,6 +19,7 @@ import android.widget.TextView;
 
 import com.example.valdizz.busstation.Database.DatabaseAccess;
 import com.example.valdizz.busstation.Database.RemindersCursorLoader;
+import com.example.valdizz.busstation.Dialogs.RemoveReminderDialog;
 import com.example.valdizz.busstation.Model.Reminder;
 import com.example.valdizz.busstation.Model.Route;
 import com.example.valdizz.busstation.Model.Station;
@@ -26,8 +27,6 @@ import com.example.valdizz.busstation.Model.Station;
 import java.util.Calendar;
 
 public class RemindersActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
-
-    private static final int CM_DELETE_ID = 0;
 
     ListView lvReminders;
     DatabaseAccess databaseAccess;
@@ -38,9 +37,7 @@ public class RemindersActivity extends AppCompatActivity implements LoaderManage
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reminders);
-
         lvReminders = (ListView) findViewById(R.id.lvReminders);
-
         initializeContentLoader();
     }
 
@@ -60,6 +57,7 @@ public class RemindersActivity extends AppCompatActivity implements LoaderManage
         scRemindersAdapter.setViewBinder(new RemindersAdapterViewBinder());
         lvReminders.setAdapter(scRemindersAdapter);
         lvReminders.setOnItemClickListener(reminderOnClickListener);
+        lvReminders.setOnItemLongClickListener(reminderOnItemLongClickListener);
         registerForContextMenu(lvReminders);
         getSupportLoaderManager().initLoader(0, null, this);
     }
@@ -97,6 +95,22 @@ public class RemindersActivity extends AppCompatActivity implements LoaderManage
             startActivity(intentRemiderSettings);
         }
     };
+
+    private AdapterView.OnItemLongClickListener reminderOnItemLongClickListener = new AdapterView.OnItemLongClickListener() {
+        @Override
+        public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
+            RemoveReminderDialog removeReminderDialog = new RemoveReminderDialog();
+            removeReminderDialog.show(getSupportFragmentManager(), String.valueOf(id));
+            return true;
+        }
+    };
+
+    public void removeReminder(String id) {
+        reminder = getReminderFromAdapter(scRemindersAdapter);
+        reminder.remove(this);
+        reminder.removeFromDB(databaseAccess, id);
+        getSupportLoaderManager().getLoader(0).forceLoad();
+    }
 
     private class RemindersAdapterViewBinder implements SimpleCursorAdapter.ViewBinder {
         @Override
@@ -168,28 +182,6 @@ public class RemindersActivity extends AppCompatActivity implements LoaderManage
             default:
                 return super.onOptionsItemSelected(item);
         }
-    }
-
-    @Override
-    public void onCreateContextMenu(ContextMenu menu, View v, ContextMenu.ContextMenuInfo menuInfo) {
-        if (v.getId() == R.id.lvReminders) {
-            menu.add(Menu.NONE, CM_DELETE_ID, 0, getString(R.string.delete));
-        }
-    }
-
-    @Override
-    public boolean onContextItemSelected(MenuItem item) {
-        switch (item.getItemId()) {
-            case CM_DELETE_ID: {
-                AdapterView.AdapterContextMenuInfo acmi = (AdapterView.AdapterContextMenuInfo) item.getMenuInfo();
-                reminder = getReminderFromAdapter(scRemindersAdapter);
-                reminder.remove(this);
-                reminder.removeFromDB(databaseAccess, String.valueOf(acmi.id));
-                getSupportLoaderManager().getLoader(0).forceLoad();
-                break;
-            }
-        }
-        return true;
     }
 
     @Override

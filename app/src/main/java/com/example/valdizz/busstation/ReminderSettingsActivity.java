@@ -136,6 +136,11 @@ public class ReminderSettingsActivity extends AppCompatActivity {
             return;
         }
 
+        if (reminder.getDate()!=null && reminder.getDate().length()>0 && reminder.getTime()!=null && reminder.getTime().length()>0){
+            reminder.remove(this);
+            reminder.removeFromDB(databaseAccess, String.valueOf(reminder.getStation().getId()), reminder.getDate(), reminder.getTime(), reminder.getPeriodicity());
+        }
+
         reminder.setDate(etReminderDate.getText().toString());
         reminder.setTime(etReminderTime.getText().toString());
         reminder.setNote(etReminderNote.getText().toString());

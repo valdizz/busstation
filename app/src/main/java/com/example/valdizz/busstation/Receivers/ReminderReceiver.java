@@ -31,7 +31,7 @@ public class ReminderReceiver extends BroadcastReceiver {
         reminder = intent.getBundleExtra(Reminder.class.getCanonicalName()).getParcelable(Reminder.class.getCanonicalName());
 
         if (reminder.getPeriodicity()==null || reminder.getPeriodicity().length()==0){
-            reminder.removeFromDB(databaseAccess, reminder);
+            reminder.removeFromDB(databaseAccess, String.valueOf(reminder.getStation().getId()), reminder.getDate(), reminder.getTime(), reminder.getPeriodicity());
         }
 
         Bundle bundle = new Bundle();

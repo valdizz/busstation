@@ -47,4 +47,5 @@
     <string name="notification_text">Остановка: %1$s</string>
     <string name="reminder_error">Дата должна быть больше текущей!</string>
     <string name="reminder_setdatetimeerror">Дата и время не определены!</string>
+    <string name="reminder_delete">Удалить напоминание?</string>
 </resources>

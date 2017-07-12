@@ -118,15 +118,14 @@ public class Reminder implements Parcelable {
     }
 
     public void remove(Context context){
-        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
-        Bundle bundle = new Bundle();
-        bundle.putParcelable(Reminder.class.getCanonicalName(), this);
-        Intent intentReminderReceiver = new Intent(context, ReminderReceiver.class);
-        intentReminderReceiver.setAction(String.valueOf(getCalendar(date, time).getTimeInMillis()));
-        intentReminderReceiver.putExtra(Reminder.class.getCanonicalName(), bundle);
-        intentReminderReceiver.putExtra("periodicity", periodicity);
-        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intentReminderReceiver, PendingIntent.FLAG_CANCEL_CURRENT);
-        alarmManager.cancel(pendingIntent);
+        if (periodicity!=null && periodicity.length()>0){
+            for (char ch : periodicity.toCharArray()){
+                removeAlarm(context, Character.getNumericValue(ch));
+            }
+        }
+        else {
+            removeAlarm(context, -1);
+        }
     }
 
     private void setAlarm(Context context, int periodicity){
@@ -134,18 +133,29 @@ public class Reminder implements Parcelable {
         Bundle bundle = new Bundle();
         bundle.putParcelable(Reminder.class.getCanonicalName(), this);
         Intent intentReminderReceiver = new Intent(context, ReminderReceiver.class);
-        intentReminderReceiver.setAction(String.valueOf(getCalendar(date, time).getTimeInMillis()));
+        intentReminderReceiver.setAction(String.valueOf(getCalendar(date, time).getTimeInMillis())+"_"+periodicity);
         intentReminderReceiver.putExtra(Reminder.class.getCanonicalName(), bundle);
-        intentReminderReceiver.putExtra("periodicity", periodicity);
         PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intentReminderReceiver, PendingIntent.FLAG_CANCEL_CURRENT);
         if (periodicity != -1) {
             alarmManager.setRepeating(AlarmManager.RTC_WAKEUP, getNextReminderDatetime(date, time, periodicity).getTimeInMillis(), AlarmManager.INTERVAL_DAY * 7, pendingIntent);
-            Log.d(DatabaseAccess.TAG_LOG, String.valueOf(getNextReminderDatetime(date, time, periodicity).getTimeInMillis()) + " / " + new SimpleDateFormat("dd-MM-yyyy hh:mm:ss").format(getNextReminderDatetime(date, time, periodicity).getTime()));
+            Log.d(DatabaseAccess.TAG_LOG, "Add periodic: "+this+" / Action="+intentReminderReceiver.getAction()+" / Datetime="+String.valueOf(getCalendar(date, time).getTimeInMillis()) + " / " + new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(getNextReminderDatetime(date, time, periodicity).getTime()));
         }
         else {
             alarmManager.set(AlarmManager.RTC_WAKEUP, getCalendar(date, time).getTimeInMillis(), pendingIntent);
-            Log.d(DatabaseAccess.TAG_LOG, String.valueOf(getCalendar(date, time).getTimeInMillis()) + " / " + new SimpleDateFormat("dd-MM-yyyy hh:mm:ss").format(getCalendar(date, time).getTime()));
+            Log.d(DatabaseAccess.TAG_LOG, "Add single: "+this+" / Action="+intentReminderReceiver.getAction()+" / Datetime="+String.valueOf(getCalendar(date, time).getTimeInMillis()) + " / " + new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(getCalendar(date, time).getTime()));
         }
+    }
+
+    private void removeAlarm(Context context, int periodicity){
+        AlarmManager alarmManager = (AlarmManager) context.getSystemService(Context.ALARM_SERVICE);
+        Bundle bundle = new Bundle();
+        bundle.putParcelable(Reminder.class.getCanonicalName(), this);
+        Intent intentReminderReceiver = new Intent(context, ReminderReceiver.class);
+        intentReminderReceiver.setAction(String.valueOf(getCalendar(date, time).getTimeInMillis())+"_"+periodicity);
+        intentReminderReceiver.putExtra(Reminder.class.getCanonicalName(), bundle);
+        PendingIntent pendingIntent = PendingIntent.getBroadcast(context, 0, intentReminderReceiver, PendingIntent.FLAG_CANCEL_CURRENT);
+        alarmManager.cancel(pendingIntent);
+        Log.d(DatabaseAccess.TAG_LOG, "Remove: "+this+" / Action="+intentReminderReceiver.getAction()+" / Datetime="+String.valueOf(getCalendar(date, time).getTimeInMillis()) + " / " + new SimpleDateFormat("dd-MM-yyyy HH:mm:ss").format(getCalendar(date, time).getTime()));
     }
 
     public Calendar getCalendar(String date, String time) {
@@ -162,9 +172,12 @@ public class Reminder implements Parcelable {
         return calendar;
     }
 
-    public Calendar getNextReminderDatetime(String date, String time, int periodicity){
+    private Calendar getNextReminderDatetime(String date, String time, int periodicity){
         Calendar newReminderTime = Calendar.getInstance();
-        newReminderTime.setTimeInMillis(getCalendar(date, time).getTimeInMillis());
+        newReminderTime.set(Calendar.HOUR_OF_DAY, Integer.valueOf(time.substring(0, 2)));
+        newReminderTime.set(Calendar.MINUTE, Integer.valueOf(time.substring(3)));
+        newReminderTime.set(Calendar.SECOND, 0);
+        newReminderTime.set(Calendar.MILLISECOND, 0);
         newReminderTime.set(Calendar.DAY_OF_WEEK, periodicity);
         if (newReminderTime.getTimeInMillis() < Calendar.getInstance().getTimeInMillis()) {
             newReminderTime.add(Calendar.DAY_OF_MONTH, 7);
@@ -173,6 +186,7 @@ public class Reminder implements Parcelable {
     }
 
     public void addToDB(final DatabaseAccess databaseAccess){
+        Log.d(DatabaseAccess.TAG_LOG, "Add to DB: "+toString());
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -184,6 +198,7 @@ public class Reminder implements Parcelable {
     }
 
     public void removeFromDB(final DatabaseAccess databaseAccess, final String id){
+        Log.d(DatabaseAccess.TAG_LOG, "Remove from DB: "+this.toString());
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
@@ -194,14 +209,26 @@ public class Reminder implements Parcelable {
         thread.start();
     }
 
-    public void removeFromDB(final DatabaseAccess databaseAccess, final Reminder reminder){
+    public void removeFromDB(final DatabaseAccess databaseAccess, final String busstations_id, final String date, final String time, final String periodicity){
+        Log.d(DatabaseAccess.TAG_LOG, "Remove from DB: "+this.toString());
         Thread thread = new Thread(new Runnable() {
             @Override
             public void run() {
                 databaseAccess.open();
-                databaseAccess.deleteReminder(String.valueOf(reminder.getStation().getId()), reminder.getDate(), reminder.getTime(), reminder.getPeriodicity());
+                databaseAccess.deleteReminder(busstations_id, date, time, periodicity);
             }
         });
         thread.start();
+    }
+
+    @Override
+    public String toString() {
+        return "Reminder{" +
+                "station=" + station.getId() +
+                ", date='" + date + '\'' +
+                ", time='" + time + '\'' +
+                ", periodicity='" + periodicity + '\'' +
+                ", note='" + note + '\'' +
+                '}';
     }
 }

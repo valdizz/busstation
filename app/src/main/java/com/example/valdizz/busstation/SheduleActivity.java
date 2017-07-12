@@ -227,14 +227,12 @@ public class SheduleActivity extends AppCompatActivity implements LoaderManager.
                         timeMinDiff += 60;
                         timeHourDiff -= 1;
                     }
-                    timeToDepartureDialog.setMessage(getString(R.string.dialog_message, timeHourDiff, timeMinDiff));
-                    timeToDepartureDialog.setShedule(shedule);
+                    timeToDepartureDialog.setTitle(getString(R.string.dialog_message, timeHourDiff, timeMinDiff));
                 }
                 else {
-                    timeToDepartureDialog.setMessage(getString(R.string.dialog_message_left));
-                    timeToDepartureDialog.setShedule(shedule);
+                    timeToDepartureDialog.setTitle(getString(R.string.dialog_message_left));
                 }
-
+                timeToDepartureDialog.setShedule(shedule);
                 timeToDepartureDialog.show(getSupportFragmentManager(), "timeToDepartureDialog");
             }
         });
