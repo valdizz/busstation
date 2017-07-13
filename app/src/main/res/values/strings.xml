@@ -8,7 +8,7 @@
     <string name="btn_exit">Exit</string>
     <string name="about_menu">About</string>
     <string name="back_menu">Back</string>
-    <string name="about_e_mail">e-mail: vlad.kornev@mail.ru</string>
+    <string name="about_e_mail">e-mail: vlad.kornev@tut.by</string>
     <string name="stations">Stations</string>
     <string name="img_desc_direction">Direction</string>
     <string name="form_caption_shedule">Shedule</string>
@@ -51,4 +51,5 @@
     <string name="reminder_error">The date must be greater than the current date!</string>
     <string name="reminder_setdatetimeerror">Date and time are not defined!</string>
     <string name="reminder_delete">Delete this reminder?</string>
+    <string name="route_transfer">"Transfer: "</string>
 </resources>

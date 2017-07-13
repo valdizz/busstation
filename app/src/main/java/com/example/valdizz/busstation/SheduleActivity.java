@@ -13,11 +13,13 @@ import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.LinearLayout;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -47,6 +49,7 @@ public class SheduleActivity extends AppCompatActivity implements LoaderManager.
     TextView tvStationNameShedule;
     ToggleButton tbSwitchDaysShedule;
     TableLayout tlShedule;
+    LinearLayout llTransferRoutes, llCaptionShedule;
     Bundle bundle;
     int hour;
     Handler updateHandler;
@@ -65,9 +68,11 @@ public class SheduleActivity extends AppCompatActivity implements LoaderManager.
         tvStationNameShedule = (TextView)findViewById(R.id.tvStationNameShedule);
         tbSwitchDaysShedule = (ToggleButton)findViewById(R.id.switchDaysShedule);
         tlShedule = (TableLayout) findViewById(R.id.tlShedule);
+        llCaptionShedule = (LinearLayout) findViewById(R.id.llCaptionShedule);
+        llTransferRoutes = (LinearLayout) findViewById(R.id.llTransferRoutes);
 
         init();
-
+        createTransferRoutes();
         createShedule(hour = 4, shedule.isWeekday() ? "1" : "0");
         initializeHandler();
     }
@@ -160,6 +165,40 @@ public class SheduleActivity extends AppCompatActivity implements LoaderManager.
         });
     }
 
+    private void createTransferRoutes(){
+        Cursor transferRoutes = databaseAccess.getTransferRoutes(new String[]{String.valueOf(station.getName()), station.getRoute().getNumber()});
+
+        if (transferRoutes.getCount() == 0){
+            llCaptionShedule.removeView(llTransferRoutes);
+            return;
+        }
+
+        llTransferRoutes.addView(tvTransferRoutes(getString(R.string.route_transfer),""));
+        while (!transferRoutes.isAfterLast()) {
+            llTransferRoutes.addView(tvTransferRoutes(transferRoutes.getString(transferRoutes.getColumnIndex("route_number")),transferRoutes.getString(transferRoutes.getColumnIndex("route_color"))));
+            transferRoutes.moveToNext();
+        }
+    }
+
+    private TextView tvTransferRoutes(String text, String color){
+        TextView transferRoutes = new TextView(this);
+        transferRoutes.setText(text);
+        transferRoutes.setTextColor(Color.BLACK);
+        transferRoutes.setGravity(Gravity.CENTER);
+        TableRow.LayoutParams tlParamsHour = new TableRow.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        tlParamsHour.setMargins(2,2,2,2);
+        transferRoutes.setPadding(2,2,2,2);
+        transferRoutes.setMinWidth(pxFromDp(24));
+        transferRoutes.setLayoutParams(tlParamsHour);
+        if (color.length()>0)
+            transferRoutes.setBackgroundColor(Color.parseColor("#" + color));
+        return transferRoutes;
+    }
+
+    private int pxFromDp(float dp) {
+        return (int) (dp * getApplicationContext().getResources().getDisplayMetrics().density);
+    }
+
     private void createShedule(int hour, String day) {
         bundle.clear();
         bundle.putStringArray(DatabaseAccess.BUNDLE_PARAMS, new String[]{String.valueOf(shedule.getStation().getId()), (hour < 10 ? "0" + String.valueOf(hour) + "%" : String.valueOf(hour) + "%"), day});
@@ -194,7 +233,7 @@ public class SheduleActivity extends AppCompatActivity implements LoaderManager.
     private TextView tvSheduleHour(String hour){
         TextView textViewHour = new TextView(this);
         textViewHour.setText(hour);
-        textViewHour.setTypeface(Typeface.MONOSPACE, Typeface.BOLD);
+        textViewHour.setTextColor(Color.BLACK);
         textViewHour.setGravity(Gravity.CENTER);
         TableRow.LayoutParams tlParamsHour = new TableRow.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         tlParamsHour.setMargins(5,5,5,5);
@@ -206,7 +245,7 @@ public class SheduleActivity extends AppCompatActivity implements LoaderManager.
     private TextView tvSheduleTime(final String time, final String description, int idBgndRes){
         TextView textViewTime = new TextView(this);
         textViewTime.setText(time);
-        textViewTime.setTypeface(Typeface.MONOSPACE, Typeface.BOLD);
+        textViewTime.setTextColor(Color.BLACK);
         textViewTime.setGravity(Gravity.CENTER);
         TableRow.LayoutParams tlParams = new TableRow.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
         tlParams.setMargins(5,5,5,5);

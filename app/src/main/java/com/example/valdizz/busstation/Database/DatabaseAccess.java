@@ -70,6 +70,12 @@ public class DatabaseAccess {
         return cursor;
     }
 
+    public Cursor getTransferRoutes(String[] params) {
+        Cursor cursor = database.rawQuery("SELECT DISTINCT Routes.number AS route_number, Routes.color AS route_color FROM BusStations INNER JOIN Stations ON (BusStations.stations_id = Stations._id) INNER JOIN Routes ON (BusStations.routes_id = Routes._id) WHERE Stations.name=? AND Routes.number<>? ORDER BY Routes.number, Routes.direction", params);
+        cursor.moveToFirst();
+        return cursor;
+    }
+
     public Cursor getShedule(String[] params) {
         Cursor cursor = database.rawQuery("SELECT * FROM BusShedule WHERE busstations_id=? AND time LIKE ? AND day=? ORDER BY time", params);
         cursor.moveToFirst();

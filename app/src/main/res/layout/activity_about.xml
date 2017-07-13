@@ -79,6 +79,7 @@
             android:layout_height="wrap_content"
             android:gravity="right"
             android:text=""
-            android:textColor="@color/colorAboutText" />
+            android:textColor="@color/colorAboutText"
+            tools:ignore="RtlHardcoded" />
     </LinearLayout>
 </LinearLayout>

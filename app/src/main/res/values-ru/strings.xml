@@ -48,4 +48,5 @@
     <string name="reminder_error">Дата должна быть больше текущей!</string>
     <string name="reminder_setdatetimeerror">Дата и время не определены!</string>
     <string name="reminder_delete">Удалить напоминание?</string>
+    <string name="route_transfer">"Пересадка: "</string>
 </resources>
