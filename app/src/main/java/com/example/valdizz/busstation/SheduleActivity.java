@@ -28,6 +28,7 @@ import android.widget.ToggleButton;
 
 import com.example.valdizz.busstation.Database.DatabaseAccess;
 import com.example.valdizz.busstation.Dialogs.TimeToDepartureDialog;
+import com.example.valdizz.busstation.Dialogs.TransferRoutesDialog;
 import com.example.valdizz.busstation.Model.Shedule;
 import com.example.valdizz.busstation.Model.Station;
 
@@ -70,6 +71,7 @@ public class SheduleActivity extends AppCompatActivity implements LoaderManager.
         tlShedule = (TableLayout) findViewById(R.id.tlShedule);
         llCaptionShedule = (LinearLayout) findViewById(R.id.llCaptionShedule);
         llTransferRoutes = (LinearLayout) findViewById(R.id.llTransferRoutes);
+        llTransferRoutes.setOnClickListener(onTransferRoutesClickListener);
 
         init();
         createTransferRoutes();
@@ -166,18 +168,23 @@ public class SheduleActivity extends AppCompatActivity implements LoaderManager.
     }
 
     private void createTransferRoutes(){
-        Cursor transferRoutes = databaseAccess.getTransferRoutes(new String[]{String.valueOf(station.getName()), station.getRoute().getNumber()});
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run() {
+                Cursor transferRoutes = databaseAccess.getTransferRoutesNumbers(new String[]{String.valueOf(station.getName()), station.getRoute().getNumber()});
 
-        if (transferRoutes.getCount() == 0){
-            llCaptionShedule.removeView(llTransferRoutes);
-            return;
-        }
+                if (transferRoutes.getCount() == 0){
+                    llCaptionShedule.removeView(llTransferRoutes);
+                    return;
+                }
 
-        llTransferRoutes.addView(tvTransferRoutes(getString(R.string.route_transfer),""));
-        while (!transferRoutes.isAfterLast()) {
-            llTransferRoutes.addView(tvTransferRoutes(transferRoutes.getString(transferRoutes.getColumnIndex("route_number")),transferRoutes.getString(transferRoutes.getColumnIndex("route_color"))));
-            transferRoutes.moveToNext();
-        }
+                llTransferRoutes.addView(tvTransferRoutes(getString(R.string.route_transfer),""));
+                while (!transferRoutes.isAfterLast()) {
+                    llTransferRoutes.addView(tvTransferRoutes(transferRoutes.getString(transferRoutes.getColumnIndex("route_number")),transferRoutes.getString(transferRoutes.getColumnIndex("route_color"))));
+                    transferRoutes.moveToNext();
+                }
+            }
+        });
     }
 
     private TextView tvTransferRoutes(String text, String color){
@@ -194,6 +201,18 @@ public class SheduleActivity extends AppCompatActivity implements LoaderManager.
             transferRoutes.setBackgroundColor(Color.parseColor("#" + color));
         return transferRoutes;
     }
+
+    View.OnClickListener onTransferRoutesClickListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View v) {
+            Bundle transferRoutesListDialogArgs = new Bundle();
+            transferRoutesListDialogArgs.putString(DatabaseAccess.ROUTE_NUMBER, station.getRoute().getNumber());
+            transferRoutesListDialogArgs.putString(DatabaseAccess.STATION_NAME, station.getName());
+            TransferRoutesDialog transferRoutesDialog = new TransferRoutesDialog();
+            transferRoutesDialog.setArguments(transferRoutesListDialogArgs);
+            transferRoutesDialog.show(getSupportFragmentManager(), station.getName());
+        }
+    };
 
     private int pxFromDp(float dp) {
         return (int) (dp * getApplicationContext().getResources().getDisplayMetrics().density);
@@ -324,7 +343,7 @@ public class SheduleActivity extends AppCompatActivity implements LoaderManager.
     public void onClickSwitchDays(View view){
         shedule.setWeekday(((ToggleButton)view).isChecked());
         tlShedule.removeAllViews();
-        //databaseAccess.open();
+        databaseAccess.open();
         createShedule(hour = 4, shedule.isWeekday() ? "1" : "0");
     }
 
