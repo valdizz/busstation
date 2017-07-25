@@ -26,15 +26,15 @@
                 android:id="@+id/tvRouteNumStations"
                 android:layout_width="wrap_content"
                 android:layout_height="match_parent"
+                android:layout_alignParentLeft="true"
+                android:layout_alignParentStart="true"
                 android:background="@drawable/main_caption"
                 android:gravity="center"
                 android:paddingLeft="20dp"
                 android:paddingRight="20dp"
                 android:text=""
                 android:textColor="@color/colorBlack"
-                android:textSize="@dimen/caption_text_size"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true" />
+                android:textSize="@dimen/caption_text_size" />
 
             <TextView
                 android:id="@+id/tvRouteNameStations"
@@ -43,10 +43,10 @@
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="@dimen/main_item_margin"
                 android:layout_marginRight="@dimen/main_item_margin"
-                android:layout_toStartOf="@+id/btnRouteDirection"
                 android:layout_toEndOf="@+id/tvRouteNumStations"
                 android:layout_toLeftOf="@+id/btnRouteDirection"
                 android:layout_toRightOf="@+id/tvRouteNumStations"
+                android:layout_toStartOf="@+id/btnRouteDirection"
                 android:background="@drawable/main_caption_green"
                 android:gravity="center_vertical"
                 android:padding="5dp"
@@ -56,30 +56,23 @@
 
             <ToggleButton
                 android:id="@+id/btnRouteDirection"
-                android:background="@drawable/toggle_btn_route_bg"
-                android:textOn=""
-                android:textOff=""
-                android:gravity="center"
                 android:layout_width="50dp"
                 android:layout_height="match_parent"
                 android:layout_alignParentEnd="true"
                 android:layout_alignParentRight="true"
+                android:background="@drawable/toggle_btn_route_bg"
                 android:contentDescription="@string/img_desc_direction"
-                android:onClick="onClickDirection" />
+                android:gravity="center"
+                android:onClick="onClickDirection"
+                android:textOff=""
+                android:textOn="" />
         </RelativeLayout>
-
     </LinearLayout>
 
-    <LinearLayout
+    <ListView
+        android:id="@+id/lvStations"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="1"
-        android:orientation="horizontal">
-
-        <ListView
-            android:id="@+id/lvStations"
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:layout_marginTop="10dp" />
-    </LinearLayout>
+        android:layout_marginTop="10dp"
+        android:layout_weight="1" />
 </LinearLayout>
