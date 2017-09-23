@@ -32,6 +32,7 @@ public class RemindersActivity extends AppCompatActivity implements LoaderManage
     DatabaseAccess databaseAccess;
     SimpleCursorAdapter scRemindersAdapter;
     Reminder reminder;
+    SwipeDetector swipeDetector;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -59,6 +60,8 @@ public class RemindersActivity extends AppCompatActivity implements LoaderManage
         scRemindersAdapter = new SimpleCursorAdapter(this, R.layout.reminder_item, null, from, to, 0);
         scRemindersAdapter.setViewBinder(new RemindersAdapterViewBinder());
         lvReminders.setAdapter(scRemindersAdapter);
+        swipeDetector = new SwipeDetector();
+        lvReminders.setOnTouchListener(swipeDetector);
         lvReminders.setOnItemClickListener(reminderOnClickListener);
         lvReminders.setOnItemLongClickListener(reminderOnItemLongClickListener);
         registerForContextMenu(lvReminders);
@@ -89,21 +92,26 @@ public class RemindersActivity extends AppCompatActivity implements LoaderManage
     private AdapterView.OnItemClickListener reminderOnClickListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            reminder = getReminderFromAdapter(scRemindersAdapter);
-
-            Bundle bundle = new Bundle();
-            bundle.putParcelable(Reminder.class.getCanonicalName(), reminder);
-            Intent intentRemiderSettings = new Intent(RemindersActivity.this, ReminderSettingsActivity.class);
-            intentRemiderSettings.putExtra(Reminder.class.getCanonicalName(), bundle);
-            startActivity(intentRemiderSettings);
+            if (swipeDetector.swipeDetected() && swipeDetector.getAction()== SwipeDetector.Action.RL){
+                //swipe
+                new RemoveReminderDialog().show(getSupportFragmentManager(), String.valueOf(id));
+            }
+            else {
+                //click
+                reminder = getReminderFromAdapter(scRemindersAdapter);
+                Bundle bundle = new Bundle();
+                bundle.putParcelable(Reminder.class.getCanonicalName(), reminder);
+                Intent intentRemiderSettings = new Intent(RemindersActivity.this, ReminderSettingsActivity.class);
+                intentRemiderSettings.putExtra(Reminder.class.getCanonicalName(), bundle);
+                startActivity(intentRemiderSettings);
+            }
         }
     };
 
     private AdapterView.OnItemLongClickListener reminderOnItemLongClickListener = new AdapterView.OnItemLongClickListener() {
         @Override
         public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-            RemoveReminderDialog removeReminderDialog = new RemoveReminderDialog();
-            removeReminderDialog.show(getSupportFragmentManager(), String.valueOf(id));
+            new RemoveReminderDialog().show(getSupportFragmentManager(), String.valueOf(id));
             return true;
         }
     };

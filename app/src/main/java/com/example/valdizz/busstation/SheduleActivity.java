@@ -20,6 +20,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -44,9 +45,7 @@ public class SheduleActivity extends AppCompatActivity implements LoaderManager.
 
     DatabaseAccess databaseAccess;
     Menu menu;
-    TextView tvRouteNumShedule;
-    TextView tvRouteNameShedule;
-    TextView tvStationNameShedule;
+    TextView tvRouteNumShedule, tvRouteNameShedule, tvStationNameShedule, tvNoShedule;
     TableLayout tlShedule;
     LinearLayout llTransferRoutes, llCaptionShedule;
     Bundle bundle;
@@ -66,6 +65,7 @@ public class SheduleActivity extends AppCompatActivity implements LoaderManager.
         tvRouteNumShedule = (TextView)findViewById(R.id.tvRouteNumShedule);
         tvRouteNameShedule = (TextView)findViewById(R.id.tvRouteNameShedule);
         tvStationNameShedule = (TextView)findViewById(R.id.tvStationNameShedule);
+        tvNoShedule = (TextView)findViewById(R.id.tvNoShedule);
         tlShedule = (TableLayout) findViewById(R.id.tlShedule);
         llCaptionShedule = (LinearLayout) findViewById(R.id.llCaptionShedule);
         llTransferRoutes = (LinearLayout) findViewById(R.id.llTransferRoutes);
@@ -86,6 +86,7 @@ public class SheduleActivity extends AppCompatActivity implements LoaderManager.
         ((GradientDrawable)tvRouteNumShedule.getBackground().getCurrent()).setColor(Color.parseColor("#" + station.getRoute().getColor()));
         tvRouteNameShedule.setText(station.getRoute().getName());
         tvStationNameShedule.setText(station.getName());
+        tvNoShedule.setVisibility(View.GONE);
 
         databaseAccess = DatabaseAccess.getInstance(this);
         databaseAccess.open();
@@ -149,6 +150,7 @@ public class SheduleActivity extends AppCompatActivity implements LoaderManager.
                 return true;
             }
             case R.id.day_menu:{
+                tvNoShedule.setVisibility(View.GONE);
                 shedule.setWeekday(!shedule.isWeekday());
                 menu.findItem(R.id.day_menu).setIcon(shedule.isWeekday() ? R.drawable.ic_menu_weekday : R.drawable.ic_menu_workday);
                 tlShedule.removeAllViews();
@@ -317,8 +319,14 @@ public class SheduleActivity extends AppCompatActivity implements LoaderManager.
         createSheduleLine(data);
         if (hour == 23)
             hour = -1;
-        if (hour != 3)
+        if (hour != 3) {
             createShedule(++hour, shedule.isWeekday() ? "1" : "0");
+        }
+        else {
+            if (tlShedule.getChildCount()==0){
+                tvNoShedule.setVisibility(View.VISIBLE);
+            }
+        }
     }
 
     @Override

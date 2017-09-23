@@ -108,4 +108,13 @@
             android:orientation="vertical"></TableLayout>
     </ScrollView>
 
+    <TextView
+        android:id="@+id/tvNoShedule"
+        android:visibility="gone"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:text="@string/list_empty_shedule"
+        android:textColor="@android:color/black"
+        android:gravity="center"/>
+
 </LinearLayout>

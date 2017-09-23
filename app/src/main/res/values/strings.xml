@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">Bus timetable</string>
     <string name="app_name_full">Bus timetable in Lida</string>
-    <string name="btn_routes">Lida bus routes</string>
+    <string name="btn_routes">Routes</string>
     <string name="btn_favorites">Favorites</string>
     <string name="btn_findbytext">Stations</string>
     <string name="btn_findbygps">Map</string>
@@ -10,7 +10,6 @@
     <string name="back_menu">Back</string>
     <string name="about_e_mail" translatable="false">e-mail: vlad.kornev@tut.by</string>
     <string name="stations">Stations</string>
-    <string name="img_desc_direction">Direction</string>
     <string name="form_caption_shedule">Shedule</string>
     <string name="dialog_set_reminder">Reminder</string>
     <string name="dialog_message">Left: %1$d h. %2$d min.</string>
@@ -55,4 +54,5 @@
     <string name="toast_weekend">Weekend.</string>
     <string name="about_readme">"- article 219 of the \"Rules for the Automobile Transport of Passengers\" allows deviation from the traffic schedule -3 + 5 minutes; \n- for a stowaway - a fine of 0.5 base amount;\n- reference schedules for all stops of urban passenger transport by phone 114;\n- when buying travel coupons from the bus driver, please do this only at the stopping points and give money without surrender;\n- branch Lida Bus Station No. 2 \"in agreement with the district executive committee has the right to make changes to the timetable with subsequent information in the district newspaper."</string>
     <string name="about_readmecaption">Additional information:</string>
+    <string name="list_empty_shedule">Today there is no bus.</string>
 </resources>
