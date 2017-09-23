@@ -1,23 +1,15 @@
 <resources>
 
-    <style name="AppTheme" parent="Theme.AppCompat.Light.DarkActionBar">
+    <style name="AppTheme" parent="Theme.AppCompat.Light.NoActionBar">
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:windowBackground">@drawable/background</item>
+        <item name="android:windowActionBar">false</item>
     </style>
 
     <style name="SplashTheme" parent="Theme.AppCompat.NoActionBar">
         <item name="android:windowBackground">@drawable/background_splash</item>
-    </style>
-
-    <style name="MainButtonStyle" parent="Theme.AppCompat.Light.DarkActionBar">
-        <item name="android:layout_margin">@dimen/main_button_margin</item>
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">match_parent</item>
-        <item name="android:layout_weight">1</item>
-        <item name="android:textSize">@dimen/main_button_text_size</item>
-        <item name="android:background">@drawable/main_button</item>
     </style>
 
     <style name="MainItemStyle" parent="Theme.AppCompat.Light.DarkActionBar">

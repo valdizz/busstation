@@ -5,23 +5,28 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.valdizz.busstation.FoundStationsActivity">
+
+    <include layout="@layout/toolbar"/>
 
     <EditText
         android:id="@+id/userFilter"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:hint="@string/hint_findbyname"
-        android:paddingBottom="10dp"/>
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
+        android:hint="@string/hint_findbyname" />
 
     <fragment
         android:id="@+id/favorite_station_list"
         android:name="com.example.valdizz.busstation.Fragments.RouteStationListFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin"
         tools:layout="@layout/routestation_list_fragment"></fragment>
 </LinearLayout>

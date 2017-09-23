@@ -1,26 +1,21 @@
 <resources>
     <string name="app_name">Расписание автобусов</string>
     <string name="app_name_full">Расписание автобусов г.Лида</string>
-    <string name="btn_routes">Маршруты</string>
-    <string name="btn_favourites">Избранное</string>
-    <string name="btn_findbytext">Найти по наименованию</string>
-    <string name="btn_findbygps">Найти на карте</string>
+    <string name="btn_routes">Маршруты автобусов г.Лида</string>
+    <string name="btn_findbytext">Остановки</string>
+    <string name="btn_findbygps">Карта</string>
     <string name="btn_exit">Выход</string>
     <string name="about_menu">О программе</string>
     <string name="back_menu">Назад</string>
     <string name="stations">Остановки</string>
     <string name="img_desc_direction">Направление</string>
     <string name="form_caption_shedule">Расписание</string>
-    <string name="toggle_btn_on">Вых</string>
-    <string name="toggle_btn_off">Раб</string>
-    <string name="about_e_mail">e-mail: vlad.kornev@mail.ru</string>
     <string name="dialog_set_reminder">Напоминание</string>
     <string name="dialog_message">Осталось: %1$d ч. %2$d мин.</string>
     <string name="dialog_message_left">Автобус ушел...</string>
     <string name="add_menu">В избранное</string>
     <string name="toast_addtofavorites">Станция %1$s добавлена в избранное.</string>
     <string name="toast_removefromfavorites">Станция %1$s удалена из избранного.</string>
-    <string name="list_empty">Нет данных</string>
     <string name="btn_reminders">Напоминания</string>
     <string name="hint_findbyname">Введите наименование</string>
     <string name="city">Лида</string>
@@ -49,4 +44,12 @@
     <string name="reminder_setdatetimeerror">Дата и время не определены!</string>
     <string name="reminder_delete">Удалить напоминание?</string>
     <string name="route_transfer">"Пересадка: "</string>
+    <string name="btn_favorites">Избранное</string>
+    <string name="list_empty_reminders">Напоминаний нет</string>
+    <string name="list_empty_stations">Остановок нет</string>
+    <string name="day_menu">День недели</string>
+    <string name="toast_workingdays">Рабочие дни.</string>
+    <string name="toast_weekend">Выходные дни.</string>
+    <string name="about_readme">- статья 219 «Правил автомобильных перевозок пассажиров» допускает отклонение от графика движения -3+5 минут;\n- за безбилетный проезд – штраф в размере 0.5 базовой величины;\n- справки расписания по всем остановочным пунктам городского пассажирского транспорта по телефону 114;\n- при приобретении талонов на проезд у водителя автобуса просьба делать это только на остановочных пунктах и деньги давать без сдачи;\n- филиал Автобусный парк №2 г. Лида» по согласованию с райисполкомом имеет право вносить изменения в расписание с последующей информацией в районной газете.</string>
+    <string name="about_readmecaption">Дополнительная информация:</string>
 </resources>

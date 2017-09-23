@@ -13,7 +13,6 @@
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:name="android.support.multidex.MultiDexApplication"
-        android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <meta-data
             android:name="com.google.android.geo.API_KEY"
@@ -40,9 +39,6 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".MainActivity"
-            android:screenOrientation="portrait" />
-        <activity
             android:name=".RoutesActivity"
             android:label="@string/btn_routes"
             android:screenOrientation="portrait" />
@@ -60,7 +56,7 @@
             android:screenOrientation="portrait" />
         <activity
             android:name=".FavoriteStationsActivity"
-            android:label="@string/btn_favourites"
+            android:label="@string/btn_favorites"
             android:screenOrientation="portrait" />
         <activity
             android:name=".FoundStationsActivity"

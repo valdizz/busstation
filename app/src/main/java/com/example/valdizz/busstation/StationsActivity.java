@@ -5,14 +5,17 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
+import android.support.v4.view.ViewCompat;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.support.v7.app.AppCompatActivity;
-import android.util.Log;
+import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.OvershootInterpolator;
 import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
@@ -24,6 +27,7 @@ import com.example.valdizz.busstation.Model.Station;
 
 public class StationsActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
+    final OvershootInterpolator interpolator = new OvershootInterpolator();
     ListView lvStations;
     DatabaseAccess databaseAccess;
     SimpleCursorAdapter scStationAdapter;
@@ -32,15 +36,18 @@ public class StationsActivity extends AppCompatActivity implements LoaderManager
     Bundle bundle;
     Route route;
     Station station;
+    FloatingActionButton fab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_stations);
+        setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
 
         lvStations = (ListView) findViewById(R.id.lvStations);
         tvRouteNumStations = (TextView)findViewById(R.id.tvRouteNumStations);
         tvRouteNameStations = (TextView)findViewById(R.id.tvRouteNameStations);
+        fab = (FloatingActionButton)findViewById(R.id.fab);
 
         init();
         initializeContentLoader();
@@ -56,10 +63,10 @@ public class StationsActivity extends AppCompatActivity implements LoaderManager
 
     private void init(){
         route = getIntent().getBundleExtra(Route.class.getCanonicalName()).getParcelable(Route.class.getCanonicalName());
-
         tvRouteNumStations.setText(route.getNumber());
         ((GradientDrawable)tvRouteNumStations.getBackground().getCurrent()).setColor(Color.parseColor("#" + route.getColor()));
         tvRouteNameStations.setText(route.getName());
+        fab.setOnClickListener(fabListener);
     }
 
     private void initializeContentLoader(){
@@ -104,24 +111,34 @@ public class StationsActivity extends AppCompatActivity implements LoaderManager
         }
     }
 
-    public void onClickDirection(View view){
-        route.setDirection(!route.isDirection());
-        bundle.clear();
-        bundle.putStringArray(DatabaseAccess.BUNDLE_PARAMS, new String[]{route.getNumber(), route.isDirection() ? "1" : "0"});
-        databaseAccess.open();
-        getSupportLoaderManager().restartLoader(0, bundle, this).forceLoad();
-    }
+    private View.OnClickListener fabListener = new View.OnClickListener() {
+        @Override
+        public void onClick(View view) {
+            route.setDirection(!route.isDirection());
+            bundle.clear();
+            bundle.putStringArray(DatabaseAccess.BUNDLE_PARAMS, new String[]{route.getNumber(), route.isDirection() ? "1" : "0"});
+            databaseAccess.open();
+            getSupportLoaderManager().restartLoader(0, bundle, StationsActivity.this).forceLoad();
+
+            ViewCompat.animate(fab).
+                    rotationBy(180f).
+                    withLayer().
+                    setDuration(300).
+                    setInterpolator(interpolator).
+                    start();
+        }
+    };
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.actionbar_menu, menu);
+        getMenuInflater().inflate(R.menu.main_menu, menu);
         return true;
     }
 
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()){
-            case R.id.back_menu:{
+            case android.R.id.home:{
                 finish();
                 return true;
             }

@@ -71,13 +71,13 @@ public class DatabaseAccess {
     }
 
     public Cursor getTransferRoutes(String[] params) {
-        Cursor cursor = database.rawQuery("SELECT  Stations.name AS station_name, BusStations._id AS busstation_id, BusStations.*, Routes._id AS route_id, Routes.number AS route_number, Routes.name AS route_name, Routes.color AS route_color, Routes.direction AS route_direction FROM BusStations INNER JOIN Stations ON (BusStations.stations_id = Stations._id) INNER JOIN Routes ON (BusStations.routes_id = Routes._id) WHERE Stations.name=? AND Routes.number<>? ORDER BY Routes.number, Routes.direction", params);
+        Cursor cursor = database.rawQuery("SELECT  Stations.name AS station_name, BusStations._id AS busstation_id, BusStations.*, Routes._id AS route_id, Routes.number AS route_number, Routes.name AS route_name, Routes.color AS route_color, Routes.direction AS route_direction FROM BusStations INNER JOIN Stations ON (BusStations.stations_id = Stations._id) INNER JOIN Routes ON (BusStations.routes_id = Routes._id) WHERE Stations.name=? AND Routes.number<>? ORDER BY Routes._id, Routes.number, Routes.direction", params);
         cursor.moveToFirst();
         return cursor;
     }
 
     public Cursor getTransferRoutesNumbers(String[] params) {
-        Cursor cursor = database.rawQuery("SELECT DISTINCT Routes.number AS route_number, Routes.color AS route_color FROM BusStations INNER JOIN Stations ON (BusStations.stations_id = Stations._id) INNER JOIN Routes ON (BusStations.routes_id = Routes._id) WHERE Stations.name=? AND Routes.number<>? ORDER BY Routes.number", params);
+        Cursor cursor = database.rawQuery("SELECT DISTINCT Routes.number AS route_number, Routes.color AS route_color FROM BusStations INNER JOIN Stations ON (BusStations.stations_id = Stations._id) INNER JOIN Routes ON (BusStations.routes_id = Routes._id) WHERE Stations.name=? AND Routes.number<>? ORDER BY Routes._id, Routes.number", params);
         cursor.moveToFirst();
         return cursor;
     }
@@ -107,7 +107,7 @@ public class DatabaseAccess {
     }
 
     public Cursor getRoutesOnStation(String[] params) {
-        Cursor cursor = database.rawQuery("SELECT Stations.name AS station_name, BusStations._id AS busstation_id, BusStations.*, Routes._id AS route_id, Routes.number AS route_number, Routes.name AS route_name, Routes.color AS route_color, Routes.direction AS route_direction FROM BusStations INNER JOIN Stations ON (BusStations.stations_id = Stations._id) INNER JOIN Routes ON (BusStations.routes_id = Routes._id) WHERE gps = ? ORDER BY route_number, BusStations.num_station", params);
+        Cursor cursor = database.rawQuery("SELECT Stations.name AS station_name, BusStations._id AS busstation_id, BusStations.*, Routes._id AS route_id, Routes.number AS route_number, Routes.name AS route_name, Routes.color AS route_color, Routes.direction AS route_direction FROM BusStations INNER JOIN Stations ON (BusStations.stations_id = Stations._id) INNER JOIN Routes ON (BusStations.routes_id = Routes._id) WHERE gps = ? ORDER BY route_id, route_number, BusStations.num_station", params);
         cursor.moveToFirst();
         return cursor;
     }

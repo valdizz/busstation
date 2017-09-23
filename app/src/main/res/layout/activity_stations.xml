@@ -1,78 +1,80 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:id="@+id/activity_stations"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    android:paddingBottom="@dimen/activity_vertical_margin"
-    android:paddingLeft="@dimen/activity_horizontal_margin"
-    android:paddingRight="@dimen/activity_horizontal_margin"
-    android:paddingTop="@dimen/activity_vertical_margin"
     tools:context="com.example.valdizz.busstation.StationsActivity">
 
-    <LinearLayout
+    <include layout="@layout/toolbar" />
+
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_weight="9"
-        android:orientation="horizontal">
+        android:paddingBottom="@dimen/activity_vertical_margin"
+        android:paddingLeft="@dimen/activity_horizontal_margin"
+        android:paddingRight="@dimen/activity_horizontal_margin"
+        android:paddingTop="@dimen/activity_vertical_margin">
 
-        <RelativeLayout
+        <TextView
+            android:id="@+id/tvRouteNumStations"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_alignParentLeft="true"
+            android:layout_alignParentStart="true"
+            android:background="@drawable/main_caption"
+            android:gravity="center"
+            android:minWidth="45dp"
+            android:text=""
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/caption_text_size" />
+
+        <TextView
+            android:id="@+id/tvRouteNameStations"
+            android:layout_width="wrap_content"
+            android:layout_height="50dp"
+            android:layout_alignParentEnd="true"
+            android:layout_alignParentRight="true"
+            android:layout_gravity="center_vertical"
+            android:layout_marginLeft="@dimen/main_item_margin"
+            android:layout_toEndOf="@+id/tvRouteNumStations"
+            android:layout_toRightOf="@+id/tvRouteNumStations"
+            android:background="@drawable/main_caption_green"
+            android:gravity="center_vertical"
+            android:padding="5dp"
+            android:text=""
+            android:textColor="@android:color/black"
+            android:textSize="@dimen/main_item_text_size" />
+
+        <android.support.design.widget.CoordinatorLayout
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            tools:ignore="UselessParent">
+            android:layout_below="@+id/tvRouteNumStations">
 
-            <TextView
-                android:id="@+id/tvRouteNumStations"
+            <android.support.design.widget.FloatingActionButton
+                android:id="@+id/fab"
                 android:layout_width="wrap_content"
-                android:layout_height="match_parent"
-                android:layout_alignParentLeft="true"
-                android:layout_alignParentStart="true"
-                android:background="@drawable/main_caption"
-                android:gravity="center"
-                android:paddingLeft="20dp"
-                android:paddingRight="20dp"
-                android:text=""
-                android:textColor="@color/colorBlack"
-                android:textSize="@dimen/caption_text_size" />
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|end"
+                android:layout_marginBottom="3dp"
+                android:clickable="true"
+                android:src="@drawable/reverse_icon"
+                app:backgroundTint="@color/colorMainGreen"
+                app:fab_colorNormal="@color/colorMainGreen"
+                app:fab_colorPressed="@color/colorMainDarkGreen"
+                app:fab_colorRipple="@android:color/black"
+                app:fab_size="normal" />
 
-            <TextView
-                android:id="@+id/tvRouteNameStations"
-                android:layout_width="wrap_content"
+            <ListView
+                android:id="@+id/lvStations"
+                android:layout_width="match_parent"
                 android:layout_height="match_parent"
-                android:layout_gravity="center_vertical"
-                android:layout_marginLeft="@dimen/main_item_margin"
-                android:layout_marginRight="@dimen/main_item_margin"
-                android:layout_toEndOf="@+id/tvRouteNumStations"
-                android:layout_toLeftOf="@+id/btnRouteDirection"
-                android:layout_toRightOf="@+id/tvRouteNumStations"
-                android:layout_toStartOf="@+id/btnRouteDirection"
-                android:background="@drawable/main_caption_green"
-                android:gravity="center_vertical"
-                android:padding="5dp"
-                android:text=""
-                android:textColor="@color/colorBlack"
-                android:textSize="@dimen/main_item_text_size" />
+                android:layout_below="@+id/tvRouteNumStations"
+                android:layout_marginTop="@dimen/main_item_margin" />
+        </android.support.design.widget.CoordinatorLayout>
 
-            <ToggleButton
-                android:id="@+id/btnRouteDirection"
-                android:layout_width="50dp"
-                android:layout_height="match_parent"
-                android:layout_alignParentEnd="true"
-                android:layout_alignParentRight="true"
-                android:background="@drawable/toggle_btn_route_bg"
-                android:contentDescription="@string/img_desc_direction"
-                android:gravity="center"
-                android:onClick="onClickDirection"
-                android:textOff=""
-                android:textOn="" />
-        </RelativeLayout>
-    </LinearLayout>
+    </RelativeLayout>
 
-    <ListView
-        android:id="@+id/lvStations"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:layout_marginTop="10dp"
-        android:layout_weight="1" />
 </LinearLayout>

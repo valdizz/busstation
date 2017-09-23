@@ -2,10 +2,14 @@ package com.example.valdizz.busstation;
 
 import android.app.DatePickerDialog;
 import android.app.TimePickerDialog;
+import android.content.Intent;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
 import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.CheckBox;
 import android.widget.DatePicker;
@@ -31,6 +35,7 @@ public class ReminderSettingsActivity extends AppCompatActivity {
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_reminder_settings);
+        setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
 
         etReminderTime = (TextView) findViewById(R.id.etReminderTime);
         etReminderDate = (TextView) findViewById(R.id.etReminderDate);
@@ -211,6 +216,29 @@ public class ReminderSettingsActivity extends AppCompatActivity {
         if (chkSunday.isChecked())
             reminderPeriodicity.append(Calendar.SUNDAY);
         return reminderPeriodicity.length()==0 ? "" :reminderPeriodicity.toString();
+    }
+
+    @Override
+    public  boolean onCreateOptionsMenu(Menu menu) {
+        getMenuInflater().inflate(R.menu.main_menu, menu);
+        return true;
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
+            case android.R.id.home:{
+                finish();
+                return true;
+            }
+            case R.id.about_menu: {
+                Intent intent = new Intent(this, AboutActivity.class);
+                startActivity(intent);
+                return true;
+            }
+            default:
+                return super.onOptionsItemSelected(item);
+        }
     }
 
 }
