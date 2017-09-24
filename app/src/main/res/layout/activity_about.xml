@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.example.valdizz.busstation.AboutActivity">
+    tools:context="com.valdizz.busstation.AboutActivity">
 
     <include layout="@layout/toolbar" />
 
@@ -43,6 +43,7 @@
                 android:gravity="right"
                 android:text=""
                 android:textColor="@android:color/black" />
+
         </LinearLayout>
 
         <LinearLayout
@@ -52,31 +53,46 @@
             android:layout_alignParentBottom="true"
             android:layout_margin="@dimen/activity_horizontal_margin"
             android:background="@drawable/main_caption_green"
-            android:orientation="vertical">
+            android:orientation="horizontal"
+            android:weightSum="1">
 
-            <TextView
-                android:id="@+id/tvCopyright"
+            <Button
+                android:id="@+id/btnRate"
+                style="@android:style/Widget.Holo.Light.Button.Small"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="left"
+                android:gravity="center"
+                android:text="@string/about_rate" />
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="7dp"
-                android:layout_marginRight="7dp"
-                android:layout_marginTop="7dp"
-                android:gravity="right"
-                android:text=""
-                android:textColor="@android:color/black" />
+                android:orientation="vertical">
 
-            <TextView
-                android:id="@+id/tvEmail"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="7dp"
-                android:layout_marginLeft="7dp"
-                android:layout_marginRight="7dp"
-                android:autoLink="email"
-                android:gravity="right"
-                android:text="@string/about_e_mail"
-                android:textColor="@android:color/black" />
+                <TextView
+                    android:id="@+id/tvCopyright"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="7dp"
+                    android:layout_marginRight="7dp"
+                    android:layout_marginTop="7dp"
+                    android:gravity="right"
+                    android:text=""
+                    android:textColor="@android:color/black" />
 
+                <TextView
+                    android:id="@+id/tvEmail"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginBottom="7dp"
+                    android:layout_marginLeft="7dp"
+                    android:layout_marginRight="7dp"
+                    android:autoLink="email"
+                    android:gravity="right"
+                    android:text="@string/about_e_mail"
+                    android:textColor="@android:color/black" />
+            </LinearLayout>
         </LinearLayout>
 
         <LinearLayout

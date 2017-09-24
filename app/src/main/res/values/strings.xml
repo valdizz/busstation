@@ -55,4 +55,5 @@
     <string name="about_readme">"- article 219 of the \"Rules for the Automobile Transport of Passengers\" allows deviation from the traffic schedule -3 + 5 minutes; \n- for a stowaway - a fine of 0.5 base amount;\n- reference schedules for all stops of urban passenger transport by phone 114;\n- when buying travel coupons from the bus driver, please do this only at the stopping points and give money without surrender;\n- branch Lida Bus Station No. 2 \"in agreement with the district executive committee has the right to make changes to the timetable with subsequent information in the district newspaper."</string>
     <string name="about_readmecaption">Additional information:</string>
     <string name="list_empty_shedule">Today there is no bus.</string>
+    <string name="about_rate">Rate app</string>
 </resources>

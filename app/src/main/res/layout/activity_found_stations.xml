@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context="com.example.valdizz.busstation.FoundStationsActivity">
+    tools:context="com.valdizz.busstation.FoundStationsActivity">
 
     <include layout="@layout/toolbar"/>
 
@@ -21,7 +21,7 @@
 
     <fragment
         android:id="@+id/favorite_station_list"
-        android:name="com.example.valdizz.busstation.Fragments.RouteStationListFragment"
+        android:name="com.valdizz.busstation.Fragments.RouteStationListFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:paddingBottom="@dimen/activity_vertical_margin"

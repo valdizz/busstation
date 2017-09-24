@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
 
-    tools:context="com.example.valdizz.busstation.ReminderSettingsActivity">
+    tools:context="com.valdizz.busstation.ReminderSettingsActivity">
 
     <include layout="@layout/toolbar"/>
 
