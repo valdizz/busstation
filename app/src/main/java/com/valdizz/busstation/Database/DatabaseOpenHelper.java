@@ -10,6 +10,7 @@ public class DatabaseOpenHelper extends SQLiteAssetHelper {
 
     public DatabaseOpenHelper(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
+        //setForcedUpgrade();
     }
 
 
