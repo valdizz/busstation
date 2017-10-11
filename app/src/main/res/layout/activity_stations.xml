@@ -53,6 +53,13 @@
             android:layout_height="match_parent"
             android:layout_below="@+id/tvRouteNumStations">
 
+            <ListView
+                android:id="@+id/lvStations"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_below="@+id/tvRouteNumStations"
+                android:layout_marginTop="@dimen/main_item_margin" />
+
             <android.support.design.widget.FloatingActionButton
                 android:id="@+id/fab"
                 android:layout_width="wrap_content"
@@ -67,12 +74,6 @@
                 app:fab_colorRipple="@android:color/black"
                 app:fab_size="normal" />
 
-            <ListView
-                android:id="@+id/lvStations"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_below="@+id/tvRouteNumStations"
-                android:layout_marginTop="@dimen/main_item_margin" />
         </android.support.design.widget.CoordinatorLayout>
 
     </RelativeLayout>

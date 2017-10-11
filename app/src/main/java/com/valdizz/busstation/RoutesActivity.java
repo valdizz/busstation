@@ -72,19 +72,22 @@ public class RoutesActivity extends AppCompatActivity implements LoaderManager.L
             public void onClick(View view) {
                 switch (view.getId()){
                     case R.id.menu_favorites:
+                        fam.close(true);
                         startActivity(new Intent(RoutesActivity.this, FavoriteStationsActivity.class));
                         break;
                     case R.id.menu_stations:
+                        fam.close(true);
                         startActivity(new Intent(RoutesActivity.this, FoundStationsActivity.class));
                         break;
                     case R.id.menu_map:
+                        fam.close(true);
                         startActivity(new Intent(RoutesActivity.this, MapStationsActivity.class));
                         break;
                     case R.id.menu_reminders:
+                        fam.close(true);
                         startActivity(new Intent(RoutesActivity.this, RemindersActivity.class));
                         break;
                 }
-                fam.close(true);
             }
         };
     }

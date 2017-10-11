@@ -14,13 +14,13 @@ import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.TableLayout;
 import android.widget.TableRow;
 import android.widget.TextView;
@@ -54,7 +54,6 @@ public class SheduleActivity extends AppCompatActivity implements LoaderManager.
     TimeToDepartureDialog timeToDepartureDialog;
     Station station;
     Shedule shedule;
-
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -168,7 +167,7 @@ public class SheduleActivity extends AppCompatActivity implements LoaderManager.
         runOnUiThread(new Runnable() {
             @Override
             public void run() {
-                //databaseAccess.open();
+                databaseAccess.open();
                 databaseAccess.setFavoriteStation(shedule.getStation().isFavorite() ? "1" : "0", String.valueOf(shedule.getStation().getId()));
                 menu.findItem(R.id.add_menu).setIcon(shedule.getStation().isFavorite() ? android.R.drawable.btn_star_big_on : android.R.drawable.btn_star_big_off);
                 Toast.makeText(SheduleActivity.this, getString(!shedule.getStation().isFavorite() ? R.string.toast_removefromfavorites : R.string.toast_addtofavorites, shedule.getStation().getName()), Toast.LENGTH_SHORT).show();
@@ -337,7 +336,7 @@ public class SheduleActivity extends AppCompatActivity implements LoaderManager.
     @Override
     protected void onDestroy() {
         super.onDestroy();
-        databaseAccess.close();
+//        databaseAccess.close();
         updateHandler.removeCallbacks(updateRunnable);
     }
 

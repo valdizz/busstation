@@ -89,7 +89,7 @@ public class DatabaseAccess {
     }
 
     public Cursor getFoundStations(String[] params) {
-        Cursor cursor = database.rawQuery("SELECT Stations.name AS station_name, BusStations._id AS busstation_id, BusStations.*, Routes._id AS route_id, Routes.number AS route_number, Routes.name AS route_name, Routes.color AS route_color, Routes.direction AS route_direction FROM BusStations INNER JOIN Stations ON (BusStations.stations_id = Stations._id) INNER JOIN Routes ON (BusStations.routes_id = Routes._id) WHERE station_name LIKE ? ORDER BY route_id, BusStations.num_station", params);
+        Cursor cursor = database.rawQuery("SELECT Stations.name AS station_name, BusStations._id AS busstation_id, BusStations.*, Routes._id AS route_id, Routes.number AS route_number, Routes.name AS route_name, Routes.color AS route_color, Routes.direction AS route_direction FROM BusStations INNER JOIN Stations ON (BusStations.stations_id = Stations._id) INNER JOIN Routes ON (BusStations.routes_id = Routes._id) WHERE UPPER(station_name) LIKE ? ORDER BY route_id, BusStations.num_station", params);
         cursor.moveToFirst();
         return cursor;
     }

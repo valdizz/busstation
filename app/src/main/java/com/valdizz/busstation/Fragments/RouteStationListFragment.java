@@ -101,7 +101,7 @@ public class RouteStationListFragment extends ListFragment implements LoaderMana
             @Override
             public Cursor runQuery(CharSequence constraint) {
                 databaseAccess.open();
-                return databaseAccess.getFoundStations(new String[]{(constraint == null || constraint.length() == 0 ? "%%" : "%" + constraint.toString() + "%")});
+                return databaseAccess.getFoundStations(new String[]{(constraint == null || constraint.length() == 0 ? "%%" : "%" + constraint.toString().toUpperCase() + "%")});
             }
         });
     }
