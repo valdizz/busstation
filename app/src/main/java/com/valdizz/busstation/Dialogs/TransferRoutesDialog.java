@@ -20,7 +20,7 @@ import com.valdizz.busstation.Database.TransferRoutesCursorLoader;
 import com.valdizz.busstation.Model.Route;
 import com.valdizz.busstation.Model.Station;
 import com.valdizz.busstation.R;
-import com.valdizz.busstation.SheduleActivity;
+import com.valdizz.busstation.ScheduleActivity;
 
 public class TransferRoutesDialog extends AppCompatDialogFragment  implements LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -73,7 +73,7 @@ public class TransferRoutesDialog extends AppCompatDialogFragment  implements Lo
 
             Bundle bundle = new Bundle();
             bundle.putParcelable(Station.class.getCanonicalName(), station);
-            Intent intentShedule = new Intent(getActivity(), SheduleActivity.class);
+            Intent intentShedule = new Intent(getActivity(), ScheduleActivity.class);
             intentShedule.setFlags(Intent.FLAG_ACTIVITY_CLEAR_TOP);
             intentShedule.putExtra(Station.class.getCanonicalName(), bundle);
             startActivity(intentShedule);

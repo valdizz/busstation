@@ -8,7 +8,7 @@
 
     <include layout="@layout/toolbar" />
 
-    <ListView
+    <com.baoyz.swipemenulistview.SwipeMenuListView
         android:id="@+id/lvReminders"
         android:layout_width="match_parent"
         android:layout_height="match_parent"

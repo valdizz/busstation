@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="com.valdizz.busstation"
-    android:versionName="1.0.1">
+    android:versionName="1.0.2">
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
@@ -51,7 +51,7 @@
             android:label="@string/stations"
             android:screenOrientation="portrait" />
         <activity
-            android:name=".SheduleActivity"
+            android:name=".ScheduleActivity"
             android:label="@string/form_caption_shedule"
             android:screenOrientation="portrait" />
         <activity

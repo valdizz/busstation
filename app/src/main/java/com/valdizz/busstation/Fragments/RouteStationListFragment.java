@@ -26,7 +26,7 @@ import com.valdizz.busstation.Database.FoundStationsCursorLoader;
 import com.valdizz.busstation.Model.Route;
 import com.valdizz.busstation.Model.Station;
 import com.valdizz.busstation.R;
-import com.valdizz.busstation.SheduleActivity;
+import com.valdizz.busstation.ScheduleActivity;
 
 public class RouteStationListFragment extends ListFragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -101,7 +101,7 @@ public class RouteStationListFragment extends ListFragment implements LoaderMana
             @Override
             public Cursor runQuery(CharSequence constraint) {
                 databaseAccess.open();
-                return databaseAccess.getFoundStations(new String[]{(constraint == null || constraint.length() == 0 ? "%%" : "%" + constraint.toString().toUpperCase() + "%")});
+                return databaseAccess.getFoundStations(new String[]{(constraint == null || constraint.length() == 0 ? "%%" : "%" + constraint.toString() + "%")});
             }
         });
     }
@@ -134,7 +134,7 @@ public class RouteStationListFragment extends ListFragment implements LoaderMana
 
         Bundle bundle = new Bundle();
         bundle.putParcelable(Station.class.getCanonicalName(), station);
-        Intent intentShedule = new Intent(getActivity(), SheduleActivity.class);
+        Intent intentShedule = new Intent(getActivity(), ScheduleActivity.class);
         intentShedule.putExtra(Station.class.getCanonicalName(), bundle);
         startActivity(intentShedule);
     }

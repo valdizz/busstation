@@ -19,7 +19,7 @@ import com.valdizz.busstation.Database.RoutesOnStationCursorLoader;
 import com.valdizz.busstation.Model.Route;
 import com.valdizz.busstation.Model.Station;
 import com.valdizz.busstation.R;
-import com.valdizz.busstation.SheduleActivity;
+import com.valdizz.busstation.ScheduleActivity;
 
 public class StationListDialog extends AppCompatDialogFragment implements LoaderManager.LoaderCallbacks<Cursor> {
 
@@ -55,6 +55,7 @@ public class StationListDialog extends AppCompatDialogFragment implements Loader
     return builder.create();
     }
 
+
     DialogInterface.OnClickListener onDialogClickListener = new DialogInterface.OnClickListener() {
         @Override
         public void onClick(DialogInterface dialog, int which) {
@@ -72,7 +73,7 @@ public class StationListDialog extends AppCompatDialogFragment implements Loader
 
             Bundle bundle = new Bundle();
             bundle.putParcelable(Station.class.getCanonicalName(), station);
-            Intent intentShedule = new Intent(getActivity(), SheduleActivity.class);
+            Intent intentShedule = new Intent(getActivity(), ScheduleActivity.class);
             intentShedule.putExtra(Station.class.getCanonicalName(), bundle);
             startActivity(intentShedule);
         }

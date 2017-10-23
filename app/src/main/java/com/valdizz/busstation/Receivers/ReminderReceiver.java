@@ -16,7 +16,7 @@ import com.valdizz.busstation.Database.DatabaseAccess;
 import com.valdizz.busstation.Model.Reminder;
 import com.valdizz.busstation.Model.Station;
 import com.valdizz.busstation.R;
-import com.valdizz.busstation.SheduleActivity;
+import com.valdizz.busstation.ScheduleActivity;
 
 
 public class ReminderReceiver extends BroadcastReceiver {
@@ -36,7 +36,7 @@ public class ReminderReceiver extends BroadcastReceiver {
 
         Bundle bundle = new Bundle();
         bundle.putParcelable(Station.class.getCanonicalName(), reminder.getStation());
-        Intent intentShedule = new Intent(context, SheduleActivity.class);
+        Intent intentShedule = new Intent(context, ScheduleActivity.class);
         intentShedule.putExtra(Station.class.getCanonicalName(), bundle);
 
         nm = (NotificationManager) context.getSystemService(Context.NOTIFICATION_SERVICE);

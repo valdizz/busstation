@@ -13,10 +13,14 @@ import android.support.v7.widget.Toolbar;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.animation.BounceInterpolator;
 import android.widget.AdapterView;
-import android.widget.ListView;
 import android.widget.TextView;
 
+import com.baoyz.swipemenulistview.SwipeMenu;
+import com.baoyz.swipemenulistview.SwipeMenuCreator;
+import com.baoyz.swipemenulistview.SwipeMenuItem;
+import com.baoyz.swipemenulistview.SwipeMenuListView;
 import com.valdizz.busstation.Database.DatabaseAccess;
 import com.valdizz.busstation.Database.RemindersCursorLoader;
 import com.valdizz.busstation.Dialogs.RemoveReminderDialog;
@@ -28,11 +32,10 @@ import java.util.Calendar;
 
 public class RemindersActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
-    ListView lvReminders;
+    SwipeMenuListView lvReminders;
     DatabaseAccess databaseAccess;
     SimpleCursorAdapter scRemindersAdapter;
     Reminder reminder;
-    SwipeDetector swipeDetector;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,8 +43,12 @@ public class RemindersActivity extends AppCompatActivity implements LoaderManage
         setContentView(R.layout.activity_reminders);
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
 
-        lvReminders = (ListView) findViewById(R.id.lvReminders);
-        lvReminders.setEmptyView((TextView)findViewById(android.R.id.empty));
+        lvReminders = (SwipeMenuListView) findViewById(R.id.lvReminders);
+        lvReminders.setMenuCreator(creator);
+        lvReminders.setSwipeDirection(SwipeMenuListView.DIRECTION_LEFT);
+        lvReminders.setCloseInterpolator(new BounceInterpolator());
+        lvReminders.setEmptyView(findViewById(android.R.id.empty));
+        lvReminders.setOnMenuItemClickListener(onMenuItemClickListener);
         initializeContentLoader();
     }
 
@@ -60,13 +67,33 @@ public class RemindersActivity extends AppCompatActivity implements LoaderManage
         scRemindersAdapter = new SimpleCursorAdapter(this, R.layout.reminder_item, null, from, to, 0);
         scRemindersAdapter.setViewBinder(new RemindersAdapterViewBinder());
         lvReminders.setAdapter(scRemindersAdapter);
-        swipeDetector = new SwipeDetector();
-        lvReminders.setOnTouchListener(swipeDetector);
         lvReminders.setOnItemClickListener(reminderOnClickListener);
         lvReminders.setOnItemLongClickListener(reminderOnItemLongClickListener);
-        registerForContextMenu(lvReminders);
         getSupportLoaderManager().initLoader(0, null, this);
     }
+
+    SwipeMenuCreator creator = new SwipeMenuCreator() {
+        @Override
+        public void create(SwipeMenu menu) {
+            // create "delete" item
+            SwipeMenuItem deleteItem = new SwipeMenuItem(getApplicationContext());
+            deleteItem.setWidth(pxFromDp(60));
+            deleteItem.setIcon(android.R.drawable.ic_delete);
+            menu.addMenuItem(deleteItem);
+        }
+    };
+
+    private SwipeMenuListView.OnMenuItemClickListener onMenuItemClickListener = new SwipeMenuListView.OnMenuItemClickListener() {
+        @Override
+        public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
+            switch (index) {
+                case 0:
+                    new RemoveReminderDialog().show(getSupportFragmentManager(), String.valueOf(lvReminders.getItemIdAtPosition(position)));
+                    break;
+            }
+            return false;
+        }
+    };
 
     private Reminder getReminderFromAdapter(SimpleCursorAdapter scRemindersAdapter){
         Route route = new Route(
@@ -92,26 +119,19 @@ public class RemindersActivity extends AppCompatActivity implements LoaderManage
     private AdapterView.OnItemClickListener reminderOnClickListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            if (swipeDetector.swipeDetected() && swipeDetector.getAction()== SwipeDetector.Action.RL){
-                //swipe
-                new RemoveReminderDialog().show(getSupportFragmentManager(), String.valueOf(id));
-            }
-            else {
-                //click
-                reminder = getReminderFromAdapter(scRemindersAdapter);
-                Bundle bundle = new Bundle();
-                bundle.putParcelable(Reminder.class.getCanonicalName(), reminder);
-                Intent intentRemiderSettings = new Intent(RemindersActivity.this, ReminderSettingsActivity.class);
-                intentRemiderSettings.putExtra(Reminder.class.getCanonicalName(), bundle);
-                startActivity(intentRemiderSettings);
-            }
+            reminder = getReminderFromAdapter(scRemindersAdapter);
+            Bundle bundle = new Bundle();
+            bundle.putParcelable(Reminder.class.getCanonicalName(), reminder);
+            Intent intentRemiderSettings = new Intent(RemindersActivity.this, ReminderSettingsActivity.class);
+            intentRemiderSettings.putExtra(Reminder.class.getCanonicalName(), bundle);
+            startActivity(intentRemiderSettings);
         }
     };
 
     private AdapterView.OnItemLongClickListener reminderOnItemLongClickListener = new AdapterView.OnItemLongClickListener() {
         @Override
         public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
-            new RemoveReminderDialog().show(getSupportFragmentManager(), String.valueOf(id));
+            new RemoveReminderDialog().show(getSupportFragmentManager(), String.valueOf(String.valueOf(id)));
             return true;
         }
     };
@@ -120,7 +140,7 @@ public class RemindersActivity extends AppCompatActivity implements LoaderManage
         reminder = getReminderFromAdapter(scRemindersAdapter);
         reminder.remove(this);
         reminder.removeFromDB(databaseAccess, id);
-        getSupportLoaderManager().getLoader(0).forceLoad();
+        getSupportLoaderManager().restartLoader(0, null, this).forceLoad();
     }
 
     private class RemindersAdapterViewBinder implements SimpleCursorAdapter.ViewBinder {
@@ -214,5 +234,9 @@ public class RemindersActivity extends AppCompatActivity implements LoaderManage
     protected void onDestroy() {
         super.onDestroy();
         databaseAccess.close();
+    }
+
+    private int pxFromDp(float dp) {
+        return (int) (dp * getApplicationContext().getResources().getDisplayMetrics().density);
     }
 }

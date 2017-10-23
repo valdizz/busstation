@@ -97,7 +97,7 @@ public class StationsActivity extends AppCompatActivity implements LoaderManager
 
             Bundle bundle = new Bundle();
             bundle.putParcelable(Station.class.getCanonicalName(), station);
-            Intent intentShedule = new Intent(StationsActivity.this, SheduleActivity.class);
+            Intent intentShedule = new Intent(StationsActivity.this, ScheduleActivity.class);
             intentShedule.putExtra(Station.class.getCanonicalName(), bundle);
             startActivity(intentShedule);
         }

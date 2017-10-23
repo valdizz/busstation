@@ -8,26 +8,26 @@ import android.support.v7.app.AlertDialog;
 import android.support.v7.app.AppCompatDialogFragment;
 
 import com.valdizz.busstation.Model.Reminder;
-import com.valdizz.busstation.Model.Shedule;
+import com.valdizz.busstation.Model.Schedule;
 import com.valdizz.busstation.R;
 import com.valdizz.busstation.ReminderSettingsActivity;
 
 public class TimeToDepartureDialog extends AppCompatDialogFragment {
     private String title;
-    private Shedule shedule;
+    private Schedule schedule;
     private Reminder reminder;
 
     public void setTitle(String title) {
         this.title = title;
     }
 
-    public void setShedule(Shedule shedule) {
-        this.shedule = shedule;
+    public void setSchedule(Schedule schedule) {
+        this.schedule = schedule;
     }
 
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
-        reminder = new Reminder(shedule.getStation(), "", "", "", "");
+        reminder = new Reminder(schedule.getStation(), "", "", "", "");
         AlertDialog.Builder builder = new AlertDialog.Builder(getActivity());
         builder.setTitle(title)
                 .setCancelable(true)
@@ -47,8 +47,8 @@ public class TimeToDepartureDialog extends AppCompatDialogFragment {
                         dialog.dismiss();
                    }
                });
-        if (shedule.getDescription()!=null && shedule.getDescription().length()>0){
-            builder.setMessage(shedule.getDescription());
+        if (schedule.getDescription()!=null && schedule.getDescription().length()>0){
+            builder.setMessage(schedule.getDescription());
         }
 
         return builder.create();
