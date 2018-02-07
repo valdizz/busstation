@@ -95,6 +95,7 @@ public class RoutesActivity extends AppCompatActivity implements LoaderManager.L
     private AdapterView.OnItemClickListener routesListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+            fam.close(true);
             route = new Route(
                     scRoutesAdapter.getCursor().getString(scRoutesAdapter.getCursor().getColumnIndex(DatabaseAccess.ROUTE_NUMBER)),
                     scRoutesAdapter.getCursor().getString(scRoutesAdapter.getCursor().getColumnIndex(DatabaseAccess.ROUTE_NAME)),
