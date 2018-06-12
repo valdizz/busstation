@@ -107,6 +107,7 @@ public class StationsActivity extends AppCompatActivity implements LoaderManager
         @Override
         public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
             tvRouteNameStations.setText(cursor.getString(cursor.getColumnIndex(DatabaseAccess.ROUTE_NAME)));
+            route.setName(cursor.getString(cursor.getColumnIndex(DatabaseAccess.ROUTE_NAME)));
             return false;
         }
     }
