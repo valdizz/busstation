@@ -163,10 +163,7 @@ public class MapStationsActivity extends AppCompatActivity implements OnMapReady
                     if (ContextCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
                         startLocationUpdates();
                     }
-                } else {
-
                 }
-                return;
             }
         }
     }
@@ -199,7 +196,7 @@ public class MapStationsActivity extends AppCompatActivity implements OnMapReady
                             case LocationSettingsStatusCodes.SUCCESS:
                                 try {
                                     LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, MapStationsActivity.this);
-                                } catch (SecurityException e) {
+                                } catch (SecurityException ignored) {
                                 }
                                 break;
                             case LocationSettingsStatusCodes.RESOLUTION_REQUIRED:
@@ -293,7 +290,7 @@ public class MapStationsActivity extends AppCompatActivity implements OnMapReady
         if (mCurrentLocation == null) {
             try {
                 mCurrentLocation = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-            } catch (SecurityException e) {
+            } catch (SecurityException ignored) {
             }
             updateUI();
         }

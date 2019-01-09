@@ -345,7 +345,7 @@ public class ScheduleActivity extends AppCompatActivity implements LoaderManager
         DatabaseAccess db;
         Bundle bundle;
 
-        public ScheduleCursorLoader(Context context, DatabaseAccess db, Bundle bundle) {
+        ScheduleCursorLoader(Context context, DatabaseAccess db, Bundle bundle) {
             super(context);
             this.db = db;
             this.bundle = bundle;
@@ -353,8 +353,7 @@ public class ScheduleActivity extends AppCompatActivity implements LoaderManager
 
         @Override
         protected Cursor onLoadInBackground() {
-            Cursor cursor = db.getSchedule(bundle.getStringArray(DatabaseAccess.BUNDLE_PARAMS));
-            return cursor;
+            return db.getSchedule(bundle.getStringArray(DatabaseAccess.BUNDLE_PARAMS));
         }
     }
 
@@ -364,7 +363,39 @@ public class ScheduleActivity extends AppCompatActivity implements LoaderManager
 
     private boolean isWeekend(){
         Calendar dayOfWeek = Calendar.getInstance();
-        return dayOfWeek.get(Calendar.DAY_OF_WEEK)==Calendar.SUNDAY || dayOfWeek.get(Calendar.DAY_OF_WEEK)==Calendar.SATURDAY;
+        if (dayOfWeek.get(Calendar.HOUR_OF_DAY) > 3 && dayOfWeek.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY)
+            return true;
+        else if (dayOfWeek.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY)
+            return true;
+        else if (dayOfWeek.get(Calendar.HOUR_OF_DAY) <= 3 && dayOfWeek.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY)
+            return true;
+        else if (isHoliday(dayOfWeek, 1, Calendar.JANUARY))
+            return true;
+        else if (isHoliday(dayOfWeek, 7, Calendar.JANUARY))
+            return true;
+        else if (isHoliday(dayOfWeek, 8, Calendar.MARCH))
+            return true;
+        else if (isHoliday(dayOfWeek, 1, Calendar.MAY))
+            return true;
+        else if (isHoliday(dayOfWeek, 9, Calendar.MAY))
+            return true;
+        else if (isHoliday(dayOfWeek, 3, Calendar.JULY))
+            return true;
+        else if (isHoliday(dayOfWeek, 7, Calendar.NOVEMBER))
+            return true;
+        else if (isHoliday(dayOfWeek, 25, Calendar.DECEMBER))
+            return true;
+        else
+            return false;
+    }
+
+    private boolean isHoliday(Calendar day, int dayOfMonth, int month) {
+        if (day.get(Calendar.HOUR_OF_DAY) > 3 && day.get(Calendar.DAY_OF_MONTH) == dayOfMonth && day.get(Calendar.MONTH) == month)
+            return true;
+        else if (day.get(Calendar.HOUR_OF_DAY) <= 3 && day.get(Calendar.DAY_OF_MONTH) == dayOfMonth+1)
+            return true;
+        else
+            return false;
     }
 
     private String getCurrentTime(){
@@ -388,7 +419,7 @@ public class ScheduleActivity extends AppCompatActivity implements LoaderManager
         if (timeH != curTimeH)
             return (timeH > curTimeH);
         else
-            return (timeM > curTimeM);
+            return (timeM >= curTimeM);
     }
 
     class FavoriteStationTask extends AsyncTask<String, Void, Void> {

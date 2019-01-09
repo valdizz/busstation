@@ -67,6 +67,7 @@
                 android:layout_gravity="bottom|end"
                 android:layout_marginBottom="3dp"
                 android:clickable="true"
+                android:focusable="true"
                 android:src="@drawable/reverse_icon"
                 app:backgroundTint="@color/colorMainGreen"
                 app:fab_colorNormal="@color/colorMainGreen"

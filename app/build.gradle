@@ -1,26 +1,28 @@
 apply plugin: 'com.android.application'
 
 android {
-    compileSdkVersion 26
-    buildToolsVersion '26.0.2'
+    compileSdkVersion 27
+    buildToolsVersion '28.0.3'
     defaultConfig {
         applicationId "com.valdizz.busstation"
         minSdkVersion 15
-        targetSdkVersion 26
+        targetSdkVersion 27
         multiDexEnabled true
-        versionCode 11
-        versionName "1.0.7"
-        project.ext.set("archivesBaseName", "busstation-" + defaultConfig.versionName);
+        versionCode 15
+        versionName "1.1.1"
+        project.ext.set("archivesBaseName", "busstation-" + defaultConfig.versionName)
         testInstrumentationRunner "android.support.test.runner.AndroidJUnitRunner"
     }
     buildTypes {
         debug {
             minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             resValue "string", "google_maps_key", "AIzaSyD946PCMTwfSGYacye3jtrFIuVax0c"
         }
         release {
             minifyEnabled true
+            shrinkResources true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
             resValue "string", "google_maps_key", "AIzaSyD946PCMTwfSGYacye3jtrFIuVax0c"
         }
@@ -28,19 +30,19 @@ android {
 }
 
 dependencies {
-    compile fileTree(dir: 'libs', include: ['*.jar'])
-    androidTestCompile('com.android.support.test.espresso:espresso-core:2.2.2', {
+    implementation fileTree(dir: 'libs', include: ['*.jar'])
+    androidTestImplementation('com.android.support.test.espresso:espresso-core:2.2.2', {
         exclude group: 'com.android.support', module: 'support-annotations'
     })
-    compile 'com.android.support:appcompat-v7:+'
-    compile 'com.readystatesoftware.sqliteasset:sqliteassethelper:+'
-    compile 'com.android.support:support-v4:+'
-    compile 'com.google.android.gms:play-services-maps:+'
-    compile 'com.google.android.gms:play-services-location:+'
-    compile 'com.android.support.constraint:constraint-layout:+'
-    compile 'com.android.support:multidex:1.0.2'
-    compile 'com.github.clans:fab:1.6.4'
-    compile 'com.android.support:design:+'
-    compile 'com.baoyz.swipemenulistview:library:1.3.0'
-    testCompile 'junit:junit:4.12'
+    implementation 'com.android.support:appcompat-v7:27.1.1'
+    implementation 'com.readystatesoftware.sqliteasset:sqliteassethelper:+'
+    implementation 'com.android.support:support-compat:27.1.1'
+    implementation 'com.google.android.gms:play-services-maps:16.0.0'
+    implementation 'com.google.android.gms:play-services-location:16.0.0'
+    implementation 'com.android.support.constraint:constraint-layout:1.1.3'
+    implementation 'com.android.support:multidex:1.0.3'
+    implementation 'com.github.clans:fab:1.6.4'
+    implementation 'com.android.support:design:27.1.1'
+    implementation 'com.baoyz.swipemenulistview:library:1.3.0'
+    testImplementation 'junit:junit:4.12'
 }

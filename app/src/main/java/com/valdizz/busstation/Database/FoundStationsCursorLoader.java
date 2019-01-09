@@ -7,8 +7,8 @@ import android.support.v4.content.CursorLoader;
 
 
 public class FoundStationsCursorLoader extends CursorLoader {
-    DatabaseAccess db;
-    Bundle bundle;
+    private DatabaseAccess db;
+    private Bundle bundle;
 
     public FoundStationsCursorLoader(Context context, DatabaseAccess db, Bundle bundle) {
         super(context);
@@ -18,7 +18,6 @@ public class FoundStationsCursorLoader extends CursorLoader {
 
     @Override
     protected Cursor onLoadInBackground() {
-        Cursor cursor = db.getFoundStations(bundle==null ? new String[]{"%%"} :bundle.getStringArray(DatabaseAccess.BUNDLE_PARAMS));
-        return cursor;
+        return db.getFoundStations(bundle==null ? new String[]{"%%"} :bundle.getStringArray(DatabaseAccess.BUNDLE_PARAMS));
     }
 }

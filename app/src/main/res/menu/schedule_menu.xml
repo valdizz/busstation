@@ -5,15 +5,15 @@
         android:id="@+id/day_menu"
         android:icon="@drawable/ic_menu_weekday"
         android:title="@string/day_menu"
-        app:showAsAction="always"></item>
+        app:showAsAction="always"/>
     <item
         android:id="@+id/add_menu"
         android:icon="@android:drawable/btn_star_big_off"
         android:title="@string/add_menu"
-        app:showAsAction="always"></item>
+        app:showAsAction="always"/>
     <item
         android:id="@+id/about_menu"
         android:icon="@android:drawable/ic_menu_info_details"
         android:title="@string/about_menu"
-        app:showAsAction="always"></item>
+        app:showAsAction="always"/>
 </menu>

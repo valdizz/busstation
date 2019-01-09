@@ -12,6 +12,7 @@ import android.support.v4.content.Loader;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.text.Editable;
 import android.text.TextWatcher;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -35,6 +36,7 @@ public class RouteStationListFragment extends ListFragment implements LoaderMana
     DatabaseAccess databaseAccess;
     SimpleCursorAdapter scRouteStationAdapter;
     Station station;
+    EditText userFilter;
 
 
     @Override
@@ -45,9 +47,19 @@ public class RouteStationListFragment extends ListFragment implements LoaderMana
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
+        userFilter = (EditText) getActivity().findViewById(R.id.userFilter);
         initializeContentLoader();
         if (getActivity().getClass().getSimpleName().equals(FOUND_STATION_ACTIVITY)) {
             addUserFilter();
+        }
+    }
+
+    @Override
+    public void onStart() {
+        super.onStart();
+        if (!getLoaderManager().getLoader(0).isStarted()) {
+            userFilter.setText("");
+            getLoaderManager().restartLoader(0, null, this);
         }
     }
 
@@ -79,7 +91,6 @@ public class RouteStationListFragment extends ListFragment implements LoaderMana
     }
 
     private void addUserFilter(){
-        EditText userFilter = (EditText) getActivity().findViewById(R.id.userFilter);
         scRouteStationAdapter.getFilter().filter(userFilter.getText().toString());
 
         userFilter.addTextChangedListener(new TextWatcher() {
