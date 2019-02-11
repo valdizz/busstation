@@ -5,6 +5,8 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SimpleCursorAdapter;
@@ -17,21 +19,23 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.valdizz.busstation.Database.DatabaseAccess;
-import com.valdizz.busstation.Database.RoutesCursorLoader;
-import com.valdizz.busstation.Model.Route;
+import com.valdizz.busstation.database.DatabaseAccess;
+import com.valdizz.busstation.database.RoutesCursorLoader;
+import com.valdizz.busstation.model.Route;
 import com.github.clans.fab.FloatingActionButton;
 import com.github.clans.fab.FloatingActionMenu;
 
 
 public class RoutesActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
-    ListView lvRoutes;
-    DatabaseAccess databaseAccess;
-    SimpleCursorAdapter scRoutesAdapter;
-    Route route;
-    FloatingActionMenu fam;
-    FloatingActionButton fabFavorites, fabMap, fabStations, fabReminders;
+    private ListView lvRoutes;
+    private DatabaseAccess databaseAccess;
+    private SimpleCursorAdapter scRoutesAdapter;
+    private FloatingActionMenu fam;
+    private FloatingActionButton fabFavorites;
+    private FloatingActionButton fabMap;
+    private FloatingActionButton fabStations;
+    private FloatingActionButton fabReminders;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -40,12 +44,12 @@ public class RoutesActivity extends AppCompatActivity implements LoaderManager.L
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
         getSupportActionBar().setDisplayHomeAsUpEnabled(false);
 
-        lvRoutes = (ListView) findViewById(R.id.lvRoutes);
-        fam = (FloatingActionMenu) findViewById(R.id.menu_fab);
-        fabFavorites = (FloatingActionButton) findViewById(R.id.menu_favorites);
-        fabMap = (FloatingActionButton) findViewById(R.id.menu_map);
-        fabStations = (FloatingActionButton) findViewById(R.id.menu_stations);
-        fabReminders = (FloatingActionButton) findViewById(R.id.menu_reminders);
+        lvRoutes = findViewById(R.id.lvRoutes);
+        fam = findViewById(R.id.menu_fab);
+        fabFavorites = findViewById(R.id.menu_favorites);
+        fabMap = findViewById(R.id.menu_map);
+        fabStations = findViewById(R.id.menu_stations);
+        fabReminders = findViewById(R.id.menu_reminders);
         initializeContentLoader();
     }
 
@@ -92,15 +96,15 @@ public class RoutesActivity extends AppCompatActivity implements LoaderManager.L
         };
     }
 
-    private AdapterView.OnItemClickListener routesListener = new AdapterView.OnItemClickListener() {
+    private final AdapterView.OnItemClickListener routesListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             fam.close(true);
-            route = new Route(
+            Route route = new Route(
                     scRoutesAdapter.getCursor().getString(scRoutesAdapter.getCursor().getColumnIndex(DatabaseAccess.ROUTE_NUMBER)),
                     scRoutesAdapter.getCursor().getString(scRoutesAdapter.getCursor().getColumnIndex(DatabaseAccess.ROUTE_NAME)),
                     scRoutesAdapter.getCursor().getString(scRoutesAdapter.getCursor().getColumnIndex(DatabaseAccess.ROUTE_COLOR)),
-                    scRoutesAdapter.getCursor().getShort(scRoutesAdapter.getCursor().getColumnIndex(DatabaseAccess.ROUTE_DIRECTION))!=0);
+                    scRoutesAdapter.getCursor().getShort(scRoutesAdapter.getCursor().getColumnIndex(DatabaseAccess.ROUTE_DIRECTION)) != 0);
 
             Bundle bundle = new Bundle();
             bundle.putParcelable(Route.class.getCanonicalName(), route);
@@ -141,18 +145,19 @@ public class RoutesActivity extends AppCompatActivity implements LoaderManager.L
         }
     }
 
+    @NonNull
     @Override
-    public Loader onCreateLoader(int id, Bundle args) {
+    public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
         return new RoutesCursorLoader(this, databaseAccess);
     }
 
     @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+    public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
         scRoutesAdapter.swapCursor(data);
     }
 
     @Override
-    public void onLoaderReset(Loader loader) {
+    public void onLoaderReset(@NonNull Loader loader) {
         scRoutesAdapter.swapCursor(null);
     }
 

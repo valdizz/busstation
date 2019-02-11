@@ -10,6 +10,8 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.CursorLoader;
 import android.support.v4.content.Loader;
@@ -26,35 +28,41 @@ import android.widget.TableRow;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.valdizz.busstation.Database.DatabaseAccess;
-import com.valdizz.busstation.Dialogs.TimeToDepartureDialog;
-import com.valdizz.busstation.Dialogs.TransferRoutesDialog;
-import com.valdizz.busstation.Model.Schedule;
-import com.valdizz.busstation.Model.Station;
+import com.valdizz.busstation.database.DatabaseAccess;
+import com.valdizz.busstation.dialogs.TimeToDepartureDialog;
+import com.valdizz.busstation.dialogs.TransferRoutesDialog;
+import com.valdizz.busstation.model.Schedule;
+import com.valdizz.busstation.model.Station;
 
+import java.lang.ref.WeakReference;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Locale;
 import java.util.Map;
 
 
 public class ScheduleActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
-    public static final long UPDATE_PERIOD = 60*1000L;
+    private static final long UPDATE_PERIOD = 60*1000L;
 
-    DatabaseAccess databaseAccess;
-    Menu menu;
-    TextView tvRouteNumSchedule, tvRouteNameSchedule, tvStationNameSchedule, tvNoSchedule;
-    TableLayout tlSchedule;
-    LinearLayout llTransferRoutes, llCaptionSchedule;
-    Bundle bundle;
-    Handler updateHandler;
-    TimeToDepartureDialog timeToDepartureDialog;
-    Station station;
-    Schedule schedule;
+    private DatabaseAccess databaseAccess;
+    private Menu menu;
+    private TextView tvRouteNumSchedule;
+    private TextView tvRouteNameSchedule;
+    private TextView tvStationNameSchedule;
+    private TextView tvNoSchedule;
+    private TableLayout tlSchedule;
+    private LinearLayout llTransferRoutes;
+    private LinearLayout llCaptionSchedule;
+    private Bundle bundle;
+    private Handler updateHandler;
+    private TimeToDepartureDialog timeToDepartureDialog;
+    private Station station;
+    private Schedule schedule;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -62,13 +70,13 @@ public class ScheduleActivity extends AppCompatActivity implements LoaderManager
         setContentView(R.layout.activity_schedule);
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
 
-        tvRouteNumSchedule = (TextView)findViewById(R.id.tvRouteNumSchedule);
-        tvRouteNameSchedule = (TextView)findViewById(R.id.tvRouteNameSchedule);
-        tvStationNameSchedule = (TextView)findViewById(R.id.tvStationNameSchedule);
-        tvNoSchedule = (TextView)findViewById(R.id.tvNoSchedule);
-        tlSchedule = (TableLayout) findViewById(R.id.tlSchedule);
-        llCaptionSchedule = (LinearLayout) findViewById(R.id.llCaptionSchedule);
-        llTransferRoutes = (LinearLayout) findViewById(R.id.llTransferRoutes);
+        tvRouteNumSchedule = findViewById(R.id.tvRouteNumSchedule);
+        tvRouteNameSchedule = findViewById(R.id.tvRouteNameSchedule);
+        tvStationNameSchedule = findViewById(R.id.tvStationNameSchedule);
+        tvNoSchedule = findViewById(R.id.tvNoSchedule);
+        tlSchedule = findViewById(R.id.tlSchedule);
+        llCaptionSchedule = findViewById(R.id.llCaptionSchedule);
+        llTransferRoutes = findViewById(R.id.llTransferRoutes);
         llTransferRoutes.setOnClickListener(onTransferRoutesClickListener);
 
         init();
@@ -100,7 +108,7 @@ public class ScheduleActivity extends AppCompatActivity implements LoaderManager
         updateHandler.postAtTime(updateRunnable, next);
     }
 
-    private Runnable updateRunnable = new Runnable() {
+    private final Runnable updateRunnable = new Runnable() {
         @Override
         public void run() {
             String currentTime = getCurrentTime();
@@ -108,7 +116,7 @@ public class ScheduleActivity extends AppCompatActivity implements LoaderManager
 
             List<TableRow> tableRows = new ArrayList<>();
             for (int i=currentHour-1; i<=currentHour; i++){
-                TableRow tr = (TableRow) tlSchedule.findViewWithTag(i);
+                TableRow tr = tlSchedule.findViewWithTag(i);
                 if (tr!=null)
                     tableRows.add(tr);
             }
@@ -145,7 +153,7 @@ public class ScheduleActivity extends AppCompatActivity implements LoaderManager
                 return true;
             }
             case R.id.add_menu:{
-                new FavoriteStationTask().execute(schedule.getStation().isFavorite() ? "0" : "1", String.valueOf(schedule.getStation().getId()));
+                new FavoriteStationTask(this).execute(schedule.getStation().isFavorite() ? "0" : "1", String.valueOf(schedule.getStation().getId()));
                 return true;
             }
             case R.id.day_menu:{
@@ -198,7 +206,7 @@ public class ScheduleActivity extends AppCompatActivity implements LoaderManager
         return transferRoutes;
     }
 
-    View.OnClickListener onTransferRoutesClickListener = new View.OnClickListener() {
+    private final View.OnClickListener onTransferRoutesClickListener = new View.OnClickListener() {
         @Override
         public void onClick(View v) {
             Bundle transferRoutesListDialogArgs = new Bundle();
@@ -298,13 +306,14 @@ public class ScheduleActivity extends AppCompatActivity implements LoaderManager
         return textViewTime;
     }
 
+    @NonNull
     @Override
-    public Loader onCreateLoader(int id, Bundle args) {
+    public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
         return new ScheduleCursorLoader(this, databaseAccess, args);
     }
 
     @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+    public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
         Map<String, List<String>> scheduleMap = new HashMap<>();
         String hour;
         StringBuilder time;
@@ -330,7 +339,7 @@ public class ScheduleActivity extends AppCompatActivity implements LoaderManager
     }
 
     @Override
-    public void onLoaderReset(Loader loader) {
+    public void onLoaderReset(@NonNull Loader loader) {
 
     }
 
@@ -342,8 +351,8 @@ public class ScheduleActivity extends AppCompatActivity implements LoaderManager
     }
 
     static class ScheduleCursorLoader extends CursorLoader {
-        DatabaseAccess db;
-        Bundle bundle;
+        final DatabaseAccess db;
+        final Bundle bundle;
 
         ScheduleCursorLoader(Context context, DatabaseAccess db, Bundle bundle) {
             super(context);
@@ -362,51 +371,29 @@ public class ScheduleActivity extends AppCompatActivity implements LoaderManager
     }
 
     private boolean isWeekend(){
-        Calendar dayOfWeek = Calendar.getInstance();
-        if (dayOfWeek.get(Calendar.HOUR_OF_DAY) > 3 && dayOfWeek.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY)
-            return true;
-        else if (dayOfWeek.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY)
-            return true;
-        else if (dayOfWeek.get(Calendar.HOUR_OF_DAY) <= 3 && dayOfWeek.get(Calendar.DAY_OF_WEEK) == Calendar.MONDAY)
-            return true;
-        else if (isHoliday(dayOfWeek, 1, Calendar.JANUARY))
-            return true;
-        else if (isHoliday(dayOfWeek, 7, Calendar.JANUARY))
-            return true;
-        else if (isHoliday(dayOfWeek, 8, Calendar.MARCH))
-            return true;
-        else if (isHoliday(dayOfWeek, 1, Calendar.MAY))
-            return true;
-        else if (isHoliday(dayOfWeek, 9, Calendar.MAY))
-            return true;
-        else if (isHoliday(dayOfWeek, 3, Calendar.JULY))
-            return true;
-        else if (isHoliday(dayOfWeek, 7, Calendar.NOVEMBER))
-            return true;
-        else if (isHoliday(dayOfWeek, 25, Calendar.DECEMBER))
-            return true;
-        else
-            return false;
-    }
-
-    private boolean isHoliday(Calendar day, int dayOfMonth, int month) {
-        if (day.get(Calendar.HOUR_OF_DAY) > 3 && day.get(Calendar.DAY_OF_MONTH) == dayOfMonth && day.get(Calendar.MONTH) == month)
-            return true;
-        else if (day.get(Calendar.HOUR_OF_DAY) <= 3 && day.get(Calendar.DAY_OF_MONTH) == dayOfMonth+1)
-            return true;
-        else
-            return false;
+        Calendar currentDate = Calendar.getInstance();
+        currentDate.add(Calendar.HOUR, -3);
+        return (currentDate.get(Calendar.DAY_OF_WEEK) == Calendar.SATURDAY)
+                || (currentDate.get(Calendar.DAY_OF_WEEK) == Calendar.SUNDAY)
+                || (currentDate.get(Calendar.DAY_OF_MONTH) == 1 && currentDate.get(Calendar.MONTH) == Calendar.JANUARY)
+                || (currentDate.get(Calendar.DAY_OF_MONTH) == 7 && currentDate.get(Calendar.MONTH) == Calendar.JANUARY)
+                || (currentDate.get(Calendar.DAY_OF_MONTH) == 8 && currentDate.get(Calendar.MONTH) == Calendar.MARCH)
+                || (currentDate.get(Calendar.DAY_OF_MONTH) == 1 && currentDate.get(Calendar.MONTH) == Calendar.MAY)
+                || (currentDate.get(Calendar.DAY_OF_MONTH) == 9 && currentDate.get(Calendar.MONTH) == Calendar.MAY)
+                || (currentDate.get(Calendar.DAY_OF_MONTH) == 3 && currentDate.get(Calendar.MONTH) == Calendar.JULY)
+                || (currentDate.get(Calendar.DAY_OF_MONTH) == 7 && currentDate.get(Calendar.MONTH) == Calendar.NOVEMBER)
+                || (currentDate.get(Calendar.DAY_OF_MONTH) == 25 && currentDate.get(Calendar.MONTH) == Calendar.DECEMBER);
     }
 
     private String getCurrentTime(){
-        return new SimpleDateFormat("HH:mm").format(new Date());
+        return new SimpleDateFormat("HH:mm", Locale.getDefault()).format(new Date());
     }
 
     private String getHourFormatHH(int hour){
         return hour < 10 ? "0" + String.valueOf(hour) : String.valueOf(hour);
     }
 
-    public boolean isLater(String time, String currentTime){
+    private boolean isLater(String time, String currentTime){
         int timeH = Integer.valueOf(time.substring(0,2));
         int curTimeH = Integer.valueOf(currentTime.substring(0,2));
         int timeM = Integer.valueOf(time.substring(3));
@@ -422,22 +409,38 @@ public class ScheduleActivity extends AppCompatActivity implements LoaderManager
             return (timeM >= curTimeM);
     }
 
-    class FavoriteStationTask extends AsyncTask<String, Void, Void> {
+    private static class FavoriteStationTask extends AsyncTask<String, Void, Void> {
+
+        private final WeakReference<ScheduleActivity> scheduleActivityWeakReference;
+
+        FavoriteStationTask(ScheduleActivity context) {
+            scheduleActivityWeakReference = new WeakReference<>(context);
+        }
+
         @Override
         protected void onPreExecute() {
-            schedule.getStation().setFavorite(!schedule.getStation().isFavorite());
+            ScheduleActivity scheduleActivity = scheduleActivityWeakReference.get();
+            if (scheduleActivity == null || scheduleActivity.isFinishing()) return;
+
+            scheduleActivity.schedule.getStation().setFavorite(!scheduleActivity.schedule.getStation().isFavorite());
         }
 
         @Override
         protected void onPostExecute(Void aVoid) {
-            menu.findItem(R.id.add_menu).setIcon(schedule.getStation().isFavorite() ? android.R.drawable.btn_star_big_on : android.R.drawable.btn_star_big_off);
-            Toast.makeText(ScheduleActivity.this, getString(!schedule.getStation().isFavorite() ? R.string.toast_removefromfavorites : R.string.toast_addtofavorites, schedule.getStation().getName()), Toast.LENGTH_SHORT).show();
+            ScheduleActivity scheduleActivity = scheduleActivityWeakReference.get();
+            if (scheduleActivity == null || scheduleActivity.isFinishing()) return;
+
+            scheduleActivity.menu.findItem(R.id.add_menu).setIcon(scheduleActivity.schedule.getStation().isFavorite() ? android.R.drawable.btn_star_big_on : android.R.drawable.btn_star_big_off);
+            Toast.makeText(scheduleActivity, scheduleActivity.getString(!scheduleActivity.schedule.getStation().isFavorite() ? R.string.toast_removefromfavorites : R.string.toast_addtofavorites, scheduleActivity.schedule.getStation().getName()), Toast.LENGTH_SHORT).show();
         }
 
         @Override
         protected Void doInBackground(String... strings) {
-            databaseAccess.open();
-            databaseAccess.setFavoriteStation(strings[0], strings[1]);
+            ScheduleActivity scheduleActivity = scheduleActivityWeakReference.get();
+            if (scheduleActivity == null || scheduleActivity.isFinishing()) return null;
+
+            scheduleActivity.databaseAccess.open();
+            scheduleActivity.databaseAccess.setFavoriteStation(strings[0], strings[1]);
             return null;
         }
     }

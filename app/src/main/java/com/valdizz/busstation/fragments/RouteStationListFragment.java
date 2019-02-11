@@ -1,10 +1,11 @@
-package com.valdizz.busstation.Fragments;
+package com.valdizz.busstation.fragments;
 
 import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.ListFragment;
 import android.support.v4.app.LoaderManager;
@@ -12,7 +13,6 @@ import android.support.v4.content.Loader;
 import android.support.v4.widget.SimpleCursorAdapter;
 import android.text.Editable;
 import android.text.TextWatcher;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -21,11 +21,11 @@ import android.widget.FilterQueryProvider;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.valdizz.busstation.Database.DatabaseAccess;
-import com.valdizz.busstation.Database.FavoriteStationsCursorLoader;
-import com.valdizz.busstation.Database.FoundStationsCursorLoader;
-import com.valdizz.busstation.Model.Route;
-import com.valdizz.busstation.Model.Station;
+import com.valdizz.busstation.database.DatabaseAccess;
+import com.valdizz.busstation.database.FavoriteStationsCursorLoader;
+import com.valdizz.busstation.database.FoundStationsCursorLoader;
+import com.valdizz.busstation.model.Route;
+import com.valdizz.busstation.model.Station;
 import com.valdizz.busstation.R;
 import com.valdizz.busstation.ScheduleActivity;
 
@@ -33,10 +33,9 @@ public class RouteStationListFragment extends ListFragment implements LoaderMana
 
     private final static String FOUND_STATION_ACTIVITY = "FoundStationsActivity";
 
-    DatabaseAccess databaseAccess;
-    SimpleCursorAdapter scRouteStationAdapter;
-    Station station;
-    EditText userFilter;
+    private DatabaseAccess databaseAccess;
+    private SimpleCursorAdapter scRouteStationAdapter;
+    private EditText userFilter;
 
 
     @Override
@@ -47,9 +46,9 @@ public class RouteStationListFragment extends ListFragment implements LoaderMana
     @Override
     public void onActivityCreated(@Nullable Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
-        userFilter = (EditText) getActivity().findViewById(R.id.userFilter);
         initializeContentLoader();
         if (getActivity().getClass().getSimpleName().equals(FOUND_STATION_ACTIVITY)) {
+            userFilter = getActivity().findViewById(R.id.userFilter);
             addUserFilter();
         }
     }
@@ -57,7 +56,7 @@ public class RouteStationListFragment extends ListFragment implements LoaderMana
     @Override
     public void onStart() {
         super.onStart();
-        if (!getLoaderManager().getLoader(0).isStarted()) {
+        if (getActivity().getClass().getSimpleName().equals(FOUND_STATION_ACTIVITY) && !getLoaderManager().getLoader(0).isStarted()) {
             userFilter.setText("");
             getLoaderManager().restartLoader(0, null, this);
         }
@@ -136,11 +135,11 @@ public class RouteStationListFragment extends ListFragment implements LoaderMana
                 scRouteStationAdapter.getCursor().getString(scRouteStationAdapter.getCursor().getColumnIndex(DatabaseAccess.ROUTE_NAME)),
                 scRouteStationAdapter.getCursor().getString(scRouteStationAdapter.getCursor().getColumnIndex(DatabaseAccess.ROUTE_COLOR)),
                 scRouteStationAdapter.getCursor().getShort(scRouteStationAdapter.getCursor().getColumnIndex(DatabaseAccess.ROUTE_DIRECTION))!=0);
-        station = new Station(
+        Station station = new Station(
                 scRouteStationAdapter.getCursor().getInt(scRouteStationAdapter.getCursor().getColumnIndex(DatabaseAccess.BUSSTATION_ID)),
                 route,
                 scRouteStationAdapter.getCursor().getString(scRouteStationAdapter.getCursor().getColumnIndex(DatabaseAccess.STATION_NAME)),
-                scRouteStationAdapter.getCursor().getShort(scRouteStationAdapter.getCursor().getColumnIndex(DatabaseAccess.BUSSTATION_FAVORITE))!=0,
+                scRouteStationAdapter.getCursor().getShort(scRouteStationAdapter.getCursor().getColumnIndex(DatabaseAccess.BUSSTATION_FAVORITE)) != 0,
                 scRouteStationAdapter.getCursor().getString(scRouteStationAdapter.getCursor().getColumnIndex(DatabaseAccess.BUSSTATION_GPS)));
 
         Bundle bundle = new Bundle();
@@ -150,6 +149,7 @@ public class RouteStationListFragment extends ListFragment implements LoaderMana
         startActivity(intentShedule);
     }
 
+    @NonNull
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         switch (getActivity().getClass().getSimpleName()){
@@ -161,12 +161,12 @@ public class RouteStationListFragment extends ListFragment implements LoaderMana
     }
 
     @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+    public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
         scRouteStationAdapter.swapCursor(data);
     }
 
     @Override
-    public void onLoaderReset(Loader<Cursor> loader) {
+    public void onLoaderReset(@NonNull Loader<Cursor> loader) {
         scRouteStationAdapter.swapCursor(null);
     }
 

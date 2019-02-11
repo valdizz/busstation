@@ -27,8 +27,6 @@
             android:id="@+id/menu_fab"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:layout_alignParentBottom="true"
-            android:layout_alignParentRight="true"
             app:menu_animationDelayPerItem="50"
             app:menu_backgroundColor="@android:color/transparent"
             app:menu_buttonSpacing="0dp"

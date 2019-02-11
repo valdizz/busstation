@@ -1,4 +1,4 @@
-package com.valdizz.busstation.Model;
+package com.valdizz.busstation.model;
 
 import android.os.Parcel;
 import android.os.Parcelable;
@@ -6,11 +6,11 @@ import android.os.Parcelable;
 
 public class Station implements Parcelable {
 
-    private int id;
-    private Route route;
-    private String name;
+    private final int id;
+    private final Route route;
+    private final String name;
     private boolean favorite;
-    private String gps;
+    private final String gps;
 
     public Station(int id, Route route, String name, boolean favorite, String gps) {
         this.id = id;
@@ -32,24 +32,12 @@ public class Station implements Parcelable {
         return id;
     }
 
-    public void setId(int id) {
-        this.id = id;
-    }
-
     public Route getRoute() {
         return route;
     }
 
-    public void setRoute(Route route) {
-        this.route = route;
-    }
-
     public String getName() {
         return name;
-    }
-
-    public void setName(String name) {
-        this.name = name;
     }
 
     public boolean isFavorite() {
@@ -58,14 +46,6 @@ public class Station implements Parcelable {
 
     public void setFavorite(boolean favorite) {
         this.favorite = favorite;
-    }
-
-    public String getGps() {
-        return gps;
-    }
-
-    public void setGps(String gps) {
-        this.gps = gps;
     }
 
     @Override

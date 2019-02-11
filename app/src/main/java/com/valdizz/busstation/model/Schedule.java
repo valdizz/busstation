@@ -1,4 +1,4 @@
-package com.valdizz.busstation.Model;
+package com.valdizz.busstation.model;
 
 
 import android.os.Parcel;
@@ -6,7 +6,7 @@ import android.os.Parcelable;
 
 public class Schedule implements Parcelable {
 
-    private Station station;
+    private final Station station;
     private String time;
     private boolean weekday;
     private String description;
@@ -18,7 +18,7 @@ public class Schedule implements Parcelable {
         this.time = time;
     }
 
-    public Schedule(Parcel parcel) {
+    private Schedule(Parcel parcel) {
         this.station = parcel.readParcelable(Station.class.getClassLoader());
         this.time = parcel.readString();
         this.weekday = parcel.readByte() != 0;
@@ -27,14 +27,6 @@ public class Schedule implements Parcelable {
 
     public Station getStation() {
         return station;
-    }
-
-    public void setStation(Station station) {
-        this.station = station;
-    }
-
-    public String getTime() {
-        return time;
     }
 
     public void setTime(String time) {

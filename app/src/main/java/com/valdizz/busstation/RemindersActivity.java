@@ -5,6 +5,8 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
+import android.support.annotation.Nullable;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
 import android.support.v4.widget.SimpleCursorAdapter;
@@ -21,21 +23,21 @@ import com.baoyz.swipemenulistview.SwipeMenu;
 import com.baoyz.swipemenulistview.SwipeMenuCreator;
 import com.baoyz.swipemenulistview.SwipeMenuItem;
 import com.baoyz.swipemenulistview.SwipeMenuListView;
-import com.valdizz.busstation.Database.DatabaseAccess;
-import com.valdizz.busstation.Database.RemindersCursorLoader;
-import com.valdizz.busstation.Dialogs.RemoveReminderDialog;
-import com.valdizz.busstation.Model.Reminder;
-import com.valdizz.busstation.Model.Route;
-import com.valdizz.busstation.Model.Station;
+import com.valdizz.busstation.database.DatabaseAccess;
+import com.valdizz.busstation.database.RemindersCursorLoader;
+import com.valdizz.busstation.dialogs.RemoveReminderDialog;
+import com.valdizz.busstation.model.Reminder;
+import com.valdizz.busstation.model.Route;
+import com.valdizz.busstation.model.Station;
 
 import java.util.Calendar;
 
 public class RemindersActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
-    SwipeMenuListView lvReminders;
-    DatabaseAccess databaseAccess;
-    SimpleCursorAdapter scRemindersAdapter;
-    Reminder reminder;
+    private SwipeMenuListView lvReminders;
+    private DatabaseAccess databaseAccess;
+    private SimpleCursorAdapter scRemindersAdapter;
+    private Reminder reminder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -43,7 +45,7 @@ public class RemindersActivity extends AppCompatActivity implements LoaderManage
         setContentView(R.layout.activity_reminders);
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
 
-        lvReminders = (SwipeMenuListView) findViewById(R.id.lvReminders);
+        lvReminders = findViewById(R.id.lvReminders);
         lvReminders.setMenuCreator(creator);
         lvReminders.setSwipeDirection(SwipeMenuListView.DIRECTION_LEFT);
         lvReminders.setCloseInterpolator(new BounceInterpolator());
@@ -72,7 +74,7 @@ public class RemindersActivity extends AppCompatActivity implements LoaderManage
         getSupportLoaderManager().initLoader(0, null, this);
     }
 
-    SwipeMenuCreator creator = new SwipeMenuCreator() {
+    private final SwipeMenuCreator creator = new SwipeMenuCreator() {
         @Override
         public void create(SwipeMenu menu) {
             // create "delete" item
@@ -83,7 +85,7 @@ public class RemindersActivity extends AppCompatActivity implements LoaderManage
         }
     };
 
-    private SwipeMenuListView.OnMenuItemClickListener onMenuItemClickListener = new SwipeMenuListView.OnMenuItemClickListener() {
+    private final SwipeMenuListView.OnMenuItemClickListener onMenuItemClickListener = new SwipeMenuListView.OnMenuItemClickListener() {
         @Override
         public boolean onMenuItemClick(int position, SwipeMenu menu, int index) {
             switch (index) {
@@ -107,16 +109,15 @@ public class RemindersActivity extends AppCompatActivity implements LoaderManage
                 scRemindersAdapter.getCursor().getString(scRemindersAdapter.getCursor().getColumnIndex(DatabaseAccess.STATION_NAME)),
                 scRemindersAdapter.getCursor().getShort(scRemindersAdapter.getCursor().getColumnIndex(DatabaseAccess.BUSSTATION_FAVORITE)) != 0,
                 scRemindersAdapter.getCursor().getString(scRemindersAdapter.getCursor().getColumnIndex(DatabaseAccess.BUSSTATION_GPS)));
-        Reminder reminder = new Reminder(
+        return new Reminder(
                 station,
                 scRemindersAdapter.getCursor().getString(scRemindersAdapter.getCursor().getColumnIndex(DatabaseAccess.REMINDER_DATE)),
                 scRemindersAdapter.getCursor().getString(scRemindersAdapter.getCursor().getColumnIndex(DatabaseAccess.REMINDER_TIME)),
                 scRemindersAdapter.getCursor().getString(scRemindersAdapter.getCursor().getColumnIndex(DatabaseAccess.REMINDER_PERIODICITY)),
                 scRemindersAdapter.getCursor().getString(scRemindersAdapter.getCursor().getColumnIndex(DatabaseAccess.REMINDER_NOTE)));
-        return reminder;
     }
 
-    private AdapterView.OnItemClickListener reminderOnClickListener = new AdapterView.OnItemClickListener() {
+    private final AdapterView.OnItemClickListener reminderOnClickListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
             reminder = getReminderFromAdapter(scRemindersAdapter);
@@ -128,7 +129,7 @@ public class RemindersActivity extends AppCompatActivity implements LoaderManage
         }
     };
 
-    private AdapterView.OnItemLongClickListener reminderOnItemLongClickListener = new AdapterView.OnItemLongClickListener() {
+    private final AdapterView.OnItemLongClickListener reminderOnItemLongClickListener = new AdapterView.OnItemLongClickListener() {
         @Override
         public boolean onItemLongClick(AdapterView<?> parent, View view, int position, long id) {
             new RemoveReminderDialog().show(getSupportFragmentManager(), String.valueOf(String.valueOf(id)));
@@ -215,18 +216,19 @@ public class RemindersActivity extends AppCompatActivity implements LoaderManage
         }
     }
 
+    @NonNull
     @Override
-    public Loader onCreateLoader(int id, Bundle args) {
+    public Loader<Cursor> onCreateLoader(int id, @Nullable Bundle args) {
         return new RemindersCursorLoader(this, databaseAccess);
     }
 
     @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+    public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
         scRemindersAdapter.swapCursor(data);
     }
 
     @Override
-    public void onLoaderReset(Loader loader) {
+    public void onLoaderReset(@NonNull Loader loader) {
         scRemindersAdapter.swapCursor(null);
     }
 

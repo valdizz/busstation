@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     package="com.valdizz.busstation">
 
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
@@ -9,10 +10,13 @@
 
     <application
         android:allowBackup="true"
+        android:fullBackupContent="true"
+        android:supportsRtl="false"
         android:icon="@mipmap/ic_launcher"
         android:label="@string/app_name"
         android:name="android.support.multidex.MultiDexApplication"
-        android:theme="@style/AppTheme">
+        android:theme="@style/AppTheme"
+        tools:ignore="GoogleAppIndexingWarning">
         <meta-data
             android:name="com.google.android.geo.API_KEY"
             android:value="@string/google_maps_key" />
@@ -20,8 +24,8 @@
             android:name="com.google.android.gms.version"
             android:value="@integer/google_play_services_version" />
 
-        <receiver android:name=".Receivers.ReminderReceiver"/>
-        <receiver android:name=".Receivers.ReminderBootReceiver">
+        <receiver android:name=".receivers.ReminderReceiver"/>
+        <receiver android:name=".receivers.ReminderBootReceiver">
             <intent-filter>
                 <action android:name="android.intent.action.BOOT_COMPLETED"/>
             </intent-filter>

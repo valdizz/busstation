@@ -1,4 +1,4 @@
-package com.valdizz.busstation.Dialogs;
+package com.valdizz.busstation.dialogs;
 
 
 import android.app.Dialog;
@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.database.Cursor;
 import android.graphics.Color;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.widget.SimpleCursorAdapter;
@@ -15,10 +16,10 @@ import android.support.v7.app.AppCompatDialogFragment;
 import android.view.View;
 import android.widget.TextView;
 
-import com.valdizz.busstation.Database.DatabaseAccess;
-import com.valdizz.busstation.Database.TransferRoutesCursorLoader;
-import com.valdizz.busstation.Model.Route;
-import com.valdizz.busstation.Model.Station;
+import com.valdizz.busstation.database.DatabaseAccess;
+import com.valdizz.busstation.database.TransferRoutesCursorLoader;
+import com.valdizz.busstation.model.Route;
+import com.valdizz.busstation.model.Station;
 import com.valdizz.busstation.R;
 import com.valdizz.busstation.ScheduleActivity;
 
@@ -26,7 +27,6 @@ public class TransferRoutesDialog extends AppCompatDialogFragment  implements Lo
 
     private SimpleCursorAdapter scTransferRoutesAdapter;
     private DatabaseAccess databaseAccess;
-    private Station station;
 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
@@ -38,6 +38,7 @@ public class TransferRoutesDialog extends AppCompatDialogFragment  implements Lo
         getLoaderManager().initLoader(0, bundle, this);
     }
 
+    @NonNull
     @Override
     public Dialog onCreateDialog(Bundle savedInstanceState) {
         scTransferRoutesAdapter = new SimpleCursorAdapter(getActivity(), R.layout.route_item_dialog, null, new String[]{DatabaseAccess.ROUTE_NUMBER, DatabaseAccess.ROUTE_NAME}, new int[]{R.id.tvRouteNumDialog, R.id.tvRouteNameDialog},0);
@@ -56,7 +57,7 @@ public class TransferRoutesDialog extends AppCompatDialogFragment  implements Lo
         return builder.create();
     }
 
-    DialogInterface.OnClickListener onDialogClickListener = new DialogInterface.OnClickListener() {
+    private final DialogInterface.OnClickListener onDialogClickListener = new DialogInterface.OnClickListener() {
         @Override
         public void onClick(DialogInterface dialog, int which) {
             Route route = new Route(
@@ -64,11 +65,11 @@ public class TransferRoutesDialog extends AppCompatDialogFragment  implements Lo
                     scTransferRoutesAdapter.getCursor().getString(scTransferRoutesAdapter.getCursor().getColumnIndex(DatabaseAccess.ROUTE_NAME)),
                     scTransferRoutesAdapter.getCursor().getString(scTransferRoutesAdapter.getCursor().getColumnIndex(DatabaseAccess.ROUTE_COLOR)),
                     scTransferRoutesAdapter.getCursor().getShort(scTransferRoutesAdapter.getCursor().getColumnIndex(DatabaseAccess.ROUTE_DIRECTION))!=0);
-            station = new Station(
+            Station station = new Station(
                     scTransferRoutesAdapter.getCursor().getInt(scTransferRoutesAdapter.getCursor().getColumnIndex(DatabaseAccess.BUSSTATION_ID)),
                     route,
                     scTransferRoutesAdapter.getCursor().getString(scTransferRoutesAdapter.getCursor().getColumnIndex(DatabaseAccess.STATION_NAME)),
-                    scTransferRoutesAdapter.getCursor().getShort(scTransferRoutesAdapter.getCursor().getColumnIndex(DatabaseAccess.BUSSTATION_FAVORITE))!=0,
+                    scTransferRoutesAdapter.getCursor().getShort(scTransferRoutesAdapter.getCursor().getColumnIndex(DatabaseAccess.BUSSTATION_FAVORITE)) != 0,
                     scTransferRoutesAdapter.getCursor().getString(scTransferRoutesAdapter.getCursor().getColumnIndex(DatabaseAccess.BUSSTATION_GPS)));
 
             Bundle bundle = new Bundle();
@@ -80,7 +81,7 @@ public class TransferRoutesDialog extends AppCompatDialogFragment  implements Lo
         }
     };
 
-    SimpleCursorAdapter.ViewBinder scTransferRoutesAdapterBinder = new SimpleCursorAdapter.ViewBinder() {
+    private final SimpleCursorAdapter.ViewBinder scTransferRoutesAdapterBinder = new SimpleCursorAdapter.ViewBinder() {
         @Override
         public boolean setViewValue(View view, Cursor cursor, int columnIndex) {
             if (view.getId() == R.id.tvRouteNumDialog){
@@ -92,18 +93,19 @@ public class TransferRoutesDialog extends AppCompatDialogFragment  implements Lo
         }
     };
 
+    @NonNull
     @Override
     public android.support.v4.content.Loader<Cursor> onCreateLoader(int id, Bundle args) {
         return new TransferRoutesCursorLoader(getActivity(), databaseAccess, args);
     }
 
     @Override
-    public void onLoadFinished(android.support.v4.content.Loader<Cursor> loader, Cursor data) {
+    public void onLoadFinished(@NonNull android.support.v4.content.Loader<Cursor> loader, Cursor data) {
         scTransferRoutesAdapter.swapCursor(data);
     }
 
     @Override
-    public void onLoaderReset(android.support.v4.content.Loader<Cursor> loader) {
+    public void onLoaderReset(@NonNull android.support.v4.content.Loader<Cursor> loader) {
         scTransferRoutesAdapter.swapCursor(null);
     }
 }

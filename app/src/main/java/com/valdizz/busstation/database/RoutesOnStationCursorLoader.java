@@ -1,4 +1,4 @@
-package com.valdizz.busstation.Database;
+package com.valdizz.busstation.database;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -7,8 +7,8 @@ import android.support.v4.content.CursorLoader;
 
 
 public class RoutesOnStationCursorLoader extends CursorLoader {
-    DatabaseAccess db;
-    Bundle bundle;
+    private final DatabaseAccess db;
+    private final Bundle bundle;
 
     public RoutesOnStationCursorLoader(Context context, DatabaseAccess db, Bundle bundle) {
         super(context);
@@ -18,7 +18,6 @@ public class RoutesOnStationCursorLoader extends CursorLoader {
 
     @Override
     protected Cursor onLoadInBackground() {
-        Cursor cursor = db.getRoutesOnStation(bundle.getStringArray(DatabaseAccess.BUNDLE_PARAMS));
-        return cursor;
+        return db.getRoutesOnStation(bundle.getStringArray(DatabaseAccess.BUNDLE_PARAMS));
     }
 }

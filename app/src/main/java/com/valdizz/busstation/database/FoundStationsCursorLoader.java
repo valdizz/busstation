@@ -1,4 +1,4 @@
-package com.valdizz.busstation.Database;
+package com.valdizz.busstation.database;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -7,8 +7,8 @@ import android.support.v4.content.CursorLoader;
 
 
 public class FoundStationsCursorLoader extends CursorLoader {
-    private DatabaseAccess db;
-    private Bundle bundle;
+    private final DatabaseAccess db;
+    private final Bundle bundle;
 
     public FoundStationsCursorLoader(Context context, DatabaseAccess db, Bundle bundle) {
         super(context);

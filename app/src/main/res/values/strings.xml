@@ -5,15 +5,13 @@
     <string name="btn_favorites">Favorites</string>
     <string name="btn_findbytext">Stations</string>
     <string name="btn_findbygps">Map</string>
-    <string name="btn_exit">Exit</string>
     <string name="about_menu">About</string>
-    <string name="back_menu">Back</string>
     <string name="about_e_mail" translatable="false">e-mail: vlad.kornev@tut.by</string>
     <string name="stations">Stations</string>
     <string name="form_caption_shedule">Shedule</string>
     <string name="dialog_set_reminder">Reminder</string>
     <string name="dialog_message">Left: %1$d h. %2$d min.</string>
-    <string name="dialog_message_left">The bus left...</string>
+    <string name="dialog_message_left">The bus left…</string>
     <string name="add_menu">To favorites</string>
     <string name="toast_addtofavorites">%1$s station added to favorites.</string>
     <string name="toast_removefromfavorites">%1$s station removed from favorites.</string>
@@ -21,9 +19,7 @@
     <string name="list_empty_reminders">No reminders</string>
     <string name="btn_reminders">Reminders</string>
     <string name="hint_findbyname">Enter the name</string>
-    <string name="city">Lida</string>
     <string name="map_mylocation">I\'m here</string>
-    <string name="map_route">Route N:</string>
     <string name="about_version" translatable="false">ver. %1$s</string>
     <string name="about_copyright" translatable="false">© Vlad Kornev, %1$s</string>
     <string name="reminder_note">Note</string>
@@ -41,8 +37,6 @@
     <string name="reminder_spectime">Specify time</string>
     <string name="reminder_specdate">Specify date</string>
     <string name="reminder_daily">daily</string>
-    <string name="add">Add</string>
-    <string name="delete">Delete</string>
     <string name="notification_caption">Route: %1$s  %2$s</string>
     <string name="notification_text">Station: %1$s</string>
     <string name="reminder_error">The date must be greater than the current date!</string>

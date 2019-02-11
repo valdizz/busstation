@@ -39,6 +39,7 @@
             android:layout_alignParentRight="true"
             android:layout_gravity="center_vertical"
             android:layout_marginLeft="@dimen/main_item_margin"
+            android:layout_marginStart="@dimen/main_item_margin"
             android:layout_toEndOf="@+id/tvRouteNumStations"
             android:layout_toRightOf="@+id/tvRouteNumStations"
             android:background="@drawable/main_caption_green"

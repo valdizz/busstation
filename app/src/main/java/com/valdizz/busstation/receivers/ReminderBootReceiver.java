@@ -1,23 +1,23 @@
-package com.valdizz.busstation.Receivers;
+package com.valdizz.busstation.receivers;
 
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.database.Cursor;
 
-import com.valdizz.busstation.Database.DatabaseAccess;
-import com.valdizz.busstation.Model.Reminder;
-import com.valdizz.busstation.Model.Route;
-import com.valdizz.busstation.Model.Station;
+import com.valdizz.busstation.database.DatabaseAccess;
+import com.valdizz.busstation.model.Reminder;
+import com.valdizz.busstation.model.Route;
+import com.valdizz.busstation.model.Station;
 
 
 public class ReminderBootReceiver extends BroadcastReceiver {
 
-    DatabaseAccess databaseAccess;
+    private DatabaseAccess databaseAccess;
 
     @Override
     public void onReceive(final Context context, Intent intent) {
-        if (intent.getAction().equals("android.intent.action.BOOT_COMPLETED")){
+        if (intent.getAction() != null && intent.getAction().equals("android.intent.action.BOOT_COMPLETED")){
             //Set reminders after startup
             Thread thread = new Thread(new Runnable() {
                 @Override

@@ -1,4 +1,4 @@
-package com.valdizz.busstation.Database;
+package com.valdizz.busstation.database;
 
 import android.content.Context;
 import android.database.Cursor;
@@ -6,7 +6,7 @@ import android.support.v4.content.CursorLoader;
 
 
 public class RemindersCursorLoader extends CursorLoader {
-    DatabaseAccess db;
+    private final DatabaseAccess db;
 
     public RemindersCursorLoader(Context context, DatabaseAccess db) {
         super(context);
@@ -15,7 +15,6 @@ public class RemindersCursorLoader extends CursorLoader {
 
     @Override
     protected Cursor onLoadInBackground() {
-        Cursor cursor = db.getReminders();
-        return cursor;
+        return db.getReminders();
     }
 }

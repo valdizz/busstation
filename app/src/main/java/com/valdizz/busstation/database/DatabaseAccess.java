@@ -1,4 +1,4 @@
-package com.valdizz.busstation.Database;
+package com.valdizz.busstation.database;
 
 
 import android.content.ContentValues;
@@ -6,8 +6,6 @@ import android.content.Context;
 import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
-
-import com.valdizz.busstation.R;
 
 public class DatabaseAccess {
 
@@ -17,23 +15,23 @@ public class DatabaseAccess {
     public final static String ROUTE_COLOR = "route_color";
     public final static String ROUTE_DIRECTION = "route_direction";
     public final static String STATION_NAME = "station_name";
-    public final static String BUSSTATIONS = "BusStations";
+    private final static String BUSSTATIONS = "BusStations";
     public final static String BUSSTATION_ID = "busstation_id";
     public final static String BUSSTATION_GPS = "gps";
     public final static String BUSSTATION_FAVORITE = "favorite";
-    public final static String REMINDERS = "Reminders";
+    private final static String REMINDERS = "Reminders";
     public final static String REMINDER_DATE = "date";
     public final static String REMINDER_TIME = "time";
     public final static String REMINDER_PERIODICITY = "periodicity";
     public final static String REMINDER_NOTE = "note";
-    public final static String REMINDER_BUSSTATIONS_ID = "busstations_id";
+    private final static String REMINDER_BUSSTATIONS_ID = "busstations_id";
     public final static String SCHEDULE_TIME = "time";
     public final static String SCHEDULE_DESCRIPTION = "description";
 
     public final static String BUNDLE_PARAMS = "params";
     public static final String TAG_LOG = "BUSSTATION_LOG";
 
-    private SQLiteOpenHelper openHelper;
+    private final SQLiteOpenHelper openHelper;
     private SQLiteDatabase database;
     private static DatabaseAccess instance;
 
@@ -112,10 +110,10 @@ public class DatabaseAccess {
         return cursor;
     }
 
-    public int setFavoriteStation(String favorite, String busstations_id) {
+    public void setFavoriteStation(String favorite, String busstations_id) {
         ContentValues values = new ContentValues();
         values.put(BUSSTATION_FAVORITE, favorite);
-        return database.update(BUSSTATIONS, values, "_id=?", new String[]{busstations_id});
+        database.update(BUSSTATIONS, values, "_id=?", new String[]{busstations_id});
     }
 
     public Cursor getReminders() {
@@ -142,12 +140,12 @@ public class DatabaseAccess {
         }
     }
 
-    public boolean deleteReminder(String id){
-        return database.delete(REMINDERS, "_id=?", new String[]{id}) > 0;
+    public void deleteReminder(String id){
+        database.delete(REMINDERS, "_id=?", new String[]{id});
     }
 
-    public boolean deleteReminder(String busstations_id, String date, String time, String periodicity){
-        return database.delete(REMINDERS, "busstations_id =? AND date=? AND time=? AND periodicity=?", new String[]{busstations_id, date, time, periodicity}) > 0;
+    public void deleteReminder(String busstations_id, String date, String time, String periodicity){
+        database.delete(REMINDERS, "busstations_id =? AND date=? AND time=? AND periodicity=?", new String[]{busstations_id, date, time, periodicity});
     }
 
 

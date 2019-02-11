@@ -18,18 +18,30 @@ import android.widget.TextView;
 import android.widget.TimePicker;
 import android.widget.Toast;
 
-import com.valdizz.busstation.Database.DatabaseAccess;
-import com.valdizz.busstation.Model.Reminder;
+import com.valdizz.busstation.database.DatabaseAccess;
+import com.valdizz.busstation.model.Reminder;
 
 import java.util.Calendar;
+import java.util.Locale;
 
 public class ReminderSettingsActivity extends AppCompatActivity {
 
-    DatabaseAccess databaseAccess;
-    EditText etReminderNote;
-    TextView tvReminderDateTime, tvRouteNumReminder, tvRouteNameReminder, tvStationNameReminder, etReminderDate, etReminderTime;
-    CheckBox chkMonday, chkTuesday, chkWednesday, chkThursday, chkFriday, chkSaturday, chkSunday;
-    Reminder reminder;
+    private DatabaseAccess databaseAccess;
+    private EditText etReminderNote;
+    private TextView tvReminderDateTime;
+    private TextView tvRouteNumReminder;
+    private TextView tvRouteNameReminder;
+    private TextView tvStationNameReminder;
+    private TextView etReminderDate;
+    private TextView etReminderTime;
+    private CheckBox chkMonday;
+    private CheckBox chkTuesday;
+    private CheckBox chkWednesday;
+    private CheckBox chkThursday;
+    private CheckBox chkFriday;
+    private CheckBox chkSaturday;
+    private CheckBox chkSunday;
+    private Reminder reminder;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -37,20 +49,20 @@ public class ReminderSettingsActivity extends AppCompatActivity {
         setContentView(R.layout.activity_reminder_settings);
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
 
-        etReminderTime = (TextView) findViewById(R.id.etReminderTime);
-        etReminderDate = (TextView) findViewById(R.id.etReminderDate);
-        etReminderNote = (EditText) findViewById(R.id.etReminderNote);
-        tvReminderDateTime = (TextView) findViewById(R.id.tvReminderDateTime);
-        tvRouteNumReminder = (TextView) findViewById(R.id.tvRouteNumReminder);
-        tvRouteNameReminder = (TextView) findViewById(R.id.tvRouteNameReminder);
-        tvStationNameReminder = (TextView) findViewById(R.id.tvStationNameReminder);
-        chkMonday = (CheckBox) findViewById(R.id.chkMonday);
-        chkTuesday = (CheckBox) findViewById(R.id.chkTuesday);
-        chkWednesday = (CheckBox) findViewById(R.id.chkWednesday);
-        chkThursday = (CheckBox) findViewById(R.id.chkThursday);
-        chkFriday = (CheckBox) findViewById(R.id.chkFriday);
-        chkSaturday = (CheckBox) findViewById(R.id.chkSaturday);
-        chkSunday = (CheckBox) findViewById(R.id.chkSunday);
+        etReminderTime = findViewById(R.id.etReminderTime);
+        etReminderDate = findViewById(R.id.etReminderDate);
+        etReminderNote = findViewById(R.id.etReminderNote);
+        tvReminderDateTime = findViewById(R.id.tvReminderDateTime);
+        tvRouteNumReminder = findViewById(R.id.tvRouteNumReminder);
+        tvRouteNameReminder = findViewById(R.id.tvRouteNameReminder);
+        tvStationNameReminder = findViewById(R.id.tvStationNameReminder);
+        chkMonday = findViewById(R.id.chkMonday);
+        chkTuesday = findViewById(R.id.chkTuesday);
+        chkWednesday = findViewById(R.id.chkWednesday);
+        chkThursday = findViewById(R.id.chkThursday);
+        chkFriday = findViewById(R.id.chkFriday);
+        chkSaturday = findViewById(R.id.chkSaturday);
+        chkSunday = findViewById(R.id.chkSunday);
 
         init();
         updateReminderDateTimeText();
@@ -59,26 +71,31 @@ public class ReminderSettingsActivity extends AppCompatActivity {
     private void init(){
         reminder = getIntent().getBundleExtra(Reminder.class.getCanonicalName()).getParcelable(Reminder.class.getCanonicalName());
 
-        tvRouteNumReminder.setText(reminder.getStation().getRoute().getNumber());
-        ((GradientDrawable)tvRouteNumReminder.getBackground().getCurrent()).setColor(Color.parseColor("#" + reminder.getStation().getRoute().getColor()));
-        tvRouteNameReminder.setText(reminder.getStation().getRoute().getName());
-        tvStationNameReminder.setText(reminder.getStation().getName());
-        etReminderDate.setText(reminder.getDate());
-        etReminderTime.setText(reminder.getTime());
-        etReminderNote.setText(reminder.getNote());
-        setPeriodicity(reminder.getPeriodicity());
-
+        if (reminder != null) {
+            tvRouteNumReminder.setText(reminder.getStation().getRoute().getNumber());
+            ((GradientDrawable) tvRouteNumReminder.getBackground().getCurrent()).setColor(Color.parseColor("#" + reminder.getStation().getRoute().getColor()));
+            tvRouteNameReminder.setText(reminder.getStation().getRoute().getName());
+            tvStationNameReminder.setText(reminder.getStation().getName());
+            etReminderDate.setText(reminder.getDate());
+            etReminderTime.setText(reminder.getTime());
+            etReminderNote.setText(reminder.getNote());
+            setPeriodicity(reminder.getPeriodicity());
+        }
         databaseAccess = DatabaseAccess.getInstance(this);
     }
 
     public void onReminderTimeClick(View view){
-        Calendar currentTime = reminder.getCalendar(reminder.getDate(), reminder.getTime());
+        Calendar currentTime = Calendar.getInstance();
         int hour = currentTime.get(Calendar.HOUR_OF_DAY);
         int minute = currentTime.get(Calendar.MINUTE);
+        if (reminder.getTime() != null && reminder.getTime().length() == 5) {
+            hour = Integer.valueOf(reminder.getTime().substring(0, 2));
+            minute = Integer.valueOf(reminder.getTime().substring(3));
+        }
         TimePickerDialog timePickerDialog = new TimePickerDialog(this, new TimePickerDialog.OnTimeSetListener() {
             @Override
             public void onTimeSet(TimePicker view, int hourOfDay, int minute) {
-                etReminderTime.setText(String.format("%02d:%02d", hourOfDay, minute));
+                etReminderTime.setText(String.format(Locale.getDefault(),"%02d:%02d", hourOfDay, minute));
                 updateReminderDateTimeText();
             }
         }, hour, minute, true);
@@ -87,14 +104,20 @@ public class ReminderSettingsActivity extends AppCompatActivity {
     }
 
     public void onReminderDateClick(View view){
-        Calendar currentDate = reminder.getCalendar(reminder.getDate(), reminder.getTime());
+        Calendar currentDate = Calendar.getInstance();
         int year = currentDate.get(Calendar.YEAR);
         int month = currentDate.get(Calendar.MONTH);
         int day = currentDate.get(Calendar.DAY_OF_MONTH);
+        if (reminder.getDate() != null && reminder.getDate().length() == 10) {
+            year = Integer.valueOf(reminder.getDate().substring(6));
+            month = Integer.valueOf(reminder.getDate().substring(3, 5));
+            day = Integer.valueOf(reminder.getDate().substring(0, 2));
+        }
+
         DatePickerDialog datePickerDialog = new DatePickerDialog(this, new DatePickerDialog.OnDateSetListener() {
             @Override
             public void onDateSet(DatePicker view, int year, int month, int dayOfMonth) {
-                etReminderDate.setText(String.format("%02d.%02d.%4d", dayOfMonth, month, year));
+                etReminderDate.setText(String.format(Locale.getDefault(),"%02d.%02d.%4d", dayOfMonth, month, year));
                 updateReminderDateTimeText();
             }
         }, year, month, day);
@@ -136,7 +159,7 @@ public class ReminderSettingsActivity extends AppCompatActivity {
     }
 
     public void onClickOk(View view){
-        if (etReminderDate.getText().length()<10 || etReminderTime.getText().length()<5){
+        if (etReminderDate.getText().length()!=10 || etReminderTime.getText().length()!=5){
             Toast.makeText(ReminderSettingsActivity.this, getString(R.string.reminder_setdatetimeerror), Toast.LENGTH_SHORT).show();
             return;
         }
@@ -151,7 +174,7 @@ public class ReminderSettingsActivity extends AppCompatActivity {
         reminder.setNote(etReminderNote.getText().toString());
         reminder.setPeriodicity(getReminderPeriodicity());
 
-        if (reminder.getCalendar(reminder.getDate(), reminder.getTime()).getTimeInMillis() < Calendar.getInstance().getTimeInMillis() && reminder.getPeriodicity().isEmpty()){
+        if (reminder.getNextReminderDatetime(reminder.getDate(), reminder.getTime(), -1).getTimeInMillis() < Calendar.getInstance().getTimeInMillis() && reminder.getPeriodicity().isEmpty()){
             Toast.makeText(ReminderSettingsActivity.this, getString(R.string.reminder_error), Toast.LENGTH_SHORT).show();
             return;
         }

@@ -11,7 +11,7 @@
 
     <fragment
         android:id="@+id/favorite_station_list"
-        android:name="com.valdizz.busstation.Fragments.RouteStationListFragment"
+        android:name="com.valdizz.busstation.fragments.RouteStationListFragment"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         tools:layout="@layout/routestation_list_fragment">

@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.graphics.Color;
 import android.graphics.drawable.GradientDrawable;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.LoaderManager;
 import android.support.v4.content.Loader;
@@ -20,23 +21,22 @@ import android.widget.AdapterView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.valdizz.busstation.Database.DatabaseAccess;
-import com.valdizz.busstation.Database.StationsCursorLoader;
-import com.valdizz.busstation.Model.Route;
-import com.valdizz.busstation.Model.Station;
+import com.valdizz.busstation.database.DatabaseAccess;
+import com.valdizz.busstation.database.StationsCursorLoader;
+import com.valdizz.busstation.model.Route;
+import com.valdizz.busstation.model.Station;
 
 public class StationsActivity extends AppCompatActivity implements LoaderManager.LoaderCallbacks<Cursor> {
 
-    final OvershootInterpolator interpolator = new OvershootInterpolator();
-    ListView lvStations;
-    DatabaseAccess databaseAccess;
-    SimpleCursorAdapter scStationAdapter;
-    TextView tvRouteNumStations;
-    TextView tvRouteNameStations;
-    Bundle bundle;
-    Route route;
-    Station station;
-    FloatingActionButton fab;
+    private final OvershootInterpolator interpolator = new OvershootInterpolator();
+    private ListView lvStations;
+    private DatabaseAccess databaseAccess;
+    private SimpleCursorAdapter scStationAdapter;
+    private TextView tvRouteNumStations;
+    private TextView tvRouteNameStations;
+    private Bundle bundle;
+    private Route route;
+    private FloatingActionButton fab;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,10 +44,10 @@ public class StationsActivity extends AppCompatActivity implements LoaderManager
         setContentView(R.layout.activity_stations);
         setSupportActionBar((Toolbar) findViewById(R.id.toolbar));
 
-        lvStations = (ListView) findViewById(R.id.lvStations);
-        tvRouteNumStations = (TextView)findViewById(R.id.tvRouteNumStations);
-        tvRouteNameStations = (TextView)findViewById(R.id.tvRouteNameStations);
-        fab = (FloatingActionButton)findViewById(R.id.fab);
+        lvStations = findViewById(R.id.lvStations);
+        tvRouteNumStations = findViewById(R.id.tvRouteNumStations);
+        tvRouteNameStations = findViewById(R.id.tvRouteNameStations);
+        fab = findViewById(R.id.fab);
 
         init();
         initializeContentLoader();
@@ -63,7 +63,7 @@ public class StationsActivity extends AppCompatActivity implements LoaderManager
 
     private void init(){
         route = getIntent().getBundleExtra(Route.class.getCanonicalName()).getParcelable(Route.class.getCanonicalName());
-        tvRouteNumStations.setText(route.getNumber());
+        tvRouteNumStations.setText(route != null ? route.getNumber() : "");
         ((GradientDrawable)tvRouteNumStations.getBackground().getCurrent()).setColor(Color.parseColor("#" + route.getColor()));
         tvRouteNameStations.setText(route.getName());
         fab.setOnClickListener(fabListener);
@@ -85,14 +85,14 @@ public class StationsActivity extends AppCompatActivity implements LoaderManager
         getSupportLoaderManager().initLoader(0, bundle, this);
     }
 
-    private AdapterView.OnItemClickListener stationsListener = new AdapterView.OnItemClickListener() {
+    private final AdapterView.OnItemClickListener stationsListener = new AdapterView.OnItemClickListener() {
         @Override
         public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-            station = new Station(
+            Station station = new Station(
                     scStationAdapter.getCursor().getInt(scStationAdapter.getCursor().getColumnIndex(DatabaseAccess.BUSSTATION_ID)),
                     route,
                     scStationAdapter.getCursor().getString(scStationAdapter.getCursor().getColumnIndex(DatabaseAccess.STATION_NAME)),
-                    scStationAdapter.getCursor().getShort(scStationAdapter.getCursor().getColumnIndex(DatabaseAccess.BUSSTATION_FAVORITE))!=0,
+                    scStationAdapter.getCursor().getShort(scStationAdapter.getCursor().getColumnIndex(DatabaseAccess.BUSSTATION_FAVORITE)) != 0,
                     scStationAdapter.getCursor().getString(scStationAdapter.getCursor().getColumnIndex(DatabaseAccess.BUSSTATION_GPS)));
 
             Bundle bundle = new Bundle();
@@ -112,7 +112,7 @@ public class StationsActivity extends AppCompatActivity implements LoaderManager
         }
     }
 
-    private View.OnClickListener fabListener = new View.OnClickListener() {
+    private final View.OnClickListener fabListener = new View.OnClickListener() {
         @Override
         public void onClick(View view) {
             route.setDirection(!route.isDirection());
@@ -153,18 +153,19 @@ public class StationsActivity extends AppCompatActivity implements LoaderManager
         }
     }
 
+    @NonNull
     @Override
     public Loader<Cursor> onCreateLoader(int id, Bundle args) {
         return new StationsCursorLoader(this, databaseAccess, args);
     }
 
     @Override
-    public void onLoadFinished(Loader<Cursor> loader, Cursor data) {
+    public void onLoadFinished(@NonNull Loader<Cursor> loader, Cursor data) {
         scStationAdapter.swapCursor(data);
     }
 
     @Override
-    public void onLoaderReset(Loader loader) {
+    public void onLoaderReset(@NonNull Loader loader) {
         scStationAdapter.swapCursor(null);
     }
 

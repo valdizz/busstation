@@ -1,4 +1,4 @@
-package com.valdizz.busstation.Model;
+package com.valdizz.busstation.model;
 
 
 import android.os.Parcel;
@@ -33,10 +33,6 @@ public class Route implements Parcelable{
         return number;
     }
 
-    public void setNumber(String number) {
-        this.number = number;
-    }
-
     public String getName() {
         return name;
     }
@@ -47,10 +43,6 @@ public class Route implements Parcelable{
 
     public String getColor() {
         return color;
-    }
-
-    public void setColor(String color) {
-        this.color = color;
     }
 
     public boolean isDirection() {
